@@ -1,0 +1,245 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of example_FVCOM_tsobc</title>
+  <meta name="keywords" content="example_FVCOM_tsobc">
+  <meta name="description" content="example file for dumping a file to force temperature and salinity at the open b.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../index.html">Home</a> &gt;  <a href="index.html">fvcom_prepro</a> &gt; example_FVCOM_tsobc.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../index.html"><img alt="<" border="0" src="../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for fvcom_prepro&nbsp;<img alt=">" border="0" src="../right.png"></a></td></tr></table>-->
+
+<h1>example_FVCOM_tsobc
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>example file for dumping a file to force temperature and salinity at the open b.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function example_FVCOM_tsobc() </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> example file for dumping a file to force temperature and salinity at the open b.
+
+ function example_FVCOM_tsobc()
+
+ DESCRIPTION:
+    Setup a sample FVCOM hydrographic open boundary forcing file
+
+ INPUT
+   
+ OUTPUT:
+    FVCOM hydrographic open boundary file
+
+ Author(s):  
+    Geoff Cowles (University of Massachusetts Dartmouth)
+
+ Revision history
+   
+==============================================================================</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="example.html" class="code" title="">example</a>	example demonstrating reading in a 2DM file and constructing a model</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function example_FVCOM_tsobc()</a>
+0002 <span class="comment">% example file for dumping a file to force temperature and salinity at the open b.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% function example_FVCOM_tsobc()</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">% DESCRIPTION:</span>
+0007 <span class="comment">%    Setup a sample FVCOM hydrographic open boundary forcing file</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">% INPUT</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">% OUTPUT:</span>
+0012 <span class="comment">%    FVCOM hydrographic open boundary file</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">% Author(s):</span>
+0015 <span class="comment">%    Geoff Cowles (University of Massachusetts Dartmouth)</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">% Revision history</span>
+0018 <span class="comment">%</span>
+0019 <span class="comment">%==============================================================================</span>
+0020 
+0021 warning off;
+0022 
+0023 
+0024 subname = <span class="string">'example_FVCOM_tsobc'</span>;
+0025 fprintf(<span class="string">'\n'</span>)
+0026 fprintf([<span class="string">'begin : '</span> subname <span class="string">'\n'</span>])
+0027 
+0028 fvcom_bathy = <span class="string">'tst_dep.dat'</span>;
+0029 fvcom_obc   = <span class="string">'tst_obc.dat'</span>;
+0030 tsOBCFile = <span class="string">'tst_tsobc.nc'</span>;
+0031 
+0032 <span class="comment">%------------------------------------------------------------------------------</span>
+0033 <span class="comment">% read in the FVCOM open boundary node data (need node numbers and dimension)</span>
+0034 <span class="comment">%------------------------------------------------------------------------------</span>
+0035 fid = fopen(fvcom_obc,<span class="string">'r'</span>);
+0036 <span class="keyword">if</span>(fid  &lt; 0)
+0037   error([<span class="string">'file: '</span> fvcom_obc <span class="string">' does not exist'</span>]);
+0038 <span class="keyword">end</span>;
+0039 C = textscan(fid, <span class="string">'%s %s %s %s %d'</span>, 1);
+0040 nObcs = C{5};
+0041 obc_nodes = zeros(nObcs,1);
+0042 fprintf(<span class="string">'reading obc file\n'</span>);
+0043 fprintf(<span class="string">'# nodes %d\n'</span>,nObc);
+0044 <span class="keyword">for</span> i=1:nObc
+0045   C = textscan(fid, <span class="string">'%d %d %d'</span>, 1);
+0046   obc_nodes(i) = C{2};
+0047 <span class="keyword">end</span>;
+0048 
+0049 fprintf(<span class="string">'obc reading complete\n'</span>);
+0050 
+0051 <span class="comment">%------------------------------------------------------------------------------</span>
+0052 <span class="comment">% read in the FVCOM bathymetry data (need bathymetry on open boundary nodes)</span>
+0053 <span class="comment">%------------------------------------------------------------------------------</span>
+0054 fid = fopen(fvcom_bathy,<span class="string">'r'</span>);
+0055 <span class="keyword">if</span>(fid  &lt; 0)
+0056   error([<span class="string">'file: '</span> fvcom_bathy <span class="string">' does not exist'</span>]);
+0057 <span class="keyword">end</span>;
+0058 C = textscan(fid, <span class="string">'%s %s %s %d'</span>, 1);
+0059 Nverts = C{4};
+0060 h = zeros(Nverts,1);
+0061 fprintf(<span class="string">'reading bathymetry file\n'</span>);
+0062 fprintf(<span class="string">'# nodes %d\n'</span>,Nverts);
+0063 <span class="keyword">for</span> i=1:Nverts
+0064   C = textscan(fid, <span class="string">'%f %f %f'</span>, 1);
+0065   h(i) = C{3};
+0066 <span class="keyword">end</span>;
+0067 fprintf(<span class="string">'min depth %f max depth %f\n'</span>,min(h),max(h));
+0068 fprintf(<span class="string">'bathymetry reading complete\n'</span>);
+0069 fclose(fid);
+0070 
+0071 <span class="comment">%--------------------------------------------------------------</span>
+0072 <span class="comment">% set variables for NetCDF file</span>
+0073 <span class="comment">%--------------------------------------------------------------</span>
+0074 
+0075 <span class="comment">% extract bathymetry at open boundary nodes</span>
+0076 h_obc = h(obc_nodes);
+0077 
+0078 <span class="comment">% time</span>
+0079 time = 0:1:31.;
+0080 nTimes = prod(size(time));
+0081 
+0082 <span class="comment">% set siglev/siglay</span>
+0083 nSiglay = 10;
+0084 nSiglev = 11;
+0085 inc = 1./real(nSiglay);
+0086 siglev = 0:-inc:-1;
+0087 <span class="keyword">for</span> i=1:nSiglay
+0088     siglay(i) = mean(siglev(i:i+1));
+0089 <span class="keyword">end</span>;
+0090 
+0091 
+0092 <span class="comment">% initialize temperature/salinity arrays</span>
+0093 temp = zeros(nObc,nSiglay,nTimes);
+0094 salt = zeros(nObc,nSiglay,nTimes);
+0095 
+0096 <span class="comment">% set variable temperature and salinity</span>
+0097 <span class="keyword">for</span> i=1:nTimes
+0098     obc_temp(i) = 18. + 2.*real(i-1)/nTimes;
+0099     obc_salt(i) = 30. - 5.*real(i-1)/nTimes;
+0100 <span class="keyword">end</span>;
+0101 
+0102 <span class="comment">%--------------------------------------------------------------</span>
+0103 <span class="comment">% dump to netcdf file</span>
+0104 <span class="comment">%--------------------------------------------------------------</span>
+0105 
+0106 <span class="comment">% open boundary forcing</span>
+0107 nc = netcdf(tsOBCFile, <span class="string">'clobber'</span>);       
+0108 
+0109 nc.type = <span class="string">'FVCOM RIVER FORCING FILE'</span> ;
+0110 nc.title = <span class="string">'simple open boundary hydrography test'</span>;   
+0111 nc.type =  <span class="string">'FVCOM TIME SERIES OBC TS FILE'</span>; 
+0112 nc.history = <span class="string">'example_FVCOM_tsobc'</span>;
+0113 
+0114 <span class="comment">% dimensions</span>
+0115 nc(<span class="string">'nobc'</span>) = nObc; 
+0116 nc(<span class="string">'Datestrln'</span>) = 26; 
+0117 nc(<span class="string">'time'</span>) = 0; 
+0118 nc(<span class="string">'siglay'</span>) = nSiglay;
+0119 nc(<span class="string">'siglev'</span>) = nSiglev;
+0120 
+0121 <span class="comment">% variables</span>
+0122 nc{<span class="string">'river_names'</span>} = ncchar(<span class="string">'rivers'</span>, <span class="string">'namelen'</span>);
+0123 
+0124 nc{<span class="string">'time'</span>} = ncfloat(<span class="string">'time'</span>);
+0125 nc{<span class="string">'time'</span>}.long_name = <span class="string">'time'</span>;  
+0126 nc{<span class="string">'time'</span>}.units     = <span class="string">'days since 0.0'</span>;  
+0127 nc{<span class="string">'time'</span>}.time_zone = <span class="string">'none'</span>;  
+0128 
+0129 nc{<span class="string">'Itime'</span>} = ncint(<span class="string">'time'</span>);
+0130 nc{<span class="string">'Itime'</span>}.units     = <span class="string">'days since 0.0'</span>;  
+0131 nc{<span class="string">'Itime'</span>}.time_zone = <span class="string">'none'</span>;  
+0132 
+0133 nc{<span class="string">'Itime2'</span>} = ncint(<span class="string">'time'</span>);
+0134 nc{<span class="string">'Itime2'</span>}.units     = <span class="string">'msec since 00:00:00'</span>;
+0135 nc{<span class="string">'Itime2'</span>}.time_zone = <span class="string">'none'</span>;  
+0136 
+0137 nc{<span class="string">'obc_nodes'</span>} = ncint(<span class="string">'nobc'</span>);
+0138 nc{<span class="string">'obc_nodes'</span>}.long_name     = <span class="string">'Open Boundary Node Number'</span>;
+0139 nc{<span class="string">'obc_nodes'</span>}.grid = <span class="string">'obc_grid'</span>;
+0140 
+0141 nc{<span class="string">'obc_h'</span>} = ncfloat(<span class="string">'nobc'</span>);
+0142 nc{<span class="string">'obc_h'</span>}.long_name     = <span class="string">'ocean boundary depth'</span>;
+0143 nc{<span class="string">'obc_h'</span>}.units = <span class="string">'m'</span>;
+0144 nc{<span class="string">'obc_h'</span>}.grid  = <span class="string">'obc_grid'</span>;
+0145 
+0146 nc{<span class="string">'obc_siglev'</span>} = ncfloat(<span class="string">'siglev'</span>,<span class="string">'nobc'</span>);
+0147 nc{<span class="string">'obc_siglev'</span>}.long_name     = <span class="string">'ocean_sigma/general_coordinate'</span>;
+0148 nc{<span class="string">'obc_siglev'</span>}.grid  = <span class="string">'obc_grid'</span>;
+0149 
+0150 nc{<span class="string">'obc_siglay'</span>} = ncfloat(<span class="string">'siglay'</span>,<span class="string">'nobc'</span>);
+0151 nc{<span class="string">'obc_siglay'</span>}.long_name     = <span class="string">'ocean_sigma/general_coordinate'</span>;
+0152 nc{<span class="string">'obc_siglay'</span>}.grid  = <span class="string">'obc_grid'</span>;
+0153 
+0154 nc{<span class="string">'obc_temp'</span>} = ncfloat(<span class="string">'time'</span>,<span class="string">'siglay'</span>,<span class="string">'nobc'</span>);
+0155 nc{<span class="string">'obc_temp'</span>}.long_name     = <span class="string">'sea_water_temperature'</span>;
+0156 nc{<span class="string">'obc_temp'</span>}.units     = <span class="string">'Celsius'</span>;
+0157 nc{<span class="string">'obc_temp'</span>}.grid  = <span class="string">'obc_grid'</span>;
+0158 
+0159 nc{<span class="string">'obc_salinity'</span>} = ncfloat(<span class="string">'time'</span>,<span class="string">'siglay'</span>,<span class="string">'nobc'</span>);
+0160 nc{<span class="string">'obc_salinity'</span>}.long_name     = <span class="string">'sea_water_salinity'</span>;
+0161 nc{<span class="string">'obc_salinity'</span>}.units     = <span class="string">'PSU'</span>;
+0162 nc{<span class="string">'obc_salinity'</span>}.grid  = <span class="string">'obc_grid'</span>;
+0163 
+0164 nc{<span class="string">'obc_nodes'</span>}(:) = obc_nodes;
+0165 nc{<span class="string">'obc_h'</span>}(:) = obc_h;
+0166 <span class="keyword">for</span> i=1:nObc
+0167     nc{<span class="string">'obc_siglev'</span>}(1:nSiglev,i) = siglev;
+0168     nc{<span class="string">'obc_siglay'</span>}(1:nSiglay,i) = siglay;
+0169 <span class="keyword">end</span>
+0170 <span class="keyword">for</span> i=1:nTimes
+0171     nc{<span class="string">'time'</span>}(i) = time(i);
+0172     nc{<span class="string">'Itime'</span>}(i) = floor(time(i));
+0173     nc{<span class="string">'Itime2'</span>}(i) = mod(time(i),1)*24*3600*1000.;
+0174     nc{<span class="string">'obc_temp'</span>}(i,:,:) = obc_temp(i);
+0175     nc{<span class="string">'obc_salinity'</span>}(i,:,:) = obc_salt(i);
+0176 <span class="keyword">end</span>;
+0177 
+0178 nc = close(nc);    
+0179 
+0180 
+0181 fprintf([<span class="string">'end   : '</span> subname <span class="string">'\n'</span>])</pre></div>
+<hr><address>Generated on Mon 20-Sep-2010 13:44:26 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>
