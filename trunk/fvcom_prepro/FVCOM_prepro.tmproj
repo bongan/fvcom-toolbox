@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>currentDocument</key>
-	<string>example_FVCOM_tsobc.m</string>
+	<string>example_FVCOM_wind_ts_speed.m</string>
 	<key>documents</key>
 	<array>
 		<dict>
@@ -160,7 +160,7 @@
 			<key>filename</key>
 			<string>example_FVCOM_wind_ts.m</string>
 			<key>lastUsed</key>
-			<date>2010-09-11T16:33:47Z</date>
+			<date>2010-09-22T03:48:21Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
@@ -190,7 +190,13 @@
 			<key>filename</key>
 			<string>example_FVCOM_tsobc.m</string>
 			<key>lastUsed</key>
-			<date>2010-09-11T23:35:16Z</date>
+			<date>2010-09-22T03:47:53Z</date>
+		</dict>
+		<dict>
+			<key>filename</key>
+			<string>example_FVCOM_wind_ts_speed.m</string>
+			<key>lastUsed</key>
+			<date>2010-09-22T03:48:21Z</date>
 			<key>selected</key>
 			<true/>
 		</dict>
@@ -424,9 +430,9 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>79</integer>
+				<integer>17</integer>
 				<key>line</key>
-				<integer>25</integer>
+				<integer>0</integer>
 			</dict>
 			<key>columnSelection</key>
 			<false/>
@@ -439,15 +445,29 @@
 				<key>column</key>
 				<integer>0</integer>
 				<key>line</key>
-				<integer>2</integer>
+				<integer>0</integer>
 			</dict>
 			<key>selectTo</key>
 			<dict>
 				<key>column</key>
-				<integer>79</integer>
+				<integer>0</integer>
 				<key>line</key>
-				<integer>25</integer>
+				<integer>1</integer>
 			</dict>
+		</dict>
+		<key>example_FVCOM_wind_ts_speed.m</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>36</integer>
+				<key>line</key>
+				<integer>0</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
 		</dict>
 		<key>find_nearest_pt.m</key>
 		<dict>
@@ -765,11 +785,12 @@
 		<string>write_FVCOM_river.m</string>
 		<string>example_FVCOM_river.m</string>
 		<string>example_FVCOM_tsobc.m</string>
+		<string>example_FVCOM_wind_ts_speed.m</string>
 		<string>add_var_FVCOM_river.m</string>
 	</array>
 	<key>showFileHierarchyDrawer</key>
 	<true/>
 	<key>windowFrame</key>
-	<string>{{549, 144}, {788, 837}}</string>
+	<string>{{376, 41}, {788, 837}}</string>
 </dict>
 </plist>
