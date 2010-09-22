@@ -1,0 +1,302 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of swan2netcdf</title>
+  <meta name="keywords" content="swan2netcdf">
+  <meta name="description" content="Convert a SWAN output file (Matlab) into a NetCDF file">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../index.html">Home</a> &gt;  <a href="index.html">swan_scripts</a> &gt; swan2netcdf.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../index.html"><img alt="<" border="0" src="../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for swan_scripts&nbsp;<img alt=">" border="0" src="../right.png"></a></td></tr></table>-->
+
+<h1>swan2netcdf
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>Convert a SWAN output file (Matlab) into a NetCDF file</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function swan2netcdf(matfile,ncfile,basename,first_time,last_time,increment); </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Convert a SWAN output file (Matlab) into a NetCDF file 
+
+ function swan2netcdf(matfile,ncfile,basename,first_time,last_time,increment);
+
+ DESCRIPTION:
+    read output from unstructured SWAN model (currently 40.82) and
+    dump to a NetCDF file which is far more useful than a Matlab file.
+
+ INPUT 
+   matfile  = Unstructured SWAN Matlab file
+   ncfile   = NetCDF file for output
+   basename = prefix for SWAN mesh, bathymetry, connectivity files
+   first_time:  first time frame in Matlab object frame time
+   last_time:   last time frame in Matlab object frame time
+   increment:   increment in seconds
+
+ OUTPUT:
+    NetCDF file containing:
+      a.) time in modified Julian day
+      b.) significant wave height (hs)
+      c.) wave direction
+      d.) mesh
+      e.) peak period
+      f.) wave direction
+      g.) U10
+      h.) V10
+
+ EXAMPLE USAGE
+   swan2netcdf('gom1.mat','gom1.nc','gom1','20070101_000000','20070131_000000',3600)
+     this converts gom1.mat to gom1.nc using SWAN grid files gom1.ele, gom1.bot
+     and gom1.node from Jan 1, 2007 00:00:00 to Jan 31, 2007 00:00:00 in increments
+     of 1 hour.
+
+ NOTE
+    routine is not refined, e.g. will not check if files exist and will
+    probably crash if you do not have the variables above in the SWAN
+    output file.  
+    You will need approximately the following BLOCK command in your SWAN runfile
+
+    BLOCK 'COMPGRID' NOHEAD 'gom1.mat' LAY 3 XP YP DEP HS RTP TPS DIR WLEN &amp;
+                WINDV OUTPUT 20070101_000000 3600 SEC
+
+ Author(s):  
+    Geoff Cowles (University of Massachusetts Dartmouth)
+
+ Revision history
+   
+==============================================================================</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function swan2netcdf(matfile,ncfile,basename,first_time,last_time,increment);</a>
+0002 <span class="comment">% Convert a SWAN output file (Matlab) into a NetCDF file</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% function swan2netcdf(matfile,ncfile,basename,first_time,last_time,increment);</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">% DESCRIPTION:</span>
+0007 <span class="comment">%    read output from unstructured SWAN model (currently 40.82) and</span>
+0008 <span class="comment">%    dump to a NetCDF file which is far more useful than a Matlab file.</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">% INPUT</span>
+0011 <span class="comment">%   matfile  = Unstructured SWAN Matlab file</span>
+0012 <span class="comment">%   ncfile   = NetCDF file for output</span>
+0013 <span class="comment">%   basename = prefix for SWAN mesh, bathymetry, connectivity files</span>
+0014 <span class="comment">%   first_time:  first time frame in Matlab object frame time</span>
+0015 <span class="comment">%   last_time:   last time frame in Matlab object frame time</span>
+0016 <span class="comment">%   increment:   increment in seconds</span>
+0017 <span class="comment">%</span>
+0018 <span class="comment">% OUTPUT:</span>
+0019 <span class="comment">%    NetCDF file containing:</span>
+0020 <span class="comment">%      a.) time in modified Julian day</span>
+0021 <span class="comment">%      b.) significant wave height (hs)</span>
+0022 <span class="comment">%      c.) wave direction</span>
+0023 <span class="comment">%      d.) mesh</span>
+0024 <span class="comment">%      e.) peak period</span>
+0025 <span class="comment">%      f.) wave direction</span>
+0026 <span class="comment">%      g.) U10</span>
+0027 <span class="comment">%      h.) V10</span>
+0028 <span class="comment">%</span>
+0029 <span class="comment">% EXAMPLE USAGE</span>
+0030 <span class="comment">%   swan2netcdf('gom1.mat','gom1.nc','gom1','20070101_000000','20070131_000000',3600)</span>
+0031 <span class="comment">%     this converts gom1.mat to gom1.nc using SWAN grid files gom1.ele, gom1.bot</span>
+0032 <span class="comment">%     and gom1.node from Jan 1, 2007 00:00:00 to Jan 31, 2007 00:00:00 in increments</span>
+0033 <span class="comment">%     of 1 hour.</span>
+0034 <span class="comment">%</span>
+0035 <span class="comment">% NOTE</span>
+0036 <span class="comment">%    routine is not refined, e.g. will not check if files exist and will</span>
+0037 <span class="comment">%    probably crash if you do not have the variables above in the SWAN</span>
+0038 <span class="comment">%    output file.</span>
+0039 <span class="comment">%    You will need approximately the following BLOCK command in your SWAN runfile</span>
+0040 <span class="comment">%</span>
+0041 <span class="comment">%    BLOCK 'COMPGRID' NOHEAD 'gom1.mat' LAY 3 XP YP DEP HS RTP TPS DIR WLEN &amp;</span>
+0042 <span class="comment">%                WINDV OUTPUT 20070101_000000 3600 SEC</span>
+0043 <span class="comment">%</span>
+0044 <span class="comment">% Author(s):</span>
+0045 <span class="comment">%    Geoff Cowles (University of Massachusetts Dartmouth)</span>
+0046 <span class="comment">%</span>
+0047 <span class="comment">% Revision history</span>
+0048 <span class="comment">%</span>
+0049 <span class="comment">%==============================================================================</span>
+0050 
+0051 eval([<span class="string">'load '</span> matfile]);              <span class="comment">% load binary file containing SWAN results</span>
+0052                                       <span class="comment">% obtained using BLOCK command with COMPGRID-set</span>
+0053 <span class="comment">% load the connectivity</span>
+0054 elefile=[basename <span class="string">'.ele'</span>];
+0055 fid = fopen(elefile);                 <span class="comment">% load TRIANGLE element based connectivity file</span>
+0056 [nele] = fscanf(fid,<span class="string">'%i'</span>,[1 3]);     <span class="comment">% get number of triangles</span>
+0057 jnk = fscanf(fid,<span class="string">'%i'</span>,[4 nele(1)])'; <span class="comment">% get connectivity table</span>
+0058 tri = jnk(:,2:4);
+0059 
+0060 <span class="comment">% load the bathymetry</span>
+0061 bathfile=[basename <span class="string">'.bot'</span>];
+0062 h = textread(bathfile,<span class="string">'%f\n'</span>);
+0063 node = prod(size(h));
+0064 
+0065 <span class="comment">% check if variable range exists</span>
+0066 f = first_time;
+0067 l = last_time;
+0068 tbeg = datenum(str2num(f(1:4)),str2num(f(5:6)),str2num(f(7:8)),str2num(f(10:11)),str2num(f(12:13)),str2num(f(14:15)));
+0069 tend = datenum(str2num(l(1:4)),str2num(l(5:6)),str2num(l(7:8)),str2num(l(10:11)),str2num(l(12:13)),str2num(l(14:15)));
+0070 tinc  = increment/(24*3600);
+0071 times = tbeg:tinc:tend;
+0072 ntimes = prod(size(times));
+0073 <span class="keyword">for</span> i=1:ntimes; 
+0074 <span class="comment">%  datestr(times(i))</span>
+0075   date = datestr(times(i),30);   
+0076   vname = [<span class="string">'Hsig_'</span>,date(1:8),<span class="string">'_'</span>,date(10:15)];
+0077   <span class="keyword">if</span>(exist(vname) == 0) 
+0078     error(<span class="string">'variable frame %s\n does not exist'</span>,vname)
+0079   <span class="keyword">end</span>;
+0080 <span class="keyword">end</span>;
+0081 
+0082 
+0083 <span class="comment">% dump the netcdf file</span>
+0084 nc = netcdf(ncfile, <span class="string">'clobber'</span>);
+0085 
+0086 
+0087 <span class="comment">% dimensions</span>
+0088 nc(<span class="string">'nele'</span>) = nele;
+0089 nc(<span class="string">'node'</span>) = node;
+0090 nc(<span class="string">'three'</span>) = 3;
+0091 nc(<span class="string">'time'</span>) = 0;
+0092 
+0093 <span class="comment">% variables</span>
+0094 
+0095 nc{<span class="string">'x'</span>} = ncfloat(<span class="string">'node'</span>);
+0096 nc{<span class="string">'x'</span>}.long_name = <span class="string">'nodal x-coordinate'</span>;
+0097 nc{<span class="string">'x'</span>}.units     = <span class="string">'m'</span>; 
+0098 
+0099 nc{<span class="string">'y'</span>} = ncfloat(<span class="string">'node'</span>);
+0100 nc{<span class="string">'y'</span>}.long_name = <span class="string">'nodal y-coordinate'</span>;
+0101 nc{<span class="string">'y'</span>}.units     = <span class="string">'m'</span>; 
+0102 
+0103 nc{<span class="string">'h'</span>} = ncfloat(<span class="string">'node'</span>);
+0104 nc{<span class="string">'h'</span>}.long_name = <span class="string">'Bathymetry'</span>;  
+0105 nc{<span class="string">'h'</span>}.units     = <span class="string">'m'</span>; 
+0106 
+0107 nc{<span class="string">'d'</span>} = ncfloat(<span class="string">'time'</span>,<span class="string">'node'</span>);
+0108 nc{<span class="string">'d'</span>}.long_name = <span class="string">'Depth'</span>;  
+0109 nc{<span class="string">'d'</span>}.units     = <span class="string">'m'</span>; 
+0110 
+0111 nc{<span class="string">'nv'</span>} = ncint(<span class="string">'three'</span>,<span class="string">'nele'</span>);
+0112 nc{<span class="string">'nv'</span>}.long_name = <span class="string">'nodes surrounding element'</span>;
+0113 
+0114 nc{<span class="string">'time'</span>} = ncfloat(<span class="string">'time'</span>);
+0115 nc{<span class="string">'time'</span>}.long_name = <span class="string">'Modified Julian Day'</span>;    
+0116 nc{<span class="string">'time'</span>}.units     = <span class="string">'days'</span>; 
+0117 
+0118 nc{<span class="string">'hs'</span>} = ncfloat(<span class="string">'time'</span>,<span class="string">'node'</span>);
+0119 nc{<span class="string">'hs'</span>}.long_name = <span class="string">'Significant Wave Height'</span>;
+0120 nc{<span class="string">'hs'</span>}.units     = <span class="string">'m'</span>; 
+0121 
+0122 nc{<span class="string">'wdir'</span>} = ncfloat(<span class="string">'time'</span>,<span class="string">'node'</span>);
+0123 nc{<span class="string">'wdir'</span>}.long_name = <span class="string">'Wave  Direction'</span>; 
+0124 nc{<span class="string">'wdir'</span>}.units     = <span class="string">'degree'</span>; 
+0125 
+0126 nc{<span class="string">'tpeak'</span>} = ncfloat(<span class="string">'time'</span>,<span class="string">'node'</span>);
+0127 nc{<span class="string">'tpeak'</span>}.long_name = <span class="string">'Relative Peak Period'</span>;
+0128 nc{<span class="string">'tpeak'</span>}.units     = <span class="string">'s'</span>; 
+0129 
+0130 nc{<span class="string">'U10'</span>} = ncfloat(<span class="string">'time'</span>,<span class="string">'node'</span>);
+0131 nc{<span class="string">'U10'</span>}.long_name = <span class="string">'Wind Velocity x-direction'</span>;
+0132 nc{<span class="string">'U10'</span>}.units     = <span class="string">'m/s'</span>; 
+0133 
+0134 nc{<span class="string">'V10'</span>} = ncfloat(<span class="string">'time'</span>,<span class="string">'node'</span>);
+0135 nc{<span class="string">'V10'</span>}.long_name = <span class="string">'Wind Velocity y-direction'</span>;
+0136 nc{<span class="string">'V10'</span>}.units     = <span class="string">'m/s'</span>; 
+0137 
+0138 <span class="comment">% static vars</span>
+0139 nc{<span class="string">'x'</span>}(:) = Xp;
+0140 nc{<span class="string">'y'</span>}(:) = Yp;
+0141 nc{<span class="string">'h'</span>}(:) = h;
+0142 nc{<span class="string">'nv'</span>}(:,:) = tri';
+0143 
+0144 <span class="comment">% dump dynamic vars</span>
+0145 <span class="keyword">for</span> i=1:ntimes;
+0146 
+0147   fprintf(<span class="string">'processing time %s\n'</span>,datestr(times(i)));
+0148   <span class="comment">%time</span>
+0149   shift = 678942.;  <span class="comment">% datenum(2010,1,1,0,0,0)-greg2mjulian(2010,1,1,0,0,0);</span>
+0150   nc{<span class="string">'time'</span>}(i) = times(i) - shift;
+0151 
+0152   <span class="comment">%hs</span>
+0153   date = datestr(times(i),30);
+0154   vname = [<span class="string">'Hsig_'</span>,date(1:8),<span class="string">'_'</span>,date(10:15)];
+0155   <span class="keyword">if</span>(exist(vname) == 0)
+0156     error(<span class="string">'variable frame %s\n does not exist'</span>,vname)
+0157   <span class="keyword">end</span>;
+0158   nc{<span class="string">'hs'</span>}(i,:) = eval(vname)';
+0159 
+0160   <span class="comment">%tp</span>
+0161   date = datestr(times(i),30);
+0162   vname = [<span class="string">'RTpeak_'</span>,date(1:8),<span class="string">'_'</span>,date(10:15)];
+0163   <span class="keyword">if</span>(exist(vname) == 0)
+0164     error(<span class="string">'variable frame %s\n does not exist'</span>,vname)
+0165   <span class="keyword">end</span>;
+0166   nc{<span class="string">'tpeak'</span>}(i,:) = eval(vname)';
+0167 
+0168   <span class="comment">%depth</span>
+0169   date = datestr(times(i),30);
+0170   vname = [<span class="string">'Depth_'</span>,date(1:8),<span class="string">'_'</span>,date(10:15)];
+0171   <span class="keyword">if</span>(exist(vname) == 0)
+0172     error(<span class="string">'variable frame %s\n does not exist'</span>,vname)
+0173   <span class="keyword">end</span>;
+0174   nc{<span class="string">'d'</span>}(i,:) = eval(vname)';
+0175 
+0176   <span class="comment">% wave dir</span>
+0177   date = datestr(times(i),30);
+0178   vname = [<span class="string">'Dir_'</span>,date(1:8),<span class="string">'_'</span>,date(10:15)];
+0179   <span class="keyword">if</span>(exist(vname) == 0)
+0180     error(<span class="string">'variable frame %s\n does not exist'</span>,vname)
+0181   <span class="keyword">end</span>;
+0182   nc{<span class="string">'wdir'</span>}(i,:) = eval(vname)';
+0183 
+0184   <span class="comment">% U10</span>
+0185   date = datestr(times(i),30);
+0186   vname = [<span class="string">'Windv_x_'</span>,date(1:8),<span class="string">'_'</span>,date(10:15)];
+0187   <span class="keyword">if</span>(exist(vname) == 0)
+0188     error(<span class="string">'variable frame %s\n does not exist'</span>,vname)
+0189   <span class="keyword">end</span>;
+0190   var = eval(vname)';
+0191   var(isnan(var)) = 0.0;
+0192   nc{<span class="string">'U10'</span>}(i,:) = var; 
+0193 
+0194   <span class="comment">% V10</span>
+0195   date = datestr(times(i),30);
+0196   vname = [<span class="string">'Windv_y_'</span>,date(1:8),<span class="string">'_'</span>,date(10:15)];
+0197   <span class="keyword">if</span>(exist(vname) == 0)
+0198     error(<span class="string">'variable frame %s\n does not exist'</span>,vname)
+0199   <span class="keyword">end</span>;
+0200   var = eval(vname)';
+0201   var(isnan(var)) = 0.0;
+0202   nc{<span class="string">'V10'</span>}(i,:) = var'; 
+0203 
+0204 
+0205 <span class="keyword">end</span>;
+0206 
+0207 
+0208 nc = close(nc);</pre></div>
+<hr><address>Generated on Mon 20-Sep-2010 13:44:26 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

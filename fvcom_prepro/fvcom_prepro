@@ -1,0 +1,20 @@
+functions
+
+
+import from fvcom (2.x,3.x) into a matlab grid object
+import from sms into a matlab grid object
+import from gmsh into a matlab grid object
+compute metrics and time step estimate
+plot mesh, bathymetry, open boundary, river nodes, etc.
+plot time step estimate
+create a julian based open boundary file (using t_tide)
+create a harmonics based open boundary file
+smooth bathymetry
+output to fvcom 3.x file
+output to unstructured swan file
+use g_input to identify specific nodes
+create a river forcing file
+add scalar concentrations to river forcing file
+create a wind forcing file
+
+
