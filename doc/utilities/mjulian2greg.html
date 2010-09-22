@@ -2,9 +2,9 @@
                 "http://www.w3.org/TR/REC-html40/loose.dtd">
 <html>
 <head>
-  <title>Description of README</title>
-  <meta name="keywords" content="README">
-  <meta name="description" content="README for FVCOM_postproc">
+  <title>Description of mjulian2greg</title>
+  <meta name="keywords" content="mjulian2greg">
+  <meta name="description" content="This function converts Modified Julian dates to Gregorian dates.">
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
   <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
   <meta name="robots" content="index, follow">
@@ -12,36 +12,28 @@
 </head>
 <body>
 <a name="_top"></a>
-<div><a href="../index.html">Home</a> &gt;  <a href="index.html">fvcom_postproc</a> &gt; README.m</div>
+<div><a href="../index.html">Home</a> &gt;  <a href="index.html">utilities</a> &gt; mjulian2greg.m</div>
 
 <!--<table width="100%"><tr><td align="left"><a href="../index.html"><img alt="<" border="0" src="../left.png">&nbsp;Master index</a></td>
-<td align="right"><a href="index.html">Index for fvcom_postproc&nbsp;<img alt=">" border="0" src="../right.png"></a></td></tr></table>-->
+<td align="right"><a href="index.html">Index for utilities&nbsp;<img alt=">" border="0" src="../right.png"></a></td></tr></table>-->
 
-<h1>README
+<h1>mjulian2greg
 </h1>
 
 <h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
-<div class="box"><strong>README for FVCOM_postproc</strong></div>
+<div class="box"><strong>This function converts Modified Julian dates to Gregorian dates.</strong></div>
 
 <h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
-<div class="box"><strong>This is a script file. </strong></div>
+<div class="box"><strong>function [year,month,day,hour,minu,sec,dayweek,dategreg] = julian2greg(MJD) </strong></div>
 
 <h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
-<div class="fragment"><pre class="comment"> README for FVCOM_postproc
-
- This directory contains matlab scripts for postrpocessing FVCOM output
-
- Author(s):  
-
- Revision history
-   
-==============================================================================</pre></div>
+<div class="fragment"><pre class="comment"> This function converts Modified Julian dates to Gregorian dates.</pre></div>
 
 <!-- crossreference -->
 <h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
 This function calls:
 <ul style="list-style-image:url(../matlabicon.gif)">
-</ul>
+<li><a href="julian2greg.html" class="code" title="function [year,month,day,hour,minu,sec,dayweek,dategreg] = julian2greg(JD)">julian2greg</a>	This function converts the Julian dates to Gregorian dates.</li></ul>
 This function is called by:
 <ul style="list-style-image:url(../matlabicon.gif)">
 </ul>
@@ -50,15 +42,10 @@ This function is called by:
 
 
 <h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
-<div class="fragment"><pre>0001 <span class="comment">% README for FVCOM_postproc</span>
-0002 <span class="comment">%</span>
-0003 <span class="comment">% This directory contains matlab scripts for postrpocessing FVCOM output</span>
-0004 <span class="comment">%</span>
-0005 <span class="comment">% Author(s):</span>
-0006 <span class="comment">%</span>
-0007 <span class="comment">% Revision history</span>
-0008 <span class="comment">%</span>
-0009 <span class="comment">%==============================================================================</span></pre></div>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [year,month,day,hour,minu,sec,dayweek,dategreg] = julian2greg(MJD)</a>
+0002 <span class="comment">% This function converts Modified Julian dates to Gregorian dates.</span>
+0003 
+0004 [year,month,day,hour,minu,sec,dayweek,dategreg] = <a href="julian2greg.html" class="code" title="function [year,month,day,hour,minu,sec,dayweek,dategreg] = julian2greg(JD)">julian2greg</a>(MJD+2400000.5);</pre></div>
 <hr><address>Generated on Wed 22-Sep-2010 10:09:54 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
 </body>
 </html>
