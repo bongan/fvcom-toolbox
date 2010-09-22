@@ -1,8 +1,8 @@
-function example_FVCOM_wind_ts
+function example_FVCOM_wind_ts_speed
 
-% example file for FVCOM, time-varying/spatially constant wind forcing as stress
+% example file for FVCOM, time-varying/spatially constant wind forcing as speed
 %
-% function example_FVCOM_wind_ts
+% function example_FVCOM_wind_ts_speed
 %
 % DESCRIPTION:
 %    Write a time-varying, spatially constant wind file
@@ -16,7 +16,7 @@ function example_FVCOM_wind_ts
 %    NetCDF WindFile
 %
 % EXAMPLE USAGE
-%    example_FVCOM_wind_ts
+%    example_FVCOM_wind_ts_speed
 %
 % Author(s):  
 %    Geoff Cowles (University of Massachusetts Dartmouth)
@@ -38,18 +38,12 @@ fprintf(['begin : ' subname '\n'])
 % tend = greg2julian(2010,1,1,0,0,0)-2400000.5;
 tbeg = 0;
 tend = 31;
-time = tbeg:(1./24.):tend;
+time = tbeg:1:tend;
 nTimes = prod(size(time));
 
-% make up a fake time varying wind
-taux = 0.25*(cos( ((time-time(1))*2*pi)/7)) + .15*(cos( ((time-time(1))*2*pi)/360));
-tauy = 0.25*(sin( ((time-time(1))*2*pi)/7)) + .15*(sin( ((time-time(1))*2*pi)/360));
-
-% plot the wind
-subplot(2,1,1)
-plot(time-time(1),taux,'k'); 
-subplot(2,1,2)
-plot(time-time(1),tauy,'r');
+% make up a fake time varying wind in m/s at 10-m above the water surface
+u10 = 10*ones(nTimes,1); 
+v10 = zeros(nTimes,1); 
 
 %------------------------------------------------------------------------------
 % write output to time-varying, spatially constant FVCOM wind file 
@@ -81,25 +75,25 @@ nc{'Itime2'}.units = 'msec since 00:00:00';
 nc{'Itime2'}.time_zone = 'UTC';
 
 
-nc{'uwind_stress'} = ncfloat('time');
-nc{'uwind_stress'}.long_name = 'Eastward Wind Stress'; 
-nc{'uwind_stress'}.standard_name = 'Wind Stress'; 
-nc{'uwind_stress'}.units = 'Pa';
-nc{'uwind_stress'}.type = 'data';
+nc{'U10'} = ncfloat('time');
+nc{'U10'}.long_name = 'Eastward Wind Velocity';
+nc{'U10'}.standard_name = 'Wind Velocity';
+nc{'U10'}.units = 'm/s';
+nc{'U10'}.type = 'data';
 
-nc{'vwind_stress'} = ncfloat('time');
-nc{'vwind_stress'}.long_name = 'Northward Wind Stress'; 
-nc{'vwind_stress'}.standard_name = 'Wind Stress'; 
-nc{'vwind_stress'}.units = 'Pa';
-nc{'vwind_stress'}.type = 'data';
+nc{'V10'} = ncfloat('time');
+nc{'V10'}.long_name = 'Northward Wind Velocity';
+nc{'V10'}.standard_name = 'Wind Velocity';
+nc{'V10'}.units = 'm/s';
+nc{'V10'}.type = 'data';
 
 % dump time
 nc{'time'}(1:nTimes) = time; 
 nc{'Itime'}(1:nTimes) = floor(time); 
 nc{'Itime2'}(1:nTimes) = mod(time,1)*24*3600*1000.;
 
-nc{'uwind_stress'}(1:nTimes) = taux; 
-nc{'vwind_stress'}(1:nTimes) = tauy; 
+nc{'U10'}(1:nTimes) = u10;  
+nc{'V10'}(1:nTimes) = v10; 
 
 ierr = close(nc);
 
