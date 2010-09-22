@@ -1,1 +1,1 @@
-m2html('mfiles',{'fvcom_postproc','fvcom_prepro','sed_scripts','swan_scripts'},'htmldir','doc');
+m2html('mfiles',{'fvcom_postproc','fvcom_prepro','utilities','swan_scripts'},'htmldir','doc');
