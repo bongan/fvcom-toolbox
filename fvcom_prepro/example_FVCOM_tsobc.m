@@ -109,7 +109,7 @@ nc = netcdf(tsOBCFile, 'clobber');
 nc.type = 'FVCOM RIVER FORCING FILE' ;
 nc.title = 'simple open boundary hydrography test';   
 nc.type =  'FVCOM TIME SERIES OBC TS FILE'; 
-nc.history = 'example_FVCOM_tsobc';
+nc.history = 'generated using the fvcom-toolbox';
 
 % dimensions
 nc('nobc') = nObc; 

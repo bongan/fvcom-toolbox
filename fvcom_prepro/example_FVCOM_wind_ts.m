@@ -59,6 +59,8 @@ nc = netcdf(fvcom_forcing_file, 'clobber');
 nc.references = 'http://fvcom.smast.umassd.edu'; 
 nc.source = 'single-point time-dependent surface forcing'; 
 nc.institution = 'School for Marine Science and Technology' ;
+nc.history = 'generated using the fvcom-toolbox';
+
 
   
 % dimensions
