@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>currentDocument</key>
-	<string>ST_example.m</string>
+	<string>ST_summary.m</string>
 	<key>documents</key>
 	<array>
 		<dict>
@@ -22,11 +22,13 @@
 			<key>filename</key>
 			<string>ST_wset.m</string>
 			<key>lastUsed</key>
-			<date>2010-09-19T02:21:12Z</date>
+			<date>2010-09-24T18:08:08Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>SW_Kviscosity.m</string>
+			<key>lastUsed</key>
+			<date>2010-09-24T18:07:54Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
@@ -56,9 +58,7 @@
 			<key>filename</key>
 			<string>ST_example.m</string>
 			<key>lastUsed</key>
-			<date>2010-09-19T02:24:06Z</date>
-			<key>selected</key>
-			<true/>
+			<date>2010-09-24T18:09:13Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
@@ -71,6 +71,14 @@
 			<string>ST_erate.m</string>
 			<key>lastUsed</key>
 			<date>2010-09-19T02:24:06Z</date>
+		</dict>
+		<dict>
+			<key>filename</key>
+			<string>ST_summary.m</string>
+			<key>lastUsed</key>
+			<date>2010-09-24T18:09:13Z</date>
+			<key>selected</key>
+			<true/>
 		</dict>
 	</array>
 	<key>fileHierarchyDrawerWidth</key>
@@ -140,14 +148,30 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>112</integer>
+				<integer>0</integer>
 				<key>line</key>
-				<integer>29</integer>
+				<integer>31</integer>
 			</dict>
+			<key>columnSelection</key>
+			<false/>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
 			<integer>0</integer>
+			<key>selectFrom</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>19</integer>
+			</dict>
+			<key>selectTo</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>31</integer>
+			</dict>
 		</dict>
 		<key>ST_phi2d.m</key>
 		<dict>
@@ -162,6 +186,20 @@
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
 			<integer>0</integer>
+		</dict>
+		<key>ST_summary.m</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>69</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>28</integer>
 		</dict>
 		<key>ST_taucr.m</key>
 		<dict>
@@ -196,32 +234,30 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>37</integer>
+				<integer>15</integer>
 				<key>line</key>
-				<integer>0</integer>
+				<integer>3</integer>
 			</dict>
-			<key>columnSelection</key>
-			<false/>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
 			<integer>0</integer>
-			<key>selectFrom</key>
-			<dict>
-				<key>column</key>
-				<integer>18</integer>
-				<key>line</key>
-				<integer>0</integer>
-			</dict>
-			<key>selectTo</key>
-			<dict>
-				<key>column</key>
-				<integer>37</integer>
-				<key>line</key>
-				<integer>0</integer>
-			</dict>
 		</dict>
 		<key>SW_Density.m</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>0</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+		</dict>
+		<key>SW_Kviscosity.m</key>
 		<dict>
 			<key>caret</key>
 			<dict>
@@ -255,10 +291,12 @@
 		<string>ST_wentworth.m</string>
 		<string>SW_Viscosity.m</string>
 		<string>ST_wset.m</string>
+		<string>ST_summary.m</string>
 		<string>ST_taucr.m</string>
 		<string>ST_d2phi.m</string>
 		<string>ST_phi2d.m</string>
 		<string>ST_example.m</string>
+		<string>SW_Kviscosity.m</string>
 		<string>ST_erate.m</string>
 		<string>SW_Density.m</string>
 		<string>ST_Dstar.m</string>
@@ -266,6 +304,6 @@
 	<key>showFileHierarchyDrawer</key>
 	<true/>
 	<key>windowFrame</key>
-	<string>{{794, 258}, {1039, 826}}</string>
+	<string>{{729, 312}, {1039, 826}}</string>
 </dict>
 </plist>
