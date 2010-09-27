@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>currentDocument</key>
-	<string>write_FVCOM_spectide.m</string>
+	<string>get_zeta_xtide.m</string>
 	<key>documents</key>
 	<array>
 		<dict>
@@ -154,9 +154,7 @@
 			<key>filename</key>
 			<string>write_FVCOM_spectide.m</string>
 			<key>lastUsed</key>
-			<date>2010-09-25T23:31:01Z</date>
-			<key>selected</key>
-			<true/>
+			<date>2010-09-27T02:43:05Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
@@ -204,7 +202,15 @@
 			<key>filename</key>
 			<string>gen_semistructured_mesh.m</string>
 			<key>lastUsed</key>
-			<date>2010-09-25T23:29:57Z</date>
+			<date>2010-09-27T02:43:05Z</date>
+		</dict>
+		<dict>
+			<key>filename</key>
+			<string>get_zeta_xtide.m</string>
+			<key>lastUsed</key>
+			<date>2010-09-27T02:43:05Z</date>
+			<key>selected</key>
+			<true/>
 		</dict>
 	</array>
 	<key>fileHierarchyDrawerWidth</key>
@@ -549,6 +555,20 @@
 			<key>firstVisibleLine</key>
 			<integer>83</integer>
 		</dict>
+		<key>get_zeta_xtide.m</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>15</integer>
+				<key>line</key>
+				<integer>0</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+		</dict>
 		<key>make_blank_mesh.m</key>
 		<dict>
 			<key>caret</key>
@@ -798,9 +818,9 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>80</integer>
+				<integer>34</integer>
 				<key>line</key>
-				<integer>0</integer>
+				<integer>33</integer>
 			</dict>
 			<key>columnSelection</key>
 			<false/>
@@ -818,9 +838,9 @@
 			<key>selectTo</key>
 			<dict>
 				<key>column</key>
-				<integer>80</integer>
+				<integer>34</integer>
 				<key>line</key>
-				<integer>0</integer>
+				<integer>33</integer>
 			</dict>
 		</dict>
 		<key>write_FVCOM_sponge.m</key>
@@ -885,11 +905,12 @@
 		<string>example_FVCOM_wind_ts_speed.m</string>
 		<string>add_var_FVCOM_river.m</string>
 		<string>gen_semistructured_mesh.m</string>
+		<string>get_zeta_xtide.m</string>
 		<string>read_fvcom_mesh.m</string>
 	</array>
 	<key>showFileHierarchyDrawer</key>
 	<true/>
 	<key>windowFrame</key>
-	<string>{{353, 260}, {1094, 918}}</string>
+	<string>{{470, 70}, {1094, 918}}</string>
 </dict>
 </plist>
