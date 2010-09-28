@@ -3,5 +3,5 @@ function new = SW_Kviscosity(T,S)
 % density functions
 mu = SW_Viscosity(T,S);
 rho = SW_Density(T,S);
-new = mu/rho;
+new = mu./rho;
 end

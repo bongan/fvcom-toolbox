@@ -32,14 +32,17 @@ function rho = SW_Density(T,S)
 %   [1] Sharqawy M. H., Lienhard J. H., and Zubair, S. M., Desalination and Water Treatment, 2009.
 %   [2] Isdale, and Morris, Desalination, 10(4), 329, 1972.
 %   [3] Millero and Poisson, Deep-Sea Research, 28A (6), 625, 1981
-%   [4]	IAPWS release on the Thermodynamic properties of ordinary water substance, 1996. 
+%   [4]	IAPWS release on the Thermodynamic properties of ordinary water
+%   substance, 1996.        
+%   UPDATED 09-23-2010 modified to now handle matrices and commented out
+%   range checking.
 %=========================================================================
 
 %----------------------
 % CHECK INPUT ARGUMENTS
 %----------------------
 if nargin ~=2
-   error('SW_Density.m: Must pass 2 parameters')
+    error('SW_Density.m: Must pass 2 parameters')
 end
 
 % CHECK S,T dimensions and verify consistent
@@ -48,26 +51,29 @@ end
 
 % CHECK THAT S & T HAVE SAME SHAPE
 if (ms~=mt) | (ns~=nt)
-   error('check_stp: S & T must have same dimensions')
+    error('check_stp: S & T must have same dimensions')
 end
 
 % CHECK THAT S & T ARE WITHIN THE FUNCTION RANGE
-for i=1:length(T)
-if T(i)>180 | T(i)<0
-    disp('Temperature is out of range for density function 0 < T < 180 C');
-end
-if S(i)<0 | S(i)>160
-    disp('Salinity is out of range for density function 0 < S < 160 g/kg');
-end
-
-%------
-% BEGIN
-%------
-s(i)=S(i)/1000;
-a1=9.9992293295E+02;a2=2.0341179217E-02;a3=-6.1624591598E-03;a4=2.2614664708E-05;a5=-4.6570659168E-08;
-b1=8.0200240891E+02;b2=-2.0005183488E+00;b3=1.6771024982E-02;b4=-3.0600536746E-05;b5=-1.6132224742E-05;
-rho_w(i) = a1 + a2*T(i) + a3*T(i)^2 + a4*T(i)^3 + a5*T(i)^4;
-D_rho(i) = b1*s(i) + b2*s(i)*T(i) + b3*s(i)*T(i)^2 + b4*s(i)*T(i)^3 + b5*s(i)^2*T(i)^2;
-rho(i) = rho_w(i) + D_rho(i);
-end
+vectorsize=size(S);
+for i = 1:vectorsize(1,1)
+    for j = 1:vectorsize(1,2)
+%         if T(i,j)>180 | T(i,j)<0
+%             disp('Temperature is out of range for density function 0 < T < 180 C');
+%         end
+%         if S(i,j)<0 | S(i,j)>160
+%             disp('Salinity is out of range for density function 0 < S < 160 g/kg');
+%         end
+        
+        %------
+        % BEGIN
+        %------
+        s(i,j)=S(i,j)/1000;
+        a1=9.9992293295E+02;a2=2.0341179217E-02;a3=-6.1624591598E-03;a4=2.2614664708E-05;a5=-4.6570659168E-08;
+        b1=8.0200240891E+02;b2=-2.0005183488E+00;b3=1.6771024982E-02;b4=-3.0600536746E-05;b5=-1.6132224742E-05;
+        rho_w(i,j) = a1 + a2*T(i,j) + a3*T(i,j)^2 + a4*T(i,j)^3 + a5*T(i,j)^4;
+        D_rho(i,j) = b1*s(i,j) + b2*s(i,j)*T(i,j) + b3*s(i,j)*T(i,j)^2 + b4*s(i,j)*T(i,j)^3 + b5*s(i,j)^2*T(i,j)^2;
+        rho(i,j) = rho_w(i,j) + D_rho(i,j);
+    end
+end;
 end
