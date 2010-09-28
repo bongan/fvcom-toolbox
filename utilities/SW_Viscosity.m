@@ -32,7 +32,7 @@ function mu = SW_Viscosity(T,S)
 %   [1] Sharqawy M. H., Lienhard J. H., and Zubair, S. M., Desalination and Water Treatment, 2009
 %   [2] B. M. Fabuss, A. Korosi, and D. F. Othmer, J., Chem. Eng. Data 14(2), 192, 1969.
 %   [3] J. D. Isdale, C. M. Spence, and J. S. Tudhope, Desalination, 10(4), 319 - 328, 1972
-%   [4] F. J. Millero, The Sea, Vol. 5, 3 – 80, John Wiley, New York, 1974
+%   [4] F. J. Millero, The Sea, Vol. 5, 3 ï¿½ 80, John Wiley, New York, 1974
 %   [5] IAPWS release on the viscosity of ordinary water substance 2008
 %=========================================================================
 
@@ -40,7 +40,7 @@ function mu = SW_Viscosity(T,S)
 % CHECK INPUT ARGUMENTS
 %----------------------
 if nargin ~=2
-   error('SW_Viscosity.m: Must pass 2 parameters')
+    error('SW_Viscosity.m: Must pass 2 parameters')
 end
 
 % CHECK S,T dimensions and verify consistent
@@ -49,28 +49,31 @@ end
 
 % CHECK THAT S & T HAVE SAME SHAPE
 if (ms~=mt) | (ns~=nt)
-   error('check_stp: S & T must have same dimensions')
+    error('check_stp: S & T must have same dimensions')
 end
 
 % CHECK THAT S & T ARE WITHIN THE FUNCTION RANGE
-for i=1:length(T)
-if T(i)<0 | T(i)>180
-    disp('Temperature is out of range for Viscosity function 10<T<180 C');
-end
-if S(i)<0 | S(i)>150
-    disp('Salinity is out of range for Viscosity function 0<S<150 g/kg');
-end
-
-%------
-% BEGIN
-%------
-S(i)=S(i)/1000;
-a1 = 1.5700386464E-01;a2 = 6.4992620050E+01;a3 = -9.1296496657E+01;a4 = 4.2844324477E-05;
-mu_w(i) = a4 + 1/(a1*(T(i)+a2)^2+a3);
-a5 = 1.5409136040E+00;a6 = 1.9981117208E-02;a7 = -9.5203865864E-05;
-a8 = 7.9739318223E+00;a9 = -7.5614568881E-02;a10 = 4.7237011074E-04;
-A = a5 + a6 * T(i) + a7 * T(i)^2;
-B = a8 + a9 * T(i) + a10* T(i)^2;
-mu(i) = mu_w(i)*(1 + A*S(i) + B*S(i)^2);
+vectorsize=size(S);
+for i = 1:vectorsize(1,1)
+    for j = 1:vectorsize(1,2)
+        if T(i,j)<0 | T(i,j)>180
+            disp('Temperature is out of range for Viscosity function 10<T<180 C');
+        end
+        if S(i,j)<0 | S(i,j)>150
+            disp('Salinity is out of range for Viscosity function 0<S<150 g/kg');
+        end
+        
+        %------
+        % BEGIN
+        %------
+        S(i,j)=S(i,j)/1000;
+        a1 = 1.5700386464E-01;a2 = 6.4992620050E+01;a3 = -9.1296496657E+01;a4 = 4.2844324477E-05;
+        mu_w(i,j) = a4 + 1/(a1*(T(i,j)+a2)^2+a3);
+        a5 = 1.5409136040E+00;a6 = 1.9981117208E-02;a7 = -9.5203865864E-05;
+        a8 = 7.9739318223E+00;a9 = -7.5614568881E-02;a10 = 4.7237011074E-04;
+        A = a5 + a6 * T(i,j) + a7 * T(i,j)^2;
+        B = a8 + a9 * T(i,j) + a10* T(i,j)^2;
+        mu(i,j) = mu_w(i,j)*(1 + A*S(i,j) + B*S(i,j)^2);
+    end
 end
 end
