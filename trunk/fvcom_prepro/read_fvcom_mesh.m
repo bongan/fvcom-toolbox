@@ -1,28 +1,21 @@
-function [Mesh] = read_fvcom_mesh(varargin)
+function [Mobj] = read_fvcom_mesh(gridfile) 
 
-% Read ascii FVCOM mesh files into Matlab mesh object  
+% Read fvcom mesh file into Matlab mesh object  
 %
-% [mesh] = function read_fvcom_mesh(varargin)
+% [Mobj] = function read_fvcom_mesh(gridfile)
 %
 % DESCRIPTION:
-%    Read FVCOM grid file, bathymetry file, and boundary node list file 
+%    Read FVCOM Grid file (connectivity + nodes)
 %    Store in a matlab mesh object 
 %
-% INPUT [keyword pairs, all optional]:  
-%   'grid'       = fvcom grid file [e.g. tst_grd.dat]
-%   'bath'       = fvcom bathymetry file [e.g. tst_dep.dat]
-%   'bndry'      = fvcom boundary node list file [e.g. tst_obc.dat]
-%   'coordinate' = coordinate system [spherical; cartesian (default)]
-%   'version'    = FVCOM major version number [2 ; 3 (default)]
-%   'project'    = generate (x,y) coordinates if input coordinates are (lon,lat) 
-%                  generate (lon,lat) coordinates if input is (x,y)
-%                  [true ; false (default)], see project_userdef.m
+% INPUT [keyword pairs]:  
+%   'gridfile'  = fvcom mesh file
 %
 % OUTPUT:
-%    Mesh = matlab structure containing mesh data
+%    Mobj = matlab structure containing mesh data
 %
 % EXAMPLE USAGE
-%    Mesh = read_fvcom_mesh('grid','gom_grd.dat','bath','gom_dep.dat')
+%    Mobj = read_fvcom_mesh('tst_grd.dat')
 %
 % Author(s):  
 %    Geoff Cowles (University of Massachusetts Dartmouth)
@@ -31,10 +24,85 @@ function [Mesh] = read_fvcom_mesh(varargin)
 %   
 %==============================================================================
 
+subname = 'read_fvcom_mesh';
+fprintf('\n')
+fprintf(['begin : ' subname '\n'])
+
 
 %------------------------------------------------------------------------------
-% Parse input arguments
+% Create a blank mesh object
+%------------------------------------------------------------------------------
+Mobj = make_blank_mesh();
+coordinate = 'cartesian';
+have_bath = false;
+have_xy = true;
+have_lonlat = false;
+
+
+%------------------------------------------------------------------------------
+% Read the mesh from the fvcom grid file
 %------------------------------------------------------------------------------
 
-Mobj
-Mobj.Nverts = 
+
+fid = fopen(gridfile,'r');
+if(fid  < 0)
+	error(['file: ' gridfile ' does not exist']);
+end;
+
+%----------------------------------------------------
+% read in the fvcom connectivity and vertices 
+%----------------------------------------------------
+C = textscan(fid, '%s %s %s %d', 1); nVerts = C{4};
+C = textscan(fid, '%s %s %s %d', 1); nElems = C{4};
+tri = zeros(nElems,3); 
+x   = zeros(nVerts,1);
+y   = zeros(nVerts,1);
+h   = zeros(nVerts,1);
+lon = zeros(nVerts,1);
+lat = zeros(nVerts,1);
+ts  = zeros(nVerts,1);
+
+fprintf('reading mesh file\n');
+fprintf('# nodes %d\n',nVerts);
+fprintf('# elems %d\n',nElems);
+for i=1:nElems
+  C = textscan(fid,' %d %d %d %d %d\n',1);
+  tri(i,1) = C{2};  tri(i,2) = C{3}; tri(i,3) = C{4};
+end;
+for i=1:nVerts 
+  C = textscan(fid, '%d %f %f %f', 1);
+  x(i) = C{2};
+  y(i) = C{3};
+end;
+fprintf('mesh read in\n');
+fclose(fid);
+
+%------------------------------------------------------------------------------
+% Transfer to Mesh structure
+%------------------------------------------------------------------------------
+
+Mobj.nVerts  = nVerts;
+Mobj.nElems  = nElems;
+Mobj.nativeCoords = coordinate;
+
+if(have_lonlat)
+	Mobj.have_lonlat  = have_lonlat;
+end;
+if(have_xy)
+	Mobj.have_xy      = have_xy;
+end;
+if(have_bath)
+	Mobj.have_bath    = have_bath;
+end;
+Mobj.x            = x;
+Mobj.y            = y;
+Mobj.ts           = ts;
+Mobj.lon          = lon;
+Mobj.lat          = lat;
+Mobj.h            = h;
+Mobj.tri          = tri;
+
+
+fprintf(['end   : ' subname '\n'])
+
+
