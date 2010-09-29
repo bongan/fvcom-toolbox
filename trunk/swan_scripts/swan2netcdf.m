@@ -1,5 +1,5 @@
 function swan2netcdf(matfile,ncfile,basename,first_time,last_time,increment);
-% Convert a SWAN output file (Matlab) into a NetCDF file 
+% Convert a SWAN output file (Matlab) into a NetCDF file
 %
 % function swan2netcdf(matfile,ncfile,basename,first_time,last_time,increment);
 %
@@ -7,7 +7,7 @@ function swan2netcdf(matfile,ncfile,basename,first_time,last_time,increment);
 %    read output from unstructured SWAN model (currently 40.82) and
 %    dump to a NetCDF file which is far more useful than a Matlab file.
 %
-% INPUT 
+% INPUT
 %   matfile  = Unstructured SWAN Matlab file
 %   ncfile   = NetCDF file for output
 %   basename = prefix for SWAN mesh, bathymetry, connectivity files
@@ -35,21 +35,23 @@ function swan2netcdf(matfile,ncfile,basename,first_time,last_time,increment);
 % NOTE
 %    routine is not refined, e.g. will not check if files exist and will
 %    probably crash if you do not have the variables above in the SWAN
-%    output file.  
+%    output file.
 %    You will need approximately the following BLOCK command in your SWAN runfile
 %
 %    BLOCK 'COMPGRID' NOHEAD 'gom1.mat' LAY 3 XP YP DEP HS RTP TPS DIR WLEN &
 %                WINDV OUTPUT 20070101_000000 3600 SEC
 %
-% Author(s):  
+% Author(s):
 %    Geoff Cowles (University of Massachusetts Dartmouth)
+%    Eric Holmes (University of Massachusetts Dartmouth)
 %
 % Revision history
-%   
+%    09-29-2010 -Now warns you if variable was not found in SWAN output
+%    .mat file and added two variables from SWAN output Ubot and TmBot.
 %==============================================================================
 
 eval(['load ' matfile]);              % load binary file containing SWAN results
-                                      % obtained using BLOCK command with COMPGRID-set
+% obtained using BLOCK command with COMPGRID-set
 % load the connectivity
 elefile=[basename '.ele'];
 fid = fopen(elefile);                 % load TRIANGLE element based connectivity file
@@ -70,13 +72,13 @@ tend = datenum(str2num(l(1:4)),str2num(l(5:6)),str2num(l(7:8)),str2num(l(10:11))
 tinc  = increment/(24*3600);
 times = tbeg:tinc:tend;
 ntimes = prod(size(times));
-for i=1:ntimes; 
-%  datestr(times(i))
-  date = datestr(times(i),30);   
-  vname = ['Hsig_',date(1:8),'_',date(10:15)];
-  if(exist(vname) == 0) 
-    error('variable frame %s\n does not exist',vname)
-  end;
+for i=1:ntimes;
+    %  datestr(times(i))
+    date = datestr(times(i),30);
+    vname = ['Hsig_',date(1:8),'_',date(10:15)];
+    if(exist(vname) == 0)
+        error('variable frame %s\n does not exist',vname)
+    end;
 end;
 
 
@@ -91,49 +93,97 @@ nc('three') = 3;
 nc('time') = 0;
 
 % variables
+date = datestr(times(1),30);
+
+
 
 nc{'x'} = ncfloat('node');
 nc{'x'}.long_name = 'nodal x-coordinate';
-nc{'x'}.units     = 'm'; 
+nc{'x'}.units     = 'm';
 
 nc{'y'} = ncfloat('node');
 nc{'y'}.long_name = 'nodal y-coordinate';
-nc{'y'}.units     = 'm'; 
+nc{'y'}.units     = 'm';
 
 nc{'h'} = ncfloat('node');
-nc{'h'}.long_name = 'Bathymetry';  
-nc{'h'}.units     = 'm'; 
+nc{'h'}.long_name = 'Bathymetry';
+nc{'h'}.units     = 'm';
 
 nc{'d'} = ncfloat('time','node');
-nc{'d'}.long_name = 'Depth';  
-nc{'d'}.units     = 'm'; 
+nc{'d'}.long_name = 'Depth';
+nc{'d'}.units     = 'm';
 
 nc{'nv'} = ncint('three','nele');
 nc{'nv'}.long_name = 'nodes surrounding element';
 
 nc{'time'} = ncfloat('time');
-nc{'time'}.long_name = 'Modified Julian Day';    
-nc{'time'}.units     = 'days'; 
+nc{'time'}.long_name = 'Modified Julian Day';
+nc{'time'}.units     = 'days';
 
-nc{'hs'} = ncfloat('time','node');
-nc{'hs'}.long_name = 'Significant Wave Height';
-nc{'hs'}.units     = 'm'; 
+vname = ['Hsig_',date(1:8),'_',date(10:15)];
+if(exist(vname) == 0)
+    warning('Variable Hsig does not exist not being added to netCDF output')
+else
+    nc{'hs'} = ncfloat('time','node');
+    nc{'hs'}.long_name = 'Significant Wave Height';
+    nc{'hs'}.units     = 'm';
+end;
 
-nc{'wdir'} = ncfloat('time','node');
-nc{'wdir'}.long_name = 'Wave  Direction'; 
-nc{'wdir'}.units     = 'degree'; 
+vname = ['Dir_',date(1:8),'_',date(10:15)];
+if(exist(vname) == 0)
+    warning('Variable Dir does not exist not being added to netCDF output')
+else
+    nc{'wdir'} = ncfloat('time','node');
+    nc{'wdir'}.long_name = 'Wave  Direction';
+    nc{'wdir'}.units     = 'degree';
+end;
 
-nc{'tpeak'} = ncfloat('time','node');
-nc{'tpeak'}.long_name = 'Relative Peak Period';
-nc{'tpeak'}.units     = 's'; 
+vname = ['RTpeak_',date(1:8),'_',date(10:15)];
+if(exist(vname) == 0)
+    warning('Variable RTpeak does not exist not being added to netCDF output')
+else
+    nc{'tpeak'} = ncfloat('time','node');
+    nc{'tpeak'}.long_name = 'Relative Peak Period';
+    nc{'tpeak'}.units     = 's';
+end;
 
-nc{'U10'} = ncfloat('time','node');
-nc{'U10'}.long_name = 'Wind Velocity x-direction';
-nc{'U10'}.units     = 'm/s'; 
+vname = ['Windv_x_',date(1:8),'_',date(10:15)];
+if(exist(vname) == 0)
+    warning('Variable WindV_x_ does not exist not being added to netCDF output')
+else
+    nc{'U10'} = ncfloat('time','node');
+    nc{'U10'}.long_name = 'Wind Velocity x-direction';
+    nc{'U10'}.units     = 'm/s';
+end;
 
-nc{'V10'} = ncfloat('time','node');
-nc{'V10'}.long_name = 'Wind Velocity y-direction';
-nc{'V10'}.units     = 'm/s'; 
+vname = ['Windv_y_',date(1:8),'_',date(10:15)];
+if(exist(vname) == 0)
+    warning('Variable WindV_y_ does not exist not being added to netCDF output')
+else
+    nc{'V10'} = ncfloat('time','node');
+    nc{'V10'}.long_name = 'Wind Velocity y-direction';
+    nc{'V10'}.units     = 'm/s';
+end;
+
+
+vname = ['Ubot_',date(1:8),'_',date(10:15)];
+if(exist(vname) == 0)
+    warning('Variable Ubot does not exist not being added to netCDF output')
+else
+    nc{'Ubot'} = ncfloat('time','node');
+    nc{'Ubot'}.long_name = 'Bottom Orbital Velocity';
+    nc{'Ubot'}.units     = 'm/s';
+end;
+
+
+vname = ['TmBot_',date(1:8),'_',date(10:15)];
+if(exist(vname) == 0)
+    warning('Variable TmBot does not exist not being added to netCDF output')
+else
+    nc{'TmBot'} = ncfloat('time','node');
+    nc{'TmBot'}.long_name = 'Bottom Wave Period';
+    nc{'TmBot'}.units     = 's';
+end;
 
 % static vars
 nc{'x'}(:) = Xp;
@@ -143,65 +193,95 @@ nc{'nv'}(:,:) = tri';
 
 % dump dynamic vars
 for i=1:ntimes;
-
-  fprintf('processing time %s\n',datestr(times(i)));
-  %time
-  shift = 678942.;  % datenum(2010,1,1,0,0,0)-greg2mjulian(2010,1,1,0,0,0);
-  nc{'time'}(i) = times(i) - shift;
-
-  %hs
-  date = datestr(times(i),30);
-  vname = ['Hsig_',date(1:8),'_',date(10:15)];
-  if(exist(vname) == 0)
-    error('variable frame %s\n does not exist',vname)
-  end;
-  nc{'hs'}(i,:) = eval(vname)';
-
-  %tp
-  date = datestr(times(i),30);
-  vname = ['RTpeak_',date(1:8),'_',date(10:15)];
-  if(exist(vname) == 0)
-    error('variable frame %s\n does not exist',vname)
-  end;
-  nc{'tpeak'}(i,:) = eval(vname)';
-
-  %depth
-  date = datestr(times(i),30);
-  vname = ['Depth_',date(1:8),'_',date(10:15)];
-  if(exist(vname) == 0)
-    error('variable frame %s\n does not exist',vname)
-  end;
-  nc{'d'}(i,:) = eval(vname)';
-
-  % wave dir
-  date = datestr(times(i),30);
-  vname = ['Dir_',date(1:8),'_',date(10:15)];
-  if(exist(vname) == 0)
-    error('variable frame %s\n does not exist',vname)
-  end;
-  nc{'wdir'}(i,:) = eval(vname)';
-
-  % U10 
-  date = datestr(times(i),30);
-  vname = ['Windv_x_',date(1:8),'_',date(10:15)];
-  if(exist(vname) == 0)
-    error('variable frame %s\n does not exist',vname)
-  end;
-  var = eval(vname)';
-  var(isnan(var)) = 0.0;
-  nc{'U10'}(i,:) = var; 
-
-  % V10 
-  date = datestr(times(i),30);
-  vname = ['Windv_y_',date(1:8),'_',date(10:15)];
-  if(exist(vname) == 0)
-    error('variable frame %s\n does not exist',vname)
-  end;
-  var = eval(vname)';
-  var(isnan(var)) = 0.0;
-  nc{'V10'}(i,:) = var'; 
-
-
+    
+    fprintf('processing time %s\n',datestr(times(i)));
+    
+    
+    %time
+    shift = 678942.;  % datenum(2010,1,1,0,0,0)-greg2mjulian(2010,1,1,0,0,0);
+    nc{'time'}(i) = times(i) - shift;
+    
+    %hs
+    date = datestr(times(i),30);
+    vname = ['Hsig_',date(1:8),'_',date(10:15)];
+    if(exist(vname) == 0)
+        %fprintf('variable frame %s\n does not exist',vname)
+    else
+        nc{'hs'}(i,:) = eval(vname)';
+    end;
+    
+    %tp
+    date = datestr(times(i),30);
+    vname = ['RTpeak_',date(1:8),'_',date(10:15)];
+    if(exist(vname) == 0)
+        %fprintf('variable frame %s\n does not exist',vname)
+    else
+        nc{'tpeak'}(i,:) = eval(vname)';
+    end;
+    
+    
+    %depth
+    date = datestr(times(i),30);
+    vname = ['Depth_',date(1:8),'_',date(10:15)];
+    if(exist(vname) == 0)
+        %fprintf('variable frame %s\n does not exist',vname)
+    else
+        nc{'d'}(i,:) = eval(vname)';
+    end;
+    
+    % wave dir
+    date = datestr(times(i),30);
+    vname = ['Dir_',date(1:8),'_',date(10:15)];
+    if(exist(vname) == 0)
+        %fprintf('variable frame %s\n does not exist',vname)
+    else
+        nc{'wdir'}(i,:) = eval(vname)';
+    end;
+    
+    % U10
+    date = datestr(times(i),30);
+    vname = ['Windv_x_',date(1:8),'_',date(10:15)];
+    if(exist(vname) == 0)
+        %fprintf('variable frame %s\n does not exist',vname)
+    else
+        var = eval(vname)';
+        var(isnan(var)) = 0.0;
+        nc{'U10'}(i,:) = var;
+    end;
+    
+    % V10
+    date = datestr(times(i),30);
+    vname = ['Windv_y_',date(1:8),'_',date(10:15)];
+    if(exist(vname) == 0)
+        %fprintf('variable frame %s\n does not exist',vname)
+    else
+        var = eval(vname)';
+        var(isnan(var)) = 0.0;
+        nc{'V10'}(i,:) = var';
+    end;
+    
+    % orbital velocity
+    date = datestr(times(i),30);
+    vname = ['Ubot_',date(1:8),'_',date(10:15)];
+    if(exist(vname) == 0)
+        %fprintf('variable frame %s\n does not exist',vname)
+    else
+        var = eval(vname)';
+        var(isnan(var)) = 0.0;
+        nc{'Ubot'}(i,:) = var';
+    end;
+    
+    % bottom wave period
+    date = datestr(times(i),30);
+    vname = ['TmBot_',date(1:8),'_',date(10:15)];
+    if(exist(vname) == 0)
+        %fprintf('variable frame %s\n does not exist',vname)
+    else
+        var = eval(vname)';
+        var(isnan(var)) = 0.0;
+        nc{'TmBot'}(i,:) = var';
+    end;
+    
 end;
 
 
