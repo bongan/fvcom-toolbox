@@ -5,6 +5,7 @@ function [erate] = ST_erate(d,varargin)
 %
 % DESCRIPTION:
 % Calculate erosion rate of sediment diameter d (m) in kg/(m^2-s)
+%   See NOTE below
 %
 % INPUT:
 %    d: sediment grain size in m
@@ -23,7 +24,11 @@ function [erate] = ST_erate(d,varargin)
 %
 % References
 %    Blaas etal, Cont. Shelf. Res., 27, 2007
+%
+% Note
+%    THIS CALCULATION IS A HACK BASED ON A CURVE FIT OF SEVERAL STUDIES
 %    Need to modify to use formula of Drake and Cacchione, CSR 9, 1989
+%    or other.  Someone fix this if possible.
 %
 % Revision history
 %   

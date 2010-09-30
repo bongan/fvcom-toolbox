@@ -60,7 +60,7 @@
    [1] Sharqawy M. H., Lienhard J. H., and Zubair, S. M., Desalination and Water Treatment, 2009
    [2] B. M. Fabuss, A. Korosi, and D. F. Othmer, J., Chem. Eng. Data 14(2), 192, 1969.
    [3] J. D. Isdale, C. M. Spence, and J. S. Tudhope, Desalination, 10(4), 319 - 328, 1972
-   [4] F. J. Millero, The Sea, Vol. 5, 3 – 80, John Wiley, New York, 1974
+   [4] F. J. Millero, The Sea, Vol. 5, 3 ï¿½ 80, John Wiley, New York, 1974
    [5] IAPWS release on the viscosity of ordinary water substance 2008
 =========================================================================</pre></div>
 
@@ -111,7 +111,7 @@ This function is called by:
 0032 <span class="comment">%   [1] Sharqawy M. H., Lienhard J. H., and Zubair, S. M., Desalination and Water Treatment, 2009</span>
 0033 <span class="comment">%   [2] B. M. Fabuss, A. Korosi, and D. F. Othmer, J., Chem. Eng. Data 14(2), 192, 1969.</span>
 0034 <span class="comment">%   [3] J. D. Isdale, C. M. Spence, and J. S. Tudhope, Desalination, 10(4), 319 - 328, 1972</span>
-0035 <span class="comment">%   [4] F. J. Millero, The Sea, Vol. 5, 3 – 80, John Wiley, New York, 1974</span>
+0035 <span class="comment">%   [4] F. J. Millero, The Sea, Vol. 5, 3 ï¿½ 80, John Wiley, New York, 1974</span>
 0036 <span class="comment">%   [5] IAPWS release on the viscosity of ordinary water substance 2008</span>
 0037 <span class="comment">%=========================================================================</span>
 0038 
@@ -119,7 +119,7 @@ This function is called by:
 0040 <span class="comment">% CHECK INPUT ARGUMENTS</span>
 0041 <span class="comment">%----------------------</span>
 0042 <span class="keyword">if</span> nargin ~=2
-0043    error(<span class="string">'SW_Viscosity.m: Must pass 2 parameters'</span>)
+0043     error(<span class="string">'SW_Viscosity.m: Must pass 2 parameters'</span>)
 0044 <span class="keyword">end</span>
 0045 
 0046 <span class="comment">% CHECK S,T dimensions and verify consistent</span>
@@ -128,31 +128,34 @@ This function is called by:
 0049 
 0050 <span class="comment">% CHECK THAT S &amp; T HAVE SAME SHAPE</span>
 0051 <span class="keyword">if</span> (ms~=mt) | (ns~=nt)
-0052    error(<span class="string">'check_stp: S &amp; T must have same dimensions'</span>)
+0052     error(<span class="string">'check_stp: S &amp; T must have same dimensions'</span>)
 0053 <span class="keyword">end</span>
 0054 
 0055 <span class="comment">% CHECK THAT S &amp; T ARE WITHIN THE FUNCTION RANGE</span>
-0056 <span class="keyword">for</span> i=1:length(T)
-0057 <span class="keyword">if</span> T(i)&lt;0 | T(i)&gt;180
-0058     disp(<span class="string">'Temperature is out of range for Viscosity function 10&lt;T&lt;180 C'</span>);
-0059 <span class="keyword">end</span>
-0060 <span class="keyword">if</span> S(i)&lt;0 | S(i)&gt;150
-0061     disp(<span class="string">'Salinity is out of range for Viscosity function 0&lt;S&lt;150 g/kg'</span>);
-0062 <span class="keyword">end</span>
-0063 
-0064 <span class="comment">%------</span>
-0065 <span class="comment">% BEGIN</span>
-0066 <span class="comment">%------</span>
-0067 S(i)=S(i)/1000;
-0068 a1 = 1.5700386464E-01;a2 = 6.4992620050E+01;a3 = -9.1296496657E+01;a4 = 4.2844324477E-05;
-0069 mu_w(i) = a4 + 1/(a1*(T(i)+a2)^2+a3);
-0070 a5 = 1.5409136040E+00;a6 = 1.9981117208E-02;a7 = -9.5203865864E-05;
-0071 a8 = 7.9739318223E+00;a9 = -7.5614568881E-02;a10 = 4.7237011074E-04;
-0072 A = a5 + a6 * T(i) + a7 * T(i)^2;
-0073 B = a8 + a9 * T(i) + a10* T(i)^2;
-0074 mu(i) = mu_w(i)*(1 + A*S(i) + B*S(i)^2);
-0075 <span class="keyword">end</span>
-0076 <span class="keyword">end</span></pre></div>
-<hr><address>Generated on Wed 29-Sep-2010 12:18:45 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+0056 vectorsize=size(S);
+0057 <span class="keyword">for</span> i = 1:vectorsize(1,1)
+0058     <span class="keyword">for</span> j = 1:vectorsize(1,2)
+0059         <span class="keyword">if</span> T(i,j)&lt;0 | T(i,j)&gt;180
+0060             disp(<span class="string">'Temperature is out of range for Viscosity function 10&lt;T&lt;180 C'</span>);
+0061         <span class="keyword">end</span>
+0062         <span class="keyword">if</span> S(i,j)&lt;0 | S(i,j)&gt;150
+0063             disp(<span class="string">'Salinity is out of range for Viscosity function 0&lt;S&lt;150 g/kg'</span>);
+0064         <span class="keyword">end</span>
+0065         
+0066         <span class="comment">%------</span>
+0067         <span class="comment">% BEGIN</span>
+0068         <span class="comment">%------</span>
+0069         S(i,j)=S(i,j)/1000;
+0070         a1 = 1.5700386464E-01;a2 = 6.4992620050E+01;a3 = -9.1296496657E+01;a4 = 4.2844324477E-05;
+0071         mu_w(i,j) = a4 + 1/(a1*(T(i,j)+a2)^2+a3);
+0072         a5 = 1.5409136040E+00;a6 = 1.9981117208E-02;a7 = -9.5203865864E-05;
+0073         a8 = 7.9739318223E+00;a9 = -7.5614568881E-02;a10 = 4.7237011074E-04;
+0074         A = a5 + a6 * T(i,j) + a7 * T(i,j)^2;
+0075         B = a8 + a9 * T(i,j) + a10* T(i,j)^2;
+0076         mu(i,j) = mu_w(i,j)*(1 + A*S(i,j) + B*S(i,j)^2);
+0077     <span class="keyword">end</span>
+0078 <span class="keyword">end</span>
+0079 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 30-Sep-2010 18:07:03 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
 </body>
 </html>
