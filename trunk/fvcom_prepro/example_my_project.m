@@ -1,6 +1,7 @@
-function [lon,lat,x,y] = my_project(lon,lat,x,y,direction) 
+function [lon,lat,x,y] = example_my_project(lon,lat,x,y,direction) 
 
-% User defined projection and inverse projection of (lon,lat) to (x,y) 
+% Sample user-defined projection and inverse projection of (lon,lat) to (x,y) 
+% Copy to my_project (not a member of the toolbox) and modify to suite you
 %
 % [lon,lat,x,y] = function my_project(lon,lat,x,y)
 %
