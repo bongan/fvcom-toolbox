@@ -48,6 +48,7 @@ end;
 
 %------------------------------------------------------------------------------
 % Perform the projection:  USER DEFINED 
+% Example:  project/inverse project to state plane 1802
 %------------------------------------------------------------------------------
 
 if(ProjectDirection == 'forward')
