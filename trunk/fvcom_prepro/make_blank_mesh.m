@@ -38,8 +38,8 @@ Mobj.nRivers = 0;
 Mobj.nObs    = 0;
 Mobj.nSponge = 0;
 Mobj.riv_nodes = zeros(50,10);
-Mobj.obc_nodes = zeros(10,120);
-Mobj.sponge_nodes = zeros(10,120);
+Mobj.obc_nodes = zeros(10,500);
+Mobj.sponge_nodes = zeros(10,500);
 
 % flags
 Mobj.nativeCoords = 'cartesian';
