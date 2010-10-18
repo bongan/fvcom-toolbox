@@ -35,6 +35,7 @@ fprintf('\n')
 fprintf(['begin : ' subname '\n'])
 
 userproject = false;
+have_bath = false;
 
 %------------------------------------------------------------------------------
 % Create a blank mesh object
@@ -204,11 +205,11 @@ end;
 if(userproject)
 	if(coordinate(1:3) == 'car')
 		fprintf('inverse projecting to get (lon,lat)\n')
-		[lon,lat,x,y] = my_project(lon,lat,x,y,'inverse');
+		[lon,lat] = my_project(x,y,'inverse');
 		have_lonlat = true;
 	else
 		fprintf('forward projecting to get (x,y)\n')
-		[lon,lat,x,y] = my_project(lon,lat,x,y,'forward');
+		[x,y] = my_project(lon,lat,'forward');
 		have_xy = true;
 	end;
 end;
