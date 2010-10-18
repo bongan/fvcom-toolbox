@@ -242,4 +242,4 @@ Mobj.tri          = tri;
 
 fprintf(['end   : ' subname '\n'])
 
-
+fclose(fid);
