@@ -61,7 +61,7 @@
 <h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
 This function calls:
 <ul style="list-style-image:url(../matlabicon.gif)">
-<li><a href="make_blank_mesh.html" class="code" title="function [Mobj] = make_blank_mesh">make_blank_mesh</a>	Make a blank mesh object with default params</li><li><a href="my_project.html" class="code" title="function [lon,lat,x,y] = my_project(lon,lat,x,y,direction)">my_project</a>	User defined projection and inverse projection of (lon,lat) to (x,y)</li></ul>
+<li><a href="make_blank_mesh.html" class="code" title="function [Mobj] = make_blank_mesh">make_blank_mesh</a>	Make a blank mesh object with default params</li><li><a href="my_project.html" class="code" title="function [out_east,out_north] = my_project(in_east,in_north,direction)">my_project</a>	Sample user-defined projection and inverse projection of (lon,lat) to (x,y)</li></ul>
 This function is called by:
 <ul style="list-style-image:url(../matlabicon.gif)">
 <li><a href="example.html" class="code" title="">example</a>	example demonstrating reading in a 2DM file and constructing a model</li></ul>
@@ -107,213 +107,214 @@ This function is called by:
 0035 fprintf([<span class="string">'begin : '</span> subname <span class="string">'\n'</span>])
 0036 
 0037 userproject = false;
-0038 
-0039 <span class="comment">%------------------------------------------------------------------------------</span>
-0040 <span class="comment">% Create a blank mesh object</span>
-0041 <span class="comment">%------------------------------------------------------------------------------</span>
-0042 Mobj = <a href="make_blank_mesh.html" class="code" title="function [Mobj] = make_blank_mesh">make_blank_mesh</a>();
-0043 coordinate = <span class="string">'cartesian'</span>;
-0044 
-0045 <span class="comment">%------------------------------------------------------------------------------</span>
-0046 <span class="comment">% Parse input arguments</span>
-0047 <span class="comment">%------------------------------------------------------------------------------</span>
-0048 
-0049 <span class="keyword">if</span>(mod(length(varargin),2) ~= 0)
-0050     error(<span class="string">'incorrect usage of read_sms_mesh, use keyword pairs'</span>)
-0051 <span class="keyword">end</span>;
-0052 
+0038 have_bath = false;
+0039 
+0040 <span class="comment">%------------------------------------------------------------------------------</span>
+0041 <span class="comment">% Create a blank mesh object</span>
+0042 <span class="comment">%------------------------------------------------------------------------------</span>
+0043 Mobj = <a href="make_blank_mesh.html" class="code" title="function [Mobj] = make_blank_mesh">make_blank_mesh</a>();
+0044 coordinate = <span class="string">'cartesian'</span>;
+0045 
+0046 <span class="comment">%------------------------------------------------------------------------------</span>
+0047 <span class="comment">% Parse input arguments</span>
+0048 <span class="comment">%------------------------------------------------------------------------------</span>
+0049 
+0050 <span class="keyword">if</span>(mod(length(varargin),2) ~= 0)
+0051     error(<span class="string">'incorrect usage of read_sms_mesh, use keyword pairs'</span>)
+0052 <span class="keyword">end</span>;
 0053 
-0054 <span class="keyword">for</span> i=1:2:length(varargin)-1
-0055     keyword  = lower(varargin{i});
-0056     <span class="keyword">if</span>( ~ischar(keyword) )
-0057         error(<span class="string">'incorrect usage of read_sms_mesh'</span>)
-0058     <span class="keyword">end</span>;
-0059     
-0060     <span class="keyword">switch</span>(keyword(1:3))
-0061     
-0062     <span class="keyword">case</span>'2dm'
-0063         sms_2dm = varargin{i+1};
-0064         have_2dm = true;
-0065     <span class="keyword">case</span> <span class="string">'bat'</span>
-0066         sms_bath = varargin{i+1};
-0067         have_bath = true;
-0068     <span class="keyword">case</span> <span class="string">'coo'</span>
-0069         coord = varargin{i+1}
-0070         <span class="keyword">if</span>(coord(1:3)==<span class="string">'sph'</span>)
-0071             coordinate = <span class="string">'spherical'</span>
-0072             have_lonlat = true;
-0073         <span class="keyword">else</span>
-0074             coordinate = <span class="string">'cartesian'</span>
-0075             have_xy    = true;
-0076         <span class="keyword">end</span>;
-0077     <span class="keyword">case</span> <span class="string">'pro'</span>
-0078         val = varargin{i+1};
-0079         <span class="keyword">if</span>( val )
-0080             userproject = true;
-0081         <span class="keyword">else</span>
-0082             userproject = false;
-0083         <span class="keyword">end</span>;
-0084     <span class="keyword">case</span> <span class="string">'add'</span>
-0085         val = varargin{i+1};
-0086         <span class="keyword">if</span>( val )
-0087             addCoriolis = true;
-0088         <span class="keyword">else</span>
-0089             addCoriolis = false;
-0090         <span class="keyword">end</span>;
-0091     <span class="keyword">otherwise</span>
-0092         error([<span class="string">'Can''t understand property:'</span> varargin{i+1}]);
-0093     <span class="keyword">end</span>; <span class="comment">%switch(keyword)</span>
-0094     
-0095 <span class="keyword">end</span>;
-0096         
-0097 <span class="comment">%------------------------------------------------------------------------------</span>
-0098 <span class="comment">% Read the mesh from the 2dm file</span>
-0099 <span class="comment">%------------------------------------------------------------------------------</span>
-0100 
+0054 
+0055 <span class="keyword">for</span> i=1:2:length(varargin)-1
+0056     keyword  = lower(varargin{i});
+0057     <span class="keyword">if</span>( ~ischar(keyword) )
+0058         error(<span class="string">'incorrect usage of read_sms_mesh'</span>)
+0059     <span class="keyword">end</span>;
+0060     
+0061     <span class="keyword">switch</span>(keyword(1:3))
+0062     
+0063     <span class="keyword">case</span>'2dm'
+0064         sms_2dm = varargin{i+1};
+0065         have_2dm = true;
+0066     <span class="keyword">case</span> <span class="string">'bat'</span>
+0067         sms_bath = varargin{i+1};
+0068         have_bath = true;
+0069     <span class="keyword">case</span> <span class="string">'coo'</span>
+0070         coord = varargin{i+1}
+0071         <span class="keyword">if</span>(coord(1:3)==<span class="string">'sph'</span>)
+0072             coordinate = <span class="string">'spherical'</span>
+0073             have_lonlat = true;
+0074         <span class="keyword">else</span>
+0075             coordinate = <span class="string">'cartesian'</span>
+0076             have_xy    = true;
+0077         <span class="keyword">end</span>;
+0078     <span class="keyword">case</span> <span class="string">'pro'</span>
+0079         val = varargin{i+1};
+0080         <span class="keyword">if</span>( val )
+0081             userproject = true;
+0082         <span class="keyword">else</span>
+0083             userproject = false;
+0084         <span class="keyword">end</span>;
+0085     <span class="keyword">case</span> <span class="string">'add'</span>
+0086         val = varargin{i+1};
+0087         <span class="keyword">if</span>( val )
+0088             addCoriolis = true;
+0089         <span class="keyword">else</span>
+0090             addCoriolis = false;
+0091         <span class="keyword">end</span>;
+0092     <span class="keyword">otherwise</span>
+0093         error([<span class="string">'Can''t understand property:'</span> varargin{i+1}]);
+0094     <span class="keyword">end</span>; <span class="comment">%switch(keyword)</span>
+0095     
+0096 <span class="keyword">end</span>;
+0097         
+0098 <span class="comment">%------------------------------------------------------------------------------</span>
+0099 <span class="comment">% Read the mesh from the 2dm file</span>
+0100 <span class="comment">%------------------------------------------------------------------------------</span>
 0101 
-0102 fid = fopen(sms_2dm,<span class="string">'r'</span>);
-0103 <span class="keyword">if</span>(fid  &lt; 0)
-0104     error([<span class="string">'file: '</span> sms_2dm <span class="string">' does not exist'</span>]);
-0105 <span class="keyword">end</span>;
-0106 
-0107 <span class="comment">% Count number of elements and vertices</span>
-0108 fprintf([<span class="string">'reading from: '</span> sms_2dm <span class="string">'\n'</span>])
-0109 fprintf(<span class="string">'first pass to count number of nodes and vertices\n'</span>)
-0110 nElems = 0;
-0111 nVerts = 0;
-0112 lin = fgetl(fid); <span class="comment">%header</span>
-0113 StillReading = true;
-0114 <span class="keyword">while</span> StillReading 
-0115     lin = fgetl(fid);
-0116     <span class="keyword">if</span>(lin(1:2) == <span class="string">'E3'</span>)
-0117         nElems = nElems + 1;
-0118     <span class="keyword">elseif</span>(lin(1:2) == <span class="string">'ND'</span>)
-0119         nVerts = nVerts + 1;
-0120     <span class="keyword">else</span>
-0121         StillReading = false;
-0122     <span class="keyword">end</span>;
-0123 <span class="keyword">end</span>;
-0124 fclose(fid); fid = fopen(sms_2dm,<span class="string">'r'</span>);
-0125 
-0126 fprintf(<span class="string">'nVerts: %d\n'</span>,nVerts)
-0127 fprintf(<span class="string">'nElems: %d\n'</span>,nElems)
-0128 fprintf(<span class="string">'reading in connectivity and grid points\n'</span>)
-0129 
-0130 <span class="comment">% allocate memory to hold mesh and connectivity</span>
-0131 tri = zeros(nElems,3);
-0132 x   = zeros(nVerts,1);
-0133 y   = zeros(nVerts,1);
-0134 h   = zeros(nVerts,1);
-0135 lon = zeros(nVerts,1);
-0136 lat = zeros(nVerts,1);
-0137 ts  = zeros(nVerts,1);
-0138 
-0139 lin=fgetl(fid); <span class="comment">%header</span>
-0140 <span class="keyword">for</span> i=1:nElems
-0141     C = textscan(fid, <span class="string">'%s %d %d %d %d %d'</span>, 1);
-0142     tri(i,1) = C{3};
-0143     tri(i,2) = C{4};
-0144     tri(i,3) = C{5};
-0145 <span class="keyword">end</span>;
-0146 
-0147 <span class="keyword">for</span> i=1:nVerts 
-0148     C = textscan(fid, <span class="string">'%s %d %f %f %f '</span>, 1);
-0149     x(i) = C{3};
-0150     y(i) = C{4};
-0151 <span class="keyword">end</span>;
-0152 
-0153 have_lonlat = false;
-0154 have_xy     = false;
-0155 <span class="keyword">if</span>(coordinate(1:5) == <span class="string">'spher'</span>)
-0156     lon = x;
-0157     lat = y;
-0158     x = x*0.0;
-0159     y = y*0.0;
-0160     have_lonlat = true;
-0161 <span class="keyword">else</span>
-0162     have_xy = true;
-0163 <span class="keyword">end</span>;
-0164 
+0102 
+0103 fid = fopen(sms_2dm,<span class="string">'r'</span>);
+0104 <span class="keyword">if</span>(fid  &lt; 0)
+0105     error([<span class="string">'file: '</span> sms_2dm <span class="string">' does not exist'</span>]);
+0106 <span class="keyword">end</span>;
+0107 
+0108 <span class="comment">% Count number of elements and vertices</span>
+0109 fprintf([<span class="string">'reading from: '</span> sms_2dm <span class="string">'\n'</span>])
+0110 fprintf(<span class="string">'first pass to count number of nodes and vertices\n'</span>)
+0111 nElems = 0;
+0112 nVerts = 0;
+0113 lin = fgetl(fid); <span class="comment">%header</span>
+0114 StillReading = true;
+0115 <span class="keyword">while</span> StillReading 
+0116     lin = fgetl(fid);
+0117     <span class="keyword">if</span>(lin(1:2) == <span class="string">'E3'</span>)
+0118         nElems = nElems + 1;
+0119     <span class="keyword">elseif</span>(lin(1:2) == <span class="string">'ND'</span>)
+0120         nVerts = nVerts + 1;
+0121     <span class="keyword">else</span>
+0122         StillReading = false;
+0123     <span class="keyword">end</span>;
+0124 <span class="keyword">end</span>;
+0125 fclose(fid); fid = fopen(sms_2dm,<span class="string">'r'</span>);
+0126 
+0127 fprintf(<span class="string">'nVerts: %d\n'</span>,nVerts)
+0128 fprintf(<span class="string">'nElems: %d\n'</span>,nElems)
+0129 fprintf(<span class="string">'reading in connectivity and grid points\n'</span>)
+0130 
+0131 <span class="comment">% allocate memory to hold mesh and connectivity</span>
+0132 tri = zeros(nElems,3);
+0133 x   = zeros(nVerts,1);
+0134 y   = zeros(nVerts,1);
+0135 h   = zeros(nVerts,1);
+0136 lon = zeros(nVerts,1);
+0137 lat = zeros(nVerts,1);
+0138 ts  = zeros(nVerts,1);
+0139 
+0140 lin=fgetl(fid); <span class="comment">%header</span>
+0141 <span class="keyword">for</span> i=1:nElems
+0142     C = textscan(fid, <span class="string">'%s %d %d %d %d %d'</span>, 1);
+0143     tri(i,1) = C{3};
+0144     tri(i,2) = C{4};
+0145     tri(i,3) = C{5};
+0146 <span class="keyword">end</span>;
+0147 
+0148 <span class="keyword">for</span> i=1:nVerts 
+0149     C = textscan(fid, <span class="string">'%s %d %f %f %f '</span>, 1);
+0150     x(i) = C{3};
+0151     y(i) = C{4};
+0152 <span class="keyword">end</span>;
+0153 
+0154 have_lonlat = false;
+0155 have_xy     = false;
+0156 <span class="keyword">if</span>(coordinate(1:5) == <span class="string">'spher'</span>)
+0157     lon = x;
+0158     lat = y;
+0159     x = x*0.0;
+0160     y = y*0.0;
+0161     have_lonlat = true;
+0162 <span class="keyword">else</span>
+0163     have_xy = true;
+0164 <span class="keyword">end</span>;
 0165 
-0166 <span class="comment">%------------------------------------------------------------------------------</span>
-0167 <span class="comment">% Read the topography from the bathymetry file</span>
-0168 <span class="comment">%------------------------------------------------------------------------------</span>
-0169 
-0170 <span class="keyword">if</span>(have_bath)
-0171     fid = fopen(sms_bath,<span class="string">'r'</span>);
-0172     <span class="keyword">if</span>(fid  &lt; 0)
-0173         error([<span class="string">'file: '</span> sms_bath <span class="string">' does not exist'</span>]);
-0174     <span class="keyword">else</span>
-0175         fprintf(<span class="string">'reading sms bathymetry from: %s\n'</span>,sms_bath)
-0176     <span class="keyword">end</span>;
-0177     lin=fgetl(fid);
+0166 
+0167 <span class="comment">%------------------------------------------------------------------------------</span>
+0168 <span class="comment">% Read the topography from the bathymetry file</span>
+0169 <span class="comment">%------------------------------------------------------------------------------</span>
+0170 
+0171 <span class="keyword">if</span>(have_bath)
+0172     fid = fopen(sms_bath,<span class="string">'r'</span>);
+0173     <span class="keyword">if</span>(fid  &lt; 0)
+0174         error([<span class="string">'file: '</span> sms_bath <span class="string">' does not exist'</span>]);
+0175     <span class="keyword">else</span>
+0176         fprintf(<span class="string">'reading sms bathymetry from: %s\n'</span>,sms_bath)
+0177     <span class="keyword">end</span>;
 0178     lin=fgetl(fid);
 0179     lin=fgetl(fid);
-0180     C = textscan(fid, <span class="string">'%s %d'</span>, 1);
-0181     nVerts_tmp = C{2};
-0182     C = textscan(fid, <span class="string">'%s %d'</span>, 1);
-0183     nElems_tmp = C{2};
-0184     <span class="keyword">if</span>( (nVerts-nVerts_tmp)*(nElems-nElems_tmp) ~= 0)
-0185         fprintf(<span class="string">'dimensions of bathymetry file do not match 2dm file\n'</span>)
-0186         fprintf(<span class="string">'bathymetry nVerts: %d\n'</span>,nVerts_tmp)
-0187         fprintf(<span class="string">'bathymetry nElems: %d\n'</span>,nElems_tmp)
-0188         error(<span class="string">'stopping...'</span>)
-0189     <span class="keyword">end</span>;
-0190     lin=fgetl(fid);
+0180     lin=fgetl(fid);
+0181     C = textscan(fid, <span class="string">'%s %d'</span>, 1);
+0182     nVerts_tmp = C{2};
+0183     C = textscan(fid, <span class="string">'%s %d'</span>, 1);
+0184     nElems_tmp = C{2};
+0185     <span class="keyword">if</span>( (nVerts-nVerts_tmp)*(nElems-nElems_tmp) ~= 0)
+0186         fprintf(<span class="string">'dimensions of bathymetry file do not match 2dm file\n'</span>)
+0187         fprintf(<span class="string">'bathymetry nVerts: %d\n'</span>,nVerts_tmp)
+0188         fprintf(<span class="string">'bathymetry nElems: %d\n'</span>,nElems_tmp)
+0189         error(<span class="string">'stopping...'</span>)
+0190     <span class="keyword">end</span>;
 0191     lin=fgetl(fid);
 0192     lin=fgetl(fid);
-0193     <span class="keyword">for</span> i=1:nVerts
-0194       C = textscan(fid, <span class="string">'%f'</span>, 1);
-0195       h(i) = C{1}; 
-0196     <span class="keyword">end</span>;
-0197     have_bath = true;
-0198 <span class="keyword">end</span>;
-0199 
-0200 <span class="comment">%------------------------------------------------------------------------------</span>
-0201 <span class="comment">% Project if desired by user</span>
-0202 <span class="comment">%------------------------------------------------------------------------------</span>
-0203 
-0204 <span class="keyword">if</span>(userproject)
-0205     <span class="keyword">if</span>(coordinate(1:3) == <span class="string">'car'</span>)
-0206         fprintf(<span class="string">'inverse projecting to get (lon,lat)\n'</span>)
-0207         [lon,lat,x,y] = <a href="my_project.html" class="code" title="function [lon,lat,x,y] = my_project(lon,lat,x,y,direction)">my_project</a>(lon,lat,x,y,<span class="string">'inverse'</span>);
-0208         have_lonlat = true;
-0209     <span class="keyword">else</span>
-0210         fprintf(<span class="string">'forward projecting to get (x,y)\n'</span>)
-0211         [lon,lat,x,y] = <a href="my_project.html" class="code" title="function [lon,lat,x,y] = my_project(lon,lat,x,y,direction)">my_project</a>(lon,lat,x,y,<span class="string">'forward'</span>);
-0212         have_xy = true;
-0213     <span class="keyword">end</span>;
-0214 <span class="keyword">end</span>;
-0215 
-0216 <span class="comment">%------------------------------------------------------------------------------</span>
-0217 <span class="comment">% Transfer to Mesh structure</span>
-0218 <span class="comment">%------------------------------------------------------------------------------</span>
-0219 
-0220 Mobj.nVerts  = nVerts;
-0221 Mobj.nElems  = nElems;
-0222 Mobj.nativeCoords = coordinate;
-0223 
-0224 <span class="keyword">if</span>(have_lonlat)
-0225     Mobj.have_lonlat  = have_lonlat;
-0226 <span class="keyword">end</span>;
-0227 <span class="keyword">if</span>(have_xy)
-0228     Mobj.have_xy      = have_xy;
-0229 <span class="keyword">end</span>;
-0230 <span class="keyword">if</span>(have_bath)
-0231     Mobj.have_bath    = have_bath;
-0232 <span class="keyword">end</span>;
-0233 Mobj.x            = x;
-0234 Mobj.y            = y;
-0235 Mobj.ts           = ts;
-0236 Mobj.lon          = lon;
-0237 Mobj.lat          = lat;
-0238 Mobj.h            = h;
-0239 Mobj.tri          = tri;
-0240 
+0193     lin=fgetl(fid);
+0194     <span class="keyword">for</span> i=1:nVerts
+0195       C = textscan(fid, <span class="string">'%f'</span>, 1);
+0196       h(i) = C{1}; 
+0197     <span class="keyword">end</span>;
+0198     have_bath = true;
+0199 <span class="keyword">end</span>;
+0200 
+0201 <span class="comment">%------------------------------------------------------------------------------</span>
+0202 <span class="comment">% Project if desired by user</span>
+0203 <span class="comment">%------------------------------------------------------------------------------</span>
+0204 
+0205 <span class="keyword">if</span>(userproject)
+0206     <span class="keyword">if</span>(coordinate(1:3) == <span class="string">'car'</span>)
+0207         fprintf(<span class="string">'inverse projecting to get (lon,lat)\n'</span>)
+0208         [lon,lat] = <a href="my_project.html" class="code" title="function [out_east,out_north] = my_project(in_east,in_north,direction)">my_project</a>(x,y,<span class="string">'inverse'</span>);
+0209         have_lonlat = true;
+0210     <span class="keyword">else</span>
+0211         fprintf(<span class="string">'forward projecting to get (x,y)\n'</span>)
+0212         [x,y] = <a href="my_project.html" class="code" title="function [out_east,out_north] = my_project(in_east,in_north,direction)">my_project</a>(lon,lat,<span class="string">'forward'</span>);
+0213         have_xy = true;
+0214     <span class="keyword">end</span>;
+0215 <span class="keyword">end</span>;
+0216 
+0217 <span class="comment">%------------------------------------------------------------------------------</span>
+0218 <span class="comment">% Transfer to Mesh structure</span>
+0219 <span class="comment">%------------------------------------------------------------------------------</span>
+0220 
+0221 Mobj.nVerts  = nVerts;
+0222 Mobj.nElems  = nElems;
+0223 Mobj.nativeCoords = coordinate;
+0224 
+0225 <span class="keyword">if</span>(have_lonlat)
+0226     Mobj.have_lonlat  = have_lonlat;
+0227 <span class="keyword">end</span>;
+0228 <span class="keyword">if</span>(have_xy)
+0229     Mobj.have_xy      = have_xy;
+0230 <span class="keyword">end</span>;
+0231 <span class="keyword">if</span>(have_bath)
+0232     Mobj.have_bath    = have_bath;
+0233 <span class="keyword">end</span>;
+0234 Mobj.x            = x;
+0235 Mobj.y            = y;
+0236 Mobj.ts           = ts;
+0237 Mobj.lon          = lon;
+0238 Mobj.lat          = lat;
+0239 Mobj.h            = h;
+0240 Mobj.tri          = tri;
 0241 
-0242 fprintf([<span class="string">'end   : '</span> subname <span class="string">'\n'</span>])
-0243 
-0244</pre></div>
-<hr><address>Generated on Thu 30-Sep-2010 18:07:03 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+0242 
+0243 fprintf([<span class="string">'end   : '</span> subname <span class="string">'\n'</span>])
+0244 
+0245 fclose(fid);</pre></div>
+<hr><address>Generated on Fri 22-Oct-2010 15:50:50 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
 </body>
 </html>
