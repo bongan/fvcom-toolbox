@@ -112,7 +112,7 @@ end;
 
 % plot option
 if(plotall)
-  for i=1:nProfiles
+  for i=1:2:nProfiles
     plot(1./freq,dens(i,:)); hold on;
   end;
 end;
