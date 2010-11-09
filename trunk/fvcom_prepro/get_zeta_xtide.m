@@ -1,4 +1,4 @@
-function [times,zeta] = gen_zeta_xtide(Xtide_Location,tbeg,tend)
+function [times,zeta] = get_zeta_xtide(Xtide_Location,tbeg,tend)
 
 % Extract an elevation time series from a location using Xtide 
 %
