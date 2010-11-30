@@ -21,10 +21,11 @@ function swan2netcdf(matfile,ncfile,basename,first_time,last_time,increment);
 %      b.) significant wave height (hs)
 %      c.) wave direction
 %      d.) mesh
-%      e.) peak period
-%      f.) wave direction
-%      g.) U10
-%      h.) V10
+%      e.) peak period  
+%      f.) U10
+%      g.) V10
+%      h.) bottom orbital velocity
+%      i.) bottom period
 %
 % EXAMPLE USAGE
 %   swan2netcdf('gom1.mat','gom1.nc','gom1','20070101_000000','20070131_000000',3600)
