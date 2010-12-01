@@ -49,6 +49,7 @@ function swan2netcdf(matfile,ncfile,basename,first_time,last_time,increment,isfo
 % Revision history
 %    09-29-2010 -Now warns you if variable was not found in SWAN output
 %    .mat file and added two variables from SWAN output Ubot and TmBot.
+%    12-01-2010 Added 'isforcing' option
 %==============================================================================
 
 eval(['load ' matfile]);              % load binary file containing SWAN results
@@ -269,7 +270,11 @@ for i=1:ntimes;
     if(exist(vname) == 0)
         %fprintf('variable frame %s\n does not exist',vname)
     else
-        nc{'wdir'}(i,:) = eval(vname)';
+        var = eval(vname)';
+        if (isforcing == 1)
+            var(isnan(var)) = 0.0;
+        end        
+        nc{'wdir'}(i,:) = var;
     end;
     
     % U10
