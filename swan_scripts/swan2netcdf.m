@@ -85,7 +85,8 @@ end;
 
 % dump the netcdf file
 nc = netcdf(ncfile, 'clobber');
-
+nc.info = 'created from SWAN unstructured grid output file';
+nc.source = 'fvcom grid (unstructured) surface forcing';
 
 % dimensions
 nc('nele') = nele;
@@ -117,9 +118,21 @@ nc{'d'}.units     = 'm';
 nc{'nv'} = ncint('three','nele');
 nc{'nv'}.long_name = 'nodes surrounding element';
 
+
 nc{'time'} = ncfloat('time');
-nc{'time'}.long_name = 'Modified Julian Day';
-nc{'time'}.units     = 'days';
+nc{'time'}.long_name = 'time';
+nc{'time'}.units = 'days since 1858-11-17 00:00:00';
+nc{'time'}.format = 'modified julian day (MJD)';
+nc{'time'}.time_zone = 'UTC';
+  
+nc{'Itime'} = ncint('time');
+nc{'Itime'}.units = 'days since 1858-11-17 00:00:00';
+nc{'Itime'}.format = 'modified julian day (MJD)';
+nc{'Itime'}.time_zone = 'UTC';
+
+nc{'Itime2'} = ncint('time');
+nc{'Itime2'}.units = 'msec since 00:00:00';
+nc{'Itime2'}.time_zone = 'UTC';
 
 vname = ['Hsig_',date(1:8),'_',date(10:15)];
 if(exist(vname) == 0)
@@ -166,6 +179,14 @@ else
     nc{'V10'}.units     = 'm/s';
 end;
 
+vname = ['Wlen_',date(1:8),'_',date(10:15)];
+if(exist(vname) == 0)
+    warning('Variable Wlen does not exist not being added to netCDF output')
+else
+    nc{'wlen'} = ncfloat('time','node');
+    nc{'wlen'}.long_name = 'wavelength';
+    nc{'wlen'}.units     = 'm';
+end;
 
 vname = ['Ubot_',date(1:8),'_',date(10:15)];
 if(exist(vname) == 0)
@@ -200,7 +221,10 @@ for i=1:ntimes;
     
     %time
     shift = 678942.;  % datenum(2010,1,1,0,0,0)-greg2mjulian(2010,1,1,0,0,0);
-    nc{'time'}(i) = times(i) - shift;
+    time  = times(i) - shift;
+    nc{'time'}(i) = time;
+	nc{'Itime'}(i) = floor(time); 
+	nc{'Itime2'}(i) = mod(time,1)*24*3600*1000.;
     
     %hs
     date = datestr(times(i),30);
@@ -270,6 +294,17 @@ for i=1:ntimes;
         var = eval(vname)';
         var(isnan(var)) = 0.0;
         nc{'Ubot'}(i,:) = var';
+    end;
+
+	% wavelength
+    date = datestr(times(i),30);
+    vname = ['Wlen_',date(1:8),'_',date(10:15)];
+    if(exist(vname) == 0)
+        %fprintf('variable frame %s\n does not exist',vname)
+    else
+        var = eval(vname)';
+        var(isnan(var)) = 0.0;
+        nc{'wlen'}(i,:) = var';
     end;
     
     % bottom wave period
