@@ -226,117 +226,117 @@ for i=1:ntimes;
     nc{'Itime'}(i) = floor(time);
     nc{'Itime2'}(i) = mod(time,1)*24*3600*1000.;
     
-        
-        %hs
-        date = datestr(times(i),30);
-        vname = ['Hsig_',date(1:8),'_',date(10:15)];
-        if(exist(vname) == 0)
-            %fprintf('variable frame %s\n does not exist',vname)
-        else
-            var = eval(vname)';
-            if (isforcing == 1)
-                var(isnan(var)) = 0.0;
-            end
-            nc{'hs'}(i,j) = var;
-        end;
-        
-        %tp
-        date = datestr(times(i),30);
-        vname = ['RTpeak_',date(1:8),'_',date(10:15)];
-        if(exist(vname) == 0)
-            %fprintf('variable frame %s\n does not exist',vname)
-        else
-            var = eval(vname)';
-            if (isforcing == 1)
-                var(isnan(var)) = 1.0;
-            end
-            nc{'tpeak'}(i,j) = var;
-        end;
-        
-        
-        %depth
-        date = datestr(times(i),30);
-        vname = ['Depth_',date(1:8),'_',date(10:15)];
-        if(exist(vname) == 0)
-            %fprintf('variable frame %s\n does not exist',vname)
-        else
-            nc{'d'}(i,:) = eval(vname)';
-        end;
-        
-        % wave dir
-        date = datestr(times(i),30);
-        vname = ['Dir_',date(1:8),'_',date(10:15)];
-        if(exist(vname) == 0)
-            %fprintf('variable frame %s\n does not exist',vname)
-        else
-            nc{'wdir'}(i,:) = eval(vname)';
-        end;
-        
-        % U10
-        date = datestr(times(i),30);
-        vname = ['Windv_x_',date(1:8),'_',date(10:15)];
-        if(exist(vname) == 0)
-            %fprintf('variable frame %s\n does not exist',vname)
-        else
-            var = eval(vname)';
-            if (isforcing == 1)
-                var(isnan(var)) = 0.0;
-            end
-            nc{'U10'}(i,:) = var;
-        end;
-        
-        % V10
-        date = datestr(times(i),30);
-        vname = ['Windv_y_',date(1:8),'_',date(10:15)];
-        if(exist(vname) == 0)
-            %fprintf('variable frame %s\n does not exist',vname)
-        else
-            var = eval(vname)';
-            if (isforcing == 1)
-                var(isnan(var)) = 0.0;
-            end
-            nc{'V10'}(i,:) = var';
-        end;
-        
-        % orbital velocity
-        date = datestr(times(i),30);
-        vname = ['Ubot_',date(1:8),'_',date(10:15)];
-        if(exist(vname) == 0)
-            %fprintf('variable frame %s\n does not exist',vname)
-        else
-            var = eval(vname)';
-            if (isforcing == 1)
-                var(isnan(var)) = 0.0;
-            end
-            nc{'Ubot'}(i,:) = var';
-        end;
-        
-        % wavelength
-        date = datestr(times(i),30);
-        vname = ['Wlen_',date(1:8),'_',date(10:15)];
-        if(exist(vname) == 0)
-            %fprintf('variable frame %s\n does not exist',vname)
-        else
-            var = eval(vname)';
-            if (isforcing == 1)
-                var(isnan(var)) = 1.0;
-            end
-            nc{'wlen'}(i,:) = var';
-        end;
-        
-        % bottom wave period
-        date = datestr(times(i),30);
-        vname = ['TmBot_',date(1:8),'_',date(10:15)];
-        if(exist(vname) == 0)
-            %fprintf('variable frame %s\n does not exist',vname)
-        else
-            var = eval(vname)';
-            if (isforcing == 1)
-                var(isnan(var)) = 1.0;
-            end
-            nc{'TmBot'}(i,:) = var';
-        end;
+    
+    %hs
+    date = datestr(times(i),30);
+    vname = ['Hsig_',date(1:8),'_',date(10:15)];
+    if(exist(vname) == 0)
+        %fprintf('variable frame %s\n does not exist',vname)
+    else
+        var = eval(vname)';
+        if (isforcing == 1)
+            var(isnan(var)) = 0.0;
+        end
+        nc{'hs'}(i,:) = var;
     end;
+    
+    %tp
+    date = datestr(times(i),30);
+    vname = ['RTpeak_',date(1:8),'_',date(10:15)];
+    if(exist(vname) == 0)
+        %fprintf('variable frame %s\n does not exist',vname)
+    else
+        var = eval(vname)';
+        if (isforcing == 1)
+            var(isnan(var)) = 1.0;
+        end
+        nc{'tpeak'}(i,:) = var;
+    end;
+    
+    
+    %depth
+    date = datestr(times(i),30);
+    vname = ['Depth_',date(1:8),'_',date(10:15)];
+    if(exist(vname) == 0)
+        %fprintf('variable frame %s\n does not exist',vname)
+    else
+        nc{'d'}(i,:) = eval(vname)';
+    end;
+    
+    % wave dir
+    date = datestr(times(i),30);
+    vname = ['Dir_',date(1:8),'_',date(10:15)];
+    if(exist(vname) == 0)
+        %fprintf('variable frame %s\n does not exist',vname)
+    else
+        nc{'wdir'}(i,:) = eval(vname)';
+    end;
+    
+    % U10
+    date = datestr(times(i),30);
+    vname = ['Windv_x_',date(1:8),'_',date(10:15)];
+    if(exist(vname) == 0)
+        %fprintf('variable frame %s\n does not exist',vname)
+    else
+        var = eval(vname)';
+        if (isforcing == 1)
+            var(isnan(var)) = 0.0;
+        end
+        nc{'U10'}(i,:) = var;
+    end;
+    
+    % V10
+    date = datestr(times(i),30);
+    vname = ['Windv_y_',date(1:8),'_',date(10:15)];
+    if(exist(vname) == 0)
+        %fprintf('variable frame %s\n does not exist',vname)
+    else
+        var = eval(vname)';
+        if (isforcing == 1)
+            var(isnan(var)) = 0.0;
+        end
+        nc{'V10'}(i,:) = var';
+    end;
+    
+    % orbital velocity
+    date = datestr(times(i),30);
+    vname = ['Ubot_',date(1:8),'_',date(10:15)];
+    if(exist(vname) == 0)
+        %fprintf('variable frame %s\n does not exist',vname)
+    else
+        var = eval(vname)';
+        if (isforcing == 1)
+            var(isnan(var)) = 0.0;
+        end
+        nc{'Ubot'}(i,:) = var';
+    end;
+    
+    % wavelength
+    date = datestr(times(i),30);
+    vname = ['Wlen_',date(1:8),'_',date(10:15)];
+    if(exist(vname) == 0)
+        %fprintf('variable frame %s\n does not exist',vname)
+    else
+        var = eval(vname)';
+        if (isforcing == 1)
+            var(isnan(var)) = 1.0;
+        end
+        nc{'wlen'}(i,:) = var';
+    end;
+    
+    % bottom wave period
+    date = datestr(times(i),30);
+    vname = ['TmBot_',date(1:8),'_',date(10:15)];
+    if(exist(vname) == 0)
+        %fprintf('variable frame %s\n does not exist',vname)
+    else
+        var = eval(vname)';
+        if (isforcing == 1)
+            var(isnan(var)) = 1.0;
+        end
+        nc{'TmBot'}(i,:) = var';
+    end;
+    
     
 end;
 
