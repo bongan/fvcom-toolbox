@@ -226,7 +226,6 @@ for i=1:ntimes;
     nc{'Itime'}(i) = floor(time);
     nc{'Itime2'}(i) = mod(time,1)*24*3600*1000.;
     
-    for j = 1:nodes
         
         %hs
         date = datestr(times(i),30);
