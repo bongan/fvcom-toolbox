@@ -208,18 +208,39 @@ else
     nc{'TmBot'}.units     = 's';
 end;
 
+vname1 = ['Hsig_',date(1:8),'_',date(10:15)];
+vname2 = ['Depth_',date(1:8),'_',date(10:15)];
+if(exist(vname1) == 0 | exist(vname2)==0)
+    warning('Bot Hsig and Depth do not exist so will not dump H/h')   
+else
+    nc{'H_over_h'} = ncfloat('time','node');
+    nc{'H_over_h'}.long_name = 'Ratio of Hsig to depth';
+    nc{'H_over_h'}.units     = '-';
+end;
+
 % static vars
 nc{'x'}(:) = Xp;
 nc{'y'}(:) = Yp;
 nc{'h'}(:) = h;
 nc{'nv'}(:,:) = tri';
 
+badpts = [];
 % dump dynamic vars
 for i=1:ntimes;
     
     fprintf('processing time %s\n',datestr(times(i)));
     
-    
+    if(isforcing==1)
+	    date = datestr(times(i),30);
+		vname = ['Hsig_',date(1:8),'_',date(10:15)]; var1 = eval(vname)';
+		vname = ['RTpeak_',date(1:8),'_',date(10:15)];var2 = eval(vname)';
+		var3  = var1+var2;
+		badpts = find(isnan(var3));
+		clear var1;
+		clear var2;
+		clear var3;
+	end; 
+	
     %time
     shift = 678942.;  % datenum(2010,1,1,0,0,0)-greg2mjulian(2010,1,1,0,0,0);
     time  = times(i) - shift;
@@ -235,9 +256,7 @@ for i=1:ntimes;
         %fprintf('variable frame %s\n does not exist',vname)
     else
         var = eval(vname)';
-        if (isforcing == 1)
-            var(isnan(var)) = 0.0;
-        end
+        if (isforcing == 1); var(badpts) = 0.; end;
         nc{'hs'}(i,:) = var;
     end;
     
@@ -248,9 +267,7 @@ for i=1:ntimes;
         %fprintf('variable frame %s\n does not exist',vname)
     else
         var = eval(vname)';
-        if (isforcing == 1)
-            var(isnan(var)) = 1.0;
-        end
+		if (isforcing == 1);  var(badpts) = 1.; end;
         nc{'tpeak'}(i,:) = var;
     end;
     
@@ -271,9 +288,7 @@ for i=1:ntimes;
         %fprintf('variable frame %s\n does not exist',vname)
     else
         var = eval(vname)';
-        if (isforcing == 1)
-            var(isnan(var)) = 0.0;
-        end        
+        if (isforcing == 1); var(badpts) = 0.; end;
         nc{'wdir'}(i,:) = var;
     end;
     
@@ -284,9 +299,6 @@ for i=1:ntimes;
         %fprintf('variable frame %s\n does not exist',vname)
     else
         var = eval(vname)';
-        if (isforcing == 1)
-            var(isnan(var)) = 0.0;
-        end
         nc{'U10'}(i,:) = var;
     end;
     
@@ -310,9 +322,7 @@ for i=1:ntimes;
         %fprintf('variable frame %s\n does not exist',vname)
     else
         var = eval(vname)';
-        if (isforcing == 1)
-            var(isnan(var)) = 0.0;
-        end
+        if (isforcing == 1); var(badpts) = 0.; end;
         nc{'Ubot'}(i,:) = var';
     end;
     
@@ -323,9 +333,7 @@ for i=1:ntimes;
         %fprintf('variable frame %s\n does not exist',vname)
     else
         var = eval(vname)';
-        if (isforcing == 1)
-            var(isnan(var)) = 1.0;
-        end
+        if (isforcing == 1); var(badpts) = 1.; end;
         nc{'wlen'}(i,:) = var';
     end;
     
@@ -336,10 +344,22 @@ for i=1:ntimes;
         %fprintf('variable frame %s\n does not exist',vname)
     else
         var = eval(vname)';
-        if (isforcing == 1)
-            var(isnan(var)) = 1.0;
-        end
+        if (isforcing == 1); var(badpts) = 1.; end;
         nc{'TmBot'}(i,:) = var';
+    end;
+
+    % hsig/depth
+    date = datestr(times(i),30);
+    vname1 = ['Hsig_',date(1:8),'_',date(10:15)];
+    vname2 = ['Depth_',date(1:8),'_',date(10:15)];
+    if(exist(vname1) == 0 | exist(vname2)==0)
+        %fprintf('variable frame %s\n does not exist',vname)
+    else
+        var1 = eval(vname1)';
+        var2 = eval(vname2)';
+        var  = var1./var2;
+        if (isforcing == 1); var(badpts) = 0.; end;
+        nc{'H_over_h'}(i,:) = var';
     end;
     
     
