@@ -1,4 +1,12 @@
-function swan2netcdf(matfile,ncfile,basename,first_time,last_time,increment,isforcing)
+function swan2netcdf(matfile,ncfile,basename,first_time,last_time,increment,isforcing,kn)
+%matfile = 'c4.mat';
+%ncfile = 'case_s0004.nc';
+%basename = 'skg4.3';
+%first_time = '20090618_000000';
+%last_time = '20090621_000000';
+%increment = 3600;
+%isforcing = true;
+%kn = .003;
 % Convert a SWAN output file (Matlab) into a NetCDF file
 %
 % function swan2netcdf(matfile,ncfile,basename,first_time,last_time,increment);
@@ -15,6 +23,7 @@ function swan2netcdf(matfile,ncfile,basename,first_time,last_time,increment,isfo
 %   last_time:   last time frame in Matlab object frame time
 %   increment:   increment in seconds
 %   isforcing:   converts NaNs from .mat file to 1.0's or 0.0's
+%   kn:          Nikuradse roughness in meters  [OPTIONAL, default = .01]
 % OUTPUT:
 %    NetCDF file containing:
 %      a.) time in modified Julian day
@@ -26,9 +35,11 @@ function swan2netcdf(matfile,ncfile,basename,first_time,last_time,increment,isfo
 %      g.) V10
 %      h.) bottom orbital velocity
 %      i.) bottom period
+%      j.) H/h ratio
+%      k.) wave-induced bed stress
 %
 % EXAMPLE USAGE
-%   swan2netcdf('gom1.mat','gom1.nc','gom1','20070101_000000','20070131_000000',3600,true)
+%   swan2netcdf('gom1.mat','gom1.nc','gom1','20070101_000000','20070131_000000',3600,true,.045)
 %     this converts gom1.mat to gom1.nc using SWAN grid files gom1.ele, gom1.bot
 %     and gom1.node from Jan 1, 2007 00:00:00 to Jan 31, 2007 00:00:00 in increments
 %     of 1 hour.
@@ -51,6 +62,12 @@ function swan2netcdf(matfile,ncfile,basename,first_time,last_time,increment,isfo
 %    .mat file and added two variables from SWAN output Ubot and TmBot.
 %    12-01-2010 Added 'isforcing' option
 %==============================================================================
+
+% set Nikaradse roughness to 1 cm if user does not specify
+if(~exist('kn'))
+  kn = .01;
+end;
+z0 = kn/30.;  %hydraulic roughness
 
 eval(['load ' matfile]);              % load binary file containing SWAN results
 % obtained using BLOCK command with COMPGRID-set
@@ -218,6 +235,16 @@ else
     nc{'H_over_h'}.units     = '-';
 end;
 
+vname1 = ['TmBot_',date(1:8),'_',date(10:15)];
+vname2 = ['Ubot_',date(1:8),'_',date(10:15)];
+if(exist(vname1) == 0 | exist(vname2)==0)
+    warning('Bot TmBot and Ubot do not exist so will not dump bed stress')
+else
+    nc{'tau_w'} = ncfloat('time','node');
+    nc{'tau_w'}.long_name = 'wave-induced bed stress'; 
+    nc{'tau_w'}.units     = 'm^2/s^2';
+end;
+
 % static vars
 nc{'x'}(:) = Xp;
 nc{'y'}(:) = Yp;
@@ -362,7 +389,25 @@ for i=1:ntimes;
         nc{'H_over_h'}(i,:) = var';
     end;
     
-    
+    % wave-induced bed stress  
+    date = datestr(times(i),30);
+    vname1 = ['TmBot_',date(1:8),'_',date(10:15)];
+    vname2 = ['Ubot_',date(1:8),'_',date(10:15)];
+    if(exist(vname1) == 0 | exist(vname2)==0)
+        %fprintf('variable frame %s\n does not exist',vname)
+    else
+        %compute wave induced bed stress using Soulsby formulas
+        %friction factor (fw) is eq 62A 
+        %tau_w = 0.5*fw*Ubot^2
+        var1 = eval(vname1)';
+        var2 = eval(vname2)';
+        omega_wave = (2.0*pi./max(var1,.05))'; %wave-orbital frequency
+        var=0.5*1.39*((omega_wave*z0).^.52)'.*(var2.^(2.0-.52));
+        if (isforcing == 1); var(badpts) = 0.; end;
+        nc{'tau_w'}(i,:) = var';
+    end;
+    %error('hog')
+
 end;
 
 
