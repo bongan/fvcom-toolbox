@@ -1,14 +1,15 @@
-%function [fetch_struct] = fetch_calc(fvcom_mesh,fvcom_bath,lon,lat,zeta_min,zeta_max,dzeta,dtheta,dry_thresh) 
-close all; clear all;
-fvcom_mesh = 'skg4.3_grd.dat';
-fvcom_bath = 'skg4.3_dep.dat';
-lon = -122.4721646 ;
-lat = 48.3372476; 
-zeta_min = 0;
-zeta_max = 0;
-nZeta = 1;
-nTheta = 36;
-dry_thresh = 0.1;
+function [fetch_struct] = fetch_calc(fvcom_mesh,fvcom_bath,lon,lat,zeta_min,zeta_max,nZeta,nTheta,dry_thresh,darc) 
+% close all; clear all;
+% fvcom_mesh = 'skg4.3_grd.dat';
+% fvcom_bath = 'skg4.3_dep.dat';
+% lon = -122.4721646 ;
+% lat = 48.3372476; 
+% zeta_min = -3;
+% zeta_max = 3;
+% nZeta = 30;
+% nTheta = 16;
+% dry_thresh = 0.1;
+% darc = 125;
 % Calculate fetch as a function of free surface height (positive up) and orientation 
 %
 % function [fetch_struct] = fetch_calc(fvcom_mesh,lon,lat,zeta_min,zeta_max,dzeta,dtheta,dry_thresh) 
@@ -26,10 +27,14 @@ dry_thresh = 0.1;
 %   nZeta       = number of zeta partitions 
 %   nTheta      = number of theta partitions 
 %   dry_thresh  = threshold for a point to be dry
+%   darc        = arc spacing in meters along which fetch is searched
 %
 % OUTPUT:
 %   fetch_struct = fetch structure containing fetch as a function of angle and free surface 
-%                  height.  Angle is  
+%                  height.  Angle is defined using Cartesian Wind Stress.  Thus the fetch 
+%                  corresponding to an angle of pi/2 (90 degrees) is the
+%                  fetch corresponding to a South wind (wind from South
+%                  with Northward wind stress)
 %
 % EXAMPLE USAGE
 %
@@ -50,12 +55,17 @@ x = Mobj.x;
 y = Mobj.y;
 
 % read the bathymetry from an FVCOM grid file
-h = read_fvcom_bath(fvcom_bath); 
+Mobj.h = read_fvcom_bath(fvcom_bath); 
+h = Mobj.h;
+
+% set cell center coordinates
+Mobj.xc = nodes2elems(x,Mobj);
+Mobj.yc = nodes2elems(y,Mobj);
 
 %-------------------------------------------------
 % set grids in zeta and theta 
 %-------------------------------------------------
-theta = 0.:2*pi/nTheta:2*pi;
+theta = -pi:2*pi/nTheta:pi; nTheta=numel(theta);
 zeta  = zeta_min:(zeta_max-zeta_min)/nZeta:zeta_max;
 if(zeta_min==zeta_max)
   zeta = zeta_min;
@@ -78,35 +88,44 @@ zobs = -griddata(x,y,h,xobs,yobs);
 %-------------------------------------------------
 % loop over angles and depths, compute fetch 
 %-------------------------------------------------
-fetch = zeros(nTheta+1,nZeta);
-for i=1:nZeta
-  elev = zeta(i);
-  pts = find( (h+elev) > dry_thresh);
-  npts = numel(pts);
-  dx  = x(pts)-xobs; 
-  dy  = y(pts)-yobs; 
-  ang = atan2(dy,dx);
-  arc = sqrt(dx.^2 + dy.^2);
-  for n=1:npts
-    [junk,ind] = min(abs(ang(n)-theta));
-    if(arc(n) > fetch(ind,i));  fetch(ind,i) = arc(n); end;
+
+radline = 0:darc:max(max(x)-min(x),max(y)-min(y)); nRad = numel(radline);
+fetch = zeros(nTheta,nZeta);
+hc = nodes2elems(Mobj.h,Mobj);
+for i=1:nTheta
+  fprintf('searching theta %f\n',theta(i)*180/pi);
+  xline = xobs+radline*cos(theta(i)+pi);
+  yline = yobs+radline*sin(theta(i)+pi);
+  k = 1;
+  for j=1:nZeta
+    elev = zeta(j); depth = hc+elev;
+    found = 0;
+    k = 1;
+    while ~found
+      cell = inCell(Mobj,xline(k),yline(k));
+      if(cell == 0)| (depth(cell) < dry_thresh);
+        fetch(i,j) = radline(k);
+        %fprintf('found at k = %d\n',k)
+        found = true;
+      end
+      k = k + 1;
+    end;
   end;
 end;
+           
 
 %-------------------------------------------------
 % save to a structure 
 %-------------------------------------------------
 
-%-------------------------------------------------
-% option to plot 
-%-------------------------------------------------
-%[X,Y] = meshgrid(zeta,theta*180/pi) ;
-%pcolor(X,Y,fetch);
-%shading interp;
-%xlabel('direction');
-%ylabel('zeta');
-%colorbar
-figure
-scatter(x,y,5,h); hold on;
-plot(xobs+fetch(:,1)'.*cos(theta),yobs+fetch(:,1)'.*sin(theta),'r')
+fetch_struct.xobs  = xobs;
+fetch_struct.yobs  = yobs;
+fetch_struct.zobs  = zobs;
+fetch_struct.theta = theta;
+fetch_struct.zeta  = zeta;
+fetch_struct.fetch = fetch;
+fetch_struct.xmesh = x;
+fetch_struct.ymesh = y;
+fetch_struct.hmesh = h;
+
 
