@@ -92,36 +92,37 @@ This function is called by:
 0031 ylabel(<span class="string">'flux m^3/s'</span>)
 0032 xlabel(<span class="string">'time'</span>)
 0033 title(<span class="string">'river flux'</span>)
-0034 
-0035 temp = 20*ones(nTimes,1);
-0036 salt = zeros(nTimes,1);
-0037 RiverFile = <span class="string">'tst_riv.nc'</span>;
-0038 nRivnodes = 3;
-0039 RiverInfo1 = <span class="string">'idealized estuary river'</span>;
-0040 RiverInfo2 = <span class="string">'event profile'</span>;
-0041 RiverName = <span class="string">'tstRiver'</span>;
-0042 
+0034 sedload = .030*(flux.^1.40)/1000.; <span class="comment">%sed conc in g/l</span>
+0035 
+0036 temp = 20*ones(nTimes,1);
+0037 salt = zeros(nTimes,1);
+0038 RiverFile = <span class="string">'tst_riv.nc'</span>;
+0039 nRivnodes = 3;
+0040 RiverInfo1 = <span class="string">'idealized estuary river'</span>;
+0041 RiverInfo2 = <span class="string">'event profile'</span>;
+0042 RiverName = <span class="string">'tstRiver'</span>;
 0043 
-0044 <a href="write_FVCOM_river.html" class="code" title="function write_FVCOM_river(RiverFile,RiverName,nRivnodes,time,flux,temp,salt,RiverInfo1,RiverInfo2)">write_FVCOM_river</a>(RiverFile,RiverName,nRivnodes,time,flux,temp,salt,RiverInfo1,RiverInfo2)
-0045 
-0046 <span class="comment">% add sediment to the file</span>
-0047 VarName = <span class="string">'medium_sand'</span>;
-0048 VarLongName = <span class="string">'concentration of medium sand'</span>;
-0049 VarUnits = <span class="string">'kgm^-3'</span>;
-0050 VarData = .1*ones(nTimes,1);
-0051 <a href="add_var_FVCOM_river.html" class="code" title="function add_var_FVCOM_river(RiverFile,VarName,VarLongName,VarUnits,VarData)">add_var_FVCOM_river</a>(RiverFile,VarName,VarLongName,VarUnits,VarData)
-0052 
-0053 VarName = <span class="string">'fine_sand'</span>;
-0054 VarLongName = <span class="string">'concentration of fine sand'</span>;
-0055 VarUnits = <span class="string">'kgm^-3'</span>;
-0056 VarData = .1*ones(nTimes,1);
-0057 <a href="add_var_FVCOM_river.html" class="code" title="function add_var_FVCOM_river(RiverFile,VarName,VarLongName,VarUnits,VarData)">add_var_FVCOM_river</a>(RiverFile,VarName,VarLongName,VarUnits,VarData)
-0058 
-0059 VarName = <span class="string">'coarse_sand'</span>;
-0060 VarLongName = <span class="string">'concentration of coarse sand'</span>;
-0061 VarUnits = <span class="string">'kgm^-3'</span>;
-0062 VarData = .1*ones(nTimes,1);
-0063 <a href="add_var_FVCOM_river.html" class="code" title="function add_var_FVCOM_river(RiverFile,VarName,VarLongName,VarUnits,VarData)">add_var_FVCOM_river</a>(RiverFile,VarName,VarLongName,VarUnits,VarData)</pre></div>
-<hr><address>Generated on Tue 09-Nov-2010 13:53:28 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+0044 
+0045 <a href="write_FVCOM_river.html" class="code" title="function write_FVCOM_river(RiverFile,RiverName,nRivnodes,time,flux,temp,salt,RiverInfo1,RiverInfo2)">write_FVCOM_river</a>(RiverFile,RiverName,nRivnodes,time,flux,temp,salt,RiverInfo1,RiverInfo2)
+0046 
+0047 <span class="comment">% add sediment to the file</span>
+0048 VarName = <span class="string">'fine_sand'</span>;
+0049 VarLongName = <span class="string">'concentration of fine sand'</span>;
+0050 VarUnits = <span class="string">'kgm^-3'</span>;
+0051 VarData = .333*sedload; 
+0052 <a href="add_var_FVCOM_river.html" class="code" title="function add_var_FVCOM_river(RiverFile,VarName,VarLongName,VarUnits,VarData)">add_var_FVCOM_river</a>(RiverFile,VarName,VarLongName,VarUnits,VarData)
+0053 
+0054 VarName = <span class="string">'coarse_silt'</span>;
+0055 VarLongName = <span class="string">'concentration of coarse silt'</span>;
+0056 VarUnits = <span class="string">'kgm^-3'</span>;
+0057 VarData = .333*sedload; 
+0058 <a href="add_var_FVCOM_river.html" class="code" title="function add_var_FVCOM_river(RiverFile,VarName,VarLongName,VarUnits,VarData)">add_var_FVCOM_river</a>(RiverFile,VarName,VarLongName,VarUnits,VarData)
+0059 
+0060 VarName = <span class="string">'fine_silt'</span>;   
+0061 VarLongName = <span class="string">'concentration of fine silt'</span>;   
+0062 VarUnits = <span class="string">'kgm^-3'</span>;
+0063 VarData = .333*sedload; 
+0064 <a href="add_var_FVCOM_river.html" class="code" title="function add_var_FVCOM_river(RiverFile,VarName,VarLongName,VarUnits,VarData)">add_var_FVCOM_river</a>(RiverFile,VarName,VarLongName,VarUnits,VarData)</pre></div>
+<hr><address>Generated on Mon 06-Dec-2010 21:40:32 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
 </body>
 </html>
