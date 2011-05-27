@@ -64,10 +64,10 @@ nu = SW_Kviscosity(T,S);
 
 % calculate rho
 dens = SW_Density(T,S);
-dens/1000.
 
-% calculate dstar
-dstar = ST_Dstar(d,'temp',T,'sal',S,'sdens',sdens);
+s = sdens;
+dstar = ([grav*(s-1)/(nu^2)])^(1/3)*d;
+
 
 % calculate wset
 wset = (nu/d)*( sqrt(10.36^2 + 1.049*(dstar^3)) - 10.36); 
