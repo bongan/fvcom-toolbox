@@ -24,8 +24,8 @@ function [fieldout]  = elems2nodes(fieldin,Mobj)
 %   
 %==============================================================================
 subname = 'elems2nodes';
-fprintf('\n')
-fprintf(['begin : ' subname '\n'])
+%fprintf('\n')
+%fprintf(['begin : ' subname '\n'])
 
 %------------------------------------------------------------------------------
 % Parse input
@@ -55,5 +55,5 @@ for i=1:Mobj.nElems
 end;
 fieldout = fieldout./real(count);
 
-fprintf(['end   : ' subname '\n'])
+%fprintf(['end   : ' subname '\n'])
 
