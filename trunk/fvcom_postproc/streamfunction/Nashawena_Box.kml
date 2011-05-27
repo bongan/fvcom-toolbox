@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom">
+<Document>
+	<name>Nashawena_Box.kml</name>
+	<Style id="sn_ylw-pushpin">
+		<IconStyle>
+			<scale>1.1</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+			</Icon>
+			<hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+	</Style>
+	<StyleMap id="msn_ylw-pushpin">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#sn_ylw-pushpin</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#sh_ylw-pushpin</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="sh_ylw-pushpin">
+		<IconStyle>
+			<scale>1.3</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+			</Icon>
+			<hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+	</Style>
+	<Placemark>
+		<name>Nashawena_Box</name>
+		<styleUrl>#msn_ylw-pushpin</styleUrl>
+		<LineString>
+			<tessellate>1</tessellate>
+			<coordinates>
+				-70.83757783943412,41.43461218962531,0 -70.8514605732162,41.4579979613151,0 -70.87970922652039,41.45419715045556,0 -70.90266392192622,41.44362657919839,0 -70.91619920417304,41.43584166276918,0 -70.90914499229025,41.42849015684355,0 -70.90678357926679,41.42305306909959,0 -70.90346975518993,41.41672804735313,0 -70.88505292386584,41.4096628753666,0 -70.88446497618537,41.40966251348602,0 -70.88387702220849,41.40966213877434,0 -70.88270114539019,41.40966139769779,0 -70.84408090572563,41.41565659643533,0 -70.83779156012876,41.42491083392067,0 
+			</coordinates>
+		</LineString>
+	</Placemark>
+</Document>
+</kml>
