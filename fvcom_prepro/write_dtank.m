@@ -1,4 +1,4 @@
-function dump_dtascii(fname,Mobj,geographic)
+function write_dtank(fname,Mobj,geographic)
 % Dump mesh to datatank file 
 %
 % function dump_dtascii(fname,Mobj) 
@@ -87,11 +87,13 @@ for i=1:Mobj.nVerts
 end;
 
 % open boundary nodes
+if(Mobj.nObs > 0)
 fprintf(fid,'ObcNodes\n');  
 fprintf(fid,'NumberList\n');  
 fprintf(fid,'%d\n',sum(Mobj.nObcNodes)); 
 for i=1:Mobj.nObcNodes(1) 
   fprintf(fid,'%d\n',Mobj.obc_nodes(1,i)); 
+end;
 end;
 
 % river nodes
@@ -103,15 +105,6 @@ for i=1:Mobj.nRivNodes(1);
   fprintf(fid,'%d\n',Mobj.riv_nodes(1,i)); 
 end;
 end;
-if(prod(size(Mobj.probe_nodes)) > 0)
-fprintf(fid,'ProbeNodes\n');  
-fprintf(fid,'NumberList\n');  
-fprintf(fid,'%d\n',prod(size(Mobj.probe_nodes)));  
-for i=1:prod(size(Mobj.probe_nodes))
-  fprintf(fid,'%d\n',Mobj.probe_nodes(i)); 
-end;
-end;
-
   
 fclose(fid);
 

@@ -27,8 +27,8 @@ function [field]  = smoothfield(fieldin,Mobj,SmoothFactor,nLoops,SmoothPts)
 %   
 %==============================================================================
 subname = 'smoothfield';
-fprintf('\n')
-fprintf(['begin : ' subname '\n'])
+%fprintf('\n')
+%fprintf(['begin : ' subname '\n'])
 
 %------------------------------------------------------------------------------
 % Parse input
@@ -72,5 +72,5 @@ end;
 field = fieldin; 
 
 
-fprintf(['end   : ' subname '\n'])
+%fprintf(['end   : ' subname '\n'])
 

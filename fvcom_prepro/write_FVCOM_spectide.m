@@ -1,4 +1,4 @@
-function write_FVCOM_spectide(ObcNodes,Period,Phase,Amp,SpectralFile,MyTitle)   
+function write_FVCOM_spectide(ObcNodes,Period,Phase,Amp,SpectralFile,MyTitle,report)  
 	
 % Write an FVCOM spectral tidal elevation forcing file 
 %
@@ -14,6 +14,7 @@ function write_FVCOM_spectide(ObcNodes,Period,Phase,Amp,SpectralFile,MyTitle)
 %   Amp          = list of amplitudes (m) of size [nObcs,nComponents]
 %   SpectralFile = name of NetCDF file
 %   MyTitle      = case title, written as global attribute of NetCDF file
+%   report       = suppress info to screen (false) or write info (true)
 %
 % OUTPUT:
 %    SpectralFile, A NetCDF FVCOM spectral tide forcing file
@@ -30,16 +31,16 @@ function write_FVCOM_spectide(ObcNodes,Period,Phase,Amp,SpectralFile,MyTitle)
 warning off
 
 subname = 'write_FVCOM_spectide';
-fprintf('\n')
-fprintf(['begin : ' subname '\n'])
+if(report);  fprintf('\n'); end;
+if(report); fprintf(['begin : ' subname '\n']); end;
 %------------------------------------------------------------------------------
 % Sanity check on input and dimensions
 %------------------------------------------------------------------------------
 nComponents = prod(size(Period));
-fprintf('Number of Tide Components %d\n',nComponents)
+if(report); fprintf('Number of Tide Components %d\n',nComponents); end;
 
 nObcs = prod(size(ObcNodes));
-fprintf('Number of Open Boundary Nodes %d\n',nObcs)
+if(report); fprintf('Number of Open Boundary Nodes %d\n',nObcs); end;
 
 [chk1,chk2] = size(Amp);
 if( (nObcs-chk1)*(nComponents-chk2) ~= 0)
@@ -123,8 +124,8 @@ for i=1:nComponents
 end;
 nc{'time_origin'}(:) = 0.0;
 
-nc = close(nc);    
+close(nc);    
 
 
-fprintf(['end   : ' subname '\n'])
+if(report); fprintf(['end   : ' subname '\n']); end;
 
