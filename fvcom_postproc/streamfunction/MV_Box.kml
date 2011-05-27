@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom">
+<Document>
+	<name>Marthas_Vineyard_Box.kml</name>
+	<Style id="sn_ylw-pushpin">
+		<IconStyle>
+			<scale>1.1</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+			</Icon>
+			<hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+	</Style>
+	<StyleMap id="msn_ylw-pushpin">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#sn_ylw-pushpin</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#sh_ylw-pushpin</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="sh_ylw-pushpin">
+		<IconStyle>
+			<scale>1.3</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+			</Icon>
+			<hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+	</Style>
+	<Placemark>
+		<name>Marthas_Vineyard_Box</name>
+		<styleUrl>#msn_ylw-pushpin</styleUrl>
+		<LineString>
+			<tessellate>1</tessellate>
+			<coordinates>
+				-70.81411664107884,41.40500569508615,0 -70.86845458953809,41.37410412779076,0 -70.877030828946,41.32448448196192,0 -70.79467297208528,41.28709681917574,0 -70.6569207535489,41.30338633589226,0 -70.65579216326338,41.30338323867746,0 -70.65296872552223,41.30379969516326,0 -70.55693183582028,41.31875567942329,0 -70.42800609907458,41.32793037330695,0 -70.41440820471132,41.40507619771559,0 -70.44292559845668,41.45143462032753,0 -70.51689690278974,41.48140748905235,0 -70.51858972302759,41.48226149564726,0 -70.59202034079718,41.50836336260882,0 -70.66736078240824,41.49500354125887,0 -70.74164047097396,41.44600443507322,0 -70.78751169704789,41.41938159324758,0 
+			</coordinates>
+		</LineString>
+	</Placemark>
+</Document>
+</kml>
