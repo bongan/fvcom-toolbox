@@ -2,7 +2,7 @@
 
 =Dependencies =
 
-You will need to install the netcdf toolbox which written by Chuck Denham.  
+You will need to install the netcdf toolbox which was originally written by Chuck Denham.  
 
 {{{
   svn co http://mexcdf.svn.sourceforge.net/svnroot/mexcdf/mexnc/trunk
