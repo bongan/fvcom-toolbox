@@ -1,7 +1,7 @@
-function [wset] = ST_wset(d,varargin)
-% Calculate settling velocity of particle diameter d (m) in m/s 
+function [] = ST_summary(d,varargin)
+% Print summary for stats of particle diameter d (m) 
 %
-% function [wset] = ST_wset(d,varargin)
+% function [] = ST_summary(d,varargin)
 %
 % DESCRIPTION:
 % Calculate settling velocity of particle diameter d (m) in m/s 
@@ -13,22 +13,22 @@ function [wset] = ST_wset(d,varargin)
 %    [optional] 'sdens'       = sediment density in kg/m^3       [default=2650]
 %
 % OUTPUT:
-%    wset: settling velocity in m/s   
+%      
 %
 % EXAMPLE USAGE
-%    wset = ST_wset(.0005,'temperature',10,'salinity',35,'sdens',2650) 
+%    ST_summary(.0005,'temperature',10,'salinity',35,'sdens',2650) 
 %
 % Author(s):  
 %    Geoff Cowles (University of Massachusetts Dartmouth)
 %
 % References
-%    Soulsby DMS (102)
+%   
 %
 % Revision history
 %   
 %==============================================================================
 
-subname = 'ST_wset';  
+subname = 'ST_summary';  
 %fprintf('\n')
 %fprintf(['begin : ' subname '\n'])
 
@@ -58,19 +58,14 @@ for i=1:2:length(varargin)-1
         end; %switch keyword
 end;
 
+fprintf('       phi          class       d(mm)    Dstar    wset(mm/s)  taucr (Pa)  erate x1e-3(kg/(m^2-s))\n')
 
-% calculate nu
-nu = SW_Kviscosity(T,S);
-
-% calculate rho
-dens = SW_Density(T,S);
-%dens/1000.
-
-% calculate dstar
-dstar = ST_Dstar(d,'temp',T,'sal',S,'sdens',sdens);
-
-% calculate wset
-wset = (nu/d)*( sqrt(10.36^2 + 1.049*(dstar^3)) - 10.36); 
+phi         = ST_d2phi(d);
+phiclass    = ST_wentworth(phi);
+Dstar       = ST_Dstar(d);
+Wset        = ST_wset(d);
+Taucr       = ST_taucr(d);
+erate       = ST_erate(d);
+fprintf('%10d %20s %8.4f %8.2f %9.4f %8.3f %8.3f\n',phi,phiclass,d*1000,Dstar,Wset*1000,Taucr,1000*erate)
 
 
-%fprintf(['end   : ' subname '\n'])
