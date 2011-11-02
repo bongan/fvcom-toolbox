@@ -1,35 +1,40 @@
-function [Mobj]  = add_river_nodes(Mobj,RiverName)
+function [Mobj]  = add_obc_nodes_screen(Mobj,ObcName,ObcType)
 
-% Add a set of river nodes comprising a single river to Mesh structure  
+% Add a set of obc nodes comprising a single obc boundary to Mesh structure  
+% By clicking on points on the screen
 %
-% [Mobj] = add_river_nodes(Mobj)
+% [Mobj] = add_obc_nodes(Mobj)
 %
 % DESCRIPTION:
-%    Select using ginput the set of nodes comprising a river
+%    Select using ginput the set of nodes comprising an obc
 %
 % INPUT
 %    Mobj = Matlab mesh object
-%    RiverName = Name of the River
+%    ObcName = Name of the Open Boundary
+%    ObcType = FVCOM Flag for OBC Type
 %
 % OUTPUT:
-%    Mobj = Matlab mesh object with an additional river nodelist
+%    Mobj = Matlab mesh object with an additional obc nodelist
 %
 % EXAMPLE USAGE
-%    Mobj = add_river_nodes(Mobj,'Potomac')
+%    Mobj = add_obc_nodes(Mobj,'OpenOcean')
 %
 % Author(s):  
 %    Geoff Cowles (University of Massachusetts Dartmouth)
 %
 % Note:
-%    Uses ginput2 which allows zooming before selecting points and displays
+%    Uses ginput2 which allows zoom/pan before selecting points and displays
 %    clicked points realtime
 %
 % Revision history
 %   
 %==============================================================================
-subname = 'add_river_nodes';
-fprintf('\n')
-fprintf(['begin : ' subname '\n'])
+subname = 'add_obc_nodes';
+global ftbverbose
+if(ftbverbose)
+  fprintf('\n')
+  fprintf(['begin : ' subname '\n'])
+end;
 
 
 %------------------------------------------------------------------------------
@@ -51,7 +56,7 @@ hold on;
 
 % use ginput2 (which allows zooming and plots points as they are clicked) to let
 % user select the boundary points
-[xselect] = ginput2(true,'k+');
+[xselect] = ginput2(true,'k+')
 
 
 [npts,jnk] = size(xselect);
@@ -72,11 +77,14 @@ end;
 plot(x(ipt),y(ipt),'ro');
 
 % add to mesh object
-Mobj.nRivers = Mobj.nRivers + 1;
-Mobj.nRivNodes(Mobj.nRivers) = npts;
-Mobj.riv_nodes(Mobj.nRivers,1:npts) = ipt;
-Mobj.riv_name{Mobj.nRivers} = RiverName;
+Mobj.nObs = Mobj.nObs + 1;
+Mobj.nObcNodes(Mobj.nObs) = npts;
+Mobj.obc_nodes(Mobj.nObs,1:npts) = ipt;
+Mobj.obc_name{Mobj.nObs} = ObcName;
+Mobj.obc_type(Mobj.nObs) = ObcType;
 
 
-fprintf(['end   : ' subname '\n'])
+if(ftbverbose)
+  fprintf(['end   : ' subname '\n'])
+end;
 
