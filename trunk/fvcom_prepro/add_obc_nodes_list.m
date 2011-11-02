@@ -1,6 +1,7 @@
-function [Mobj]  = add_obc_nodes(Mobj,ObcName,ObcType)
+function [Mobj]  = add_obc_nodes_list(Mobj,Nlist,ObcName,ObcType) 
 
 % Add a set of obc nodes comprising a single obc boundary to Mesh structure  
+% Using a list of nodes
 %
 % [Mobj] = add_obc_nodes(Mobj)
 %
@@ -9,6 +10,7 @@ function [Mobj]  = add_obc_nodes(Mobj,ObcName,ObcType)
 %
 % INPUT
 %    Mobj = Matlab mesh object
+%    Nlist = List of nodes
 %    ObcName = Name of the Open Boundary
 %    ObcType = FVCOM Flag for OBC Type
 %
@@ -16,7 +18,7 @@ function [Mobj]  = add_obc_nodes(Mobj,ObcName,ObcType)
 %    Mobj = Matlab mesh object with an additional obc nodelist
 %
 % EXAMPLE USAGE
-%    Mobj = add_obc_nodes(Mobj,'OpenOcean')
+%    Mobj = add_obc_nodes_list(Mobj,Nlist,'OpenOcean')
 %
 % Author(s):  
 %    Geoff Cowles (University of Massachusetts Dartmouth)
@@ -29,9 +31,22 @@ function [Mobj]  = add_obc_nodes(Mobj,ObcName,ObcType)
 %   
 %==============================================================================
 subname = 'add_obc_nodes';
-fprintf('\n')
-fprintf(['begin : ' subname '\n'])
+global ftbverbose
+if(ftbverbose)
+  fprintf('\n')
+  fprintf(['begin : ' subname '\n'])
+end;
 
+
+%------------------------------------------------------------------------------
+% Get a unique list and make sure they are in the range of node numbers 
+%------------------------------------------------------------------------------
+Nlist = unique(Nlist);
+
+if(max(Nlist) > Mobj.nVerts);
+  fprintf('your open boundary node number exceed the total number of nodes in the domain\n');
+  error('stopping...\n')
+end;
 
 %------------------------------------------------------------------------------
 % Plot the mesh 
@@ -50,35 +65,19 @@ patch('Vertices',[x,y],'Faces',Mobj.tri,...
     	'Cdata',Mobj.h,'edgecolor','k','facecolor','interp');
 hold on;
 
-% use ginput2 (which allows zooming and plots points as they are clicked) to let
-% user select the boundary points
-[xselect] = ginput2(true,'k+')
-
-
-[npts,jnk] = size(xselect);
-
-if(npts == 0)
-	fprintf('you didn''t select any points')
-	fprintf(['end   : ' subname '\n'])
-	return
-end;
-fprintf('you selected %d points\n',npts)
-
-% snap to the closest vertices
-for i=1:npts
-	[ipt(i),dist] = find_nearest_pt(xselect(i,1),xselect(i,2),Mobj);
-end;
-
-% replot domain with snapped vertices
-plot(x(ipt),y(ipt),'ro');
+plot(x(Nlist),y(Nlist),'ro');
+title('open boundary nodes');
 
 % add to mesh object
+npts = numel(Nlist);
 Mobj.nObs = Mobj.nObs + 1;
-Mobj.nObcNodes(Mobj.nObs) = npts;
-Mobj.obc_nodes(Mobj.nObs,1:npts) = ipt;
+Mobj.nObcNodes(Mobj.nObs) = npts; 
+Mobj.obc_nodes(Mobj.nObs,1:npts) = Nlist;
 Mobj.obc_name{Mobj.nObs} = ObcName;
 Mobj.obc_type(Mobj.nObs) = ObcType;
 
 
-fprintf(['end   : ' subname '\n'])
+if(ftbverbose)
+  fprintf(['end   : ' subname '\n'])
+end;
 
