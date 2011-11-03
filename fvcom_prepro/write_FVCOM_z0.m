@@ -27,7 +27,10 @@ function write_FVCOM_z0(z0,filename,mytitle)
 %==============================================================================
 warning off
 subname = 'write_FVCOM_z0';
-fprintf('\n'); fprintf(['begin : ' subname '\n']);
+global ftbverbose;
+if(ftbverbose);
+  fprintf('\n'); fprintf(['begin : ' subname '\n']);
+end;
 
 %------------------------------------------------------------------------------
 % Parse input arguments
@@ -51,8 +54,10 @@ end;
 %------------------------------------------------------------------------------
 % Dump to z0 NetCDF file
 %------------------------------------------------------------------------------
-fprintf('Dumping to z0 NetCDF file: \n',filename);
-fprintf('Size of z0 array: \n',nElems);
+if(ftbverbose);
+  fprintf('Dumping to z0 NetCDF file: \n',filename);
+  fprintf('Size of z0 array: \n',nElems);
+end;
 nc = netcdf(filename,'clobber');
 nc.title = mytitle;
 nc('nele') = prod(size(z0));
@@ -64,6 +69,8 @@ ierr = close(nc);
 
 
 
-fprintf(['end   : ' subname '\n'])
+if(ftbverbose);
+  fprintf(['end   : ' subname '\n'])
+end;
 
 

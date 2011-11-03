@@ -24,8 +24,11 @@ function [h] = read_fvcom_bath(bathfile)
 %==============================================================================
 
 subname = 'read_fvcom_bath';
-fprintf('\n')
-fprintf(['begin : ' subname '\n'])
+global ftbverbose
+if(ftbverbose)
+  fprintf('\n')
+  fprintf(['begin : ' subname '\n'])
+end;
 
 %------------------------------------------------------------------------------
 % read in the FVCOM bathymetry data
@@ -49,6 +52,8 @@ fclose(fid);
 
 
 
-fprintf(['end   : ' subname '\n'])
+if(ftbverbose)
+  fprintf(['end   : ' subname '\n'])
+end;
 
 

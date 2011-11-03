@@ -26,8 +26,11 @@ function write_FVCOM_bedflag(bedflag,filename,mytitle)
 %   
 %==============================================================================
 warning off
-subname = 'write_FVCOM_bedflag';
-fprintf('\n'); fprintf(['begin : ' subname '\n']);
+global ftbverbose;
+if(ftbverbose);
+  subname = 'write_FVCOM_bedflag';
+  fprintf('\n'); fprintf(['begin : ' subname '\n']);
+end;
 
 %------------------------------------------------------------------------------
 % Parse input arguments
@@ -51,19 +54,21 @@ end;
 %------------------------------------------------------------------------------
 % Dump to bedflag NetCDF file
 %------------------------------------------------------------------------------
+if(ftbverbose);
 fprintf('Dumping to bedflag NetCDF file: \n',filename);
 fprintf('Size of bedflag array: \n',nVerts);
+end;
 nc = netcdf(filename,'clobber');
 nc.title = mytitle;
 nc('node') = prod(size(bedflag));
 nc{'bedflag'}  = ncfloat('node');
-nc{'bedflag'}.long_name = 'bedosition flag';
+nc{'bedflag'}.long_name = 'bed deposition flag';
 nc{'bedflag'}.units = '-';
 nc{'bedflag'}(1:nVerts) = bedflag(1:nVerts);
 ierr = close(nc);
 
 
 
-fprintf(['end   : ' subname '\n'])
+if(ftbverbose); fprintf(['end   : ' subname '\n']); end;
 
 

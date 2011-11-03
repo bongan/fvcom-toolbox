@@ -1,4 +1,4 @@
-function write_FVCOM_spectide(ObcNodes,Period,Phase,Amp,SpectralFile,MyTitle,report)  
+function write_FVCOM_spectide(ObcNodes,Period,Phase,Amp,SpectralFile,MyTitle) 
 	
 % Write an FVCOM spectral tidal elevation forcing file 
 %
@@ -14,7 +14,6 @@ function write_FVCOM_spectide(ObcNodes,Period,Phase,Amp,SpectralFile,MyTitle,rep
 %   Amp          = list of amplitudes (m) of size [nObcs,nComponents]
 %   SpectralFile = name of NetCDF file
 %   MyTitle      = case title, written as global attribute of NetCDF file
-%   report       = suppress info to screen (false) or write info (true)
 %
 % OUTPUT:
 %    SpectralFile, A NetCDF FVCOM spectral tide forcing file
@@ -30,6 +29,9 @@ function write_FVCOM_spectide(ObcNodes,Period,Phase,Amp,SpectralFile,MyTitle,rep
 %==============================================================================
 warning off
 
+global ftbverbose 
+report = false;
+if(ftbverbose); report = true; end;
 subname = 'write_FVCOM_spectide';
 if(report);  fprintf('\n'); end;
 if(report); fprintf(['begin : ' subname '\n']); end;

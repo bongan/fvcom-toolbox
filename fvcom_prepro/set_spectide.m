@@ -24,8 +24,11 @@ function set_spectide(Mobj)
 %   
 %==============================================================================
 subname = 'set_spectide';
-fprintf('\n')
-fprintf(['begin : ' subname '\n'])
+global ftbverbose;
+if(ftbverbose);
+  fprintf('\n')
+  fprintf(['begin : ' subname '\n'])
+end;
 
 %------------------------------------------------------------------------------
 % Set Constants
@@ -78,4 +81,4 @@ end;
 %------------------------------------------------------------------------------
 write_FVCOM_spectide(ObcNodes,Period(1:nComps),Phase,Amp,SpectralFile,MyTitle)
 
-fprintf(['end   : ' subname '\n'])
+if(ftbverbose); fprintf(['end   : ' subname '\n']);end;

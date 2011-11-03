@@ -24,8 +24,11 @@ function [fieldout]  = nodes2elems(fieldin,Mobj)
 %   
 %==============================================================================
 subname = 'nodes2elems';
-fprintf('\n')
-fprintf(['begin : ' subname '\n'])
+global ftbverbose;
+if(ftbverbose);
+  fprintf('\n')
+  fprintf(['begin : ' subname '\n'])
+end;
 
 %------------------------------------------------------------------------------
 % Parse input
@@ -49,5 +52,7 @@ for i=1:Mobj.nElems
 end;
 
 
-fprintf(['end   : ' subname '\n'])
+if(ftbverbose);
+  fprintf(['end   : ' subname '\n'])
+end;
 

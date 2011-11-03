@@ -28,8 +28,8 @@ function [Point,Distance] = find_nearest_pt(xloc,yloc,Mobj)
 %==============================================================================
 
 subname = 'find_nearest_pt';
-fprintf('\n')
-fprintf(['begin : ' subname '\n'])
+%fprintf('\n')
+%fprintf(['begin : ' subname '\n'])
 
 %------------------------------------------------------------------------------
 % Parse input arguments
@@ -56,6 +56,6 @@ radvec = sqrt( (xloc-x).^2 + (yloc-y).^2);
 [Distance,Point] = min(radvec);
 
 
-fprintf(['end   : ' subname '\n'])
+%fprintf(['end   : ' subname '\n'])
 
 

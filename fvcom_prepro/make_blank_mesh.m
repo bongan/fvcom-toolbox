@@ -21,10 +21,12 @@ function [Mobj] = make_blank_mesh
 % Revision history
 %   
 %==============================================================================
-
+global ftbverbose
 subname = 'make_blank_mesh';
-fprintf('\n')
-fprintf(['begin : ' subname '\n'])
+if(ftbverbose)
+  fprintf('\n')
+  fprintf(['begin : ' subname '\n'])
+end;
 
 %------------------------------------------------------------------------------
 % Set defaults
@@ -50,6 +52,8 @@ Mobj.have_bath    = false;
 Mobj.have_mets    = false;
 
 
-fprintf(['end   : ' subname '\n'])
+if(ftbverbose)
+  fprintf(['end   : ' subname '\n'])
+end;
 
 

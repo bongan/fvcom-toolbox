@@ -31,8 +31,11 @@ function [Mobj] = read_sms_mesh(varargin)
 %==============================================================================
 
 subname = 'read_sms_mesh';
-fprintf('\n')
-fprintf(['begin : ' subname '\n'])
+global ftbverbose;
+if(ftbverbose);
+  fprintf('\n')
+  fprintf(['begin : ' subname '\n'])
+end;
 
 userproject = false;
 have_bath = false;
@@ -106,8 +109,10 @@ if(fid  < 0)
 end;
 
 % Count number of elements and vertices
-fprintf(['reading from: ' sms_2dm '\n'])
-fprintf('first pass to count number of nodes and vertices\n')
+if(ftbverbose);
+  fprintf(['reading from: ' sms_2dm '\n'])
+  fprintf('first pass to count number of nodes and vertices\n')
+end;
 nElems = 0;
 nVerts = 0;
 lin = fgetl(fid); %header
@@ -124,9 +129,11 @@ while StillReading
 end;
 fclose(fid); fid = fopen(sms_2dm,'r');
 
-fprintf('nVerts: %d\n',nVerts)
-fprintf('nElems: %d\n',nElems)
-fprintf('reading in connectivity and grid points\n')
+if(ftbverbose); 
+  fprintf('nVerts: %d\n',nVerts); 
+  fprintf('nElems: %d\n',nElems); 
+  fprintf('reading in connectivity and grid points\n')
+end;
 
 % allocate memory to hold mesh and connectivity
 tri = zeros(nElems,3);
@@ -173,7 +180,7 @@ if(have_bath)
 	if(fid  < 0)
 		error(['file: ' sms_bath ' does not exist']);
 	else
-		fprintf('reading sms bathymetry from: %s\n',sms_bath)
+		if(ftbverbose); fprintf('reading sms bathymetry from: %s\n',sms_bath); end;
 	end;
 	lin=fgetl(fid);
 	lin=fgetl(fid);
@@ -239,7 +246,7 @@ Mobj.lat          = lat;
 Mobj.h            = h;
 Mobj.tri          = tri;
 
-
-fprintf(['end   : ' subname '\n'])
-
+if(ftbverbose);
+  fprintf(['end   : ' subname '\n'])
+end;
 fclose(fid);

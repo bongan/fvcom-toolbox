@@ -24,7 +24,10 @@ function write_FVCOM_sponge(Mobj,filename)
 %   
 %==============================================================================
 subname = 'write_FVCOM_sponge';
-fprintf('\n'); fprintf(['begin : ' subname '\n']);
+global ftbverbose 
+if(ftbverbose)
+  fprintf('\n'); fprintf(['begin : ' subname '\n']);
+end;
 
 %------------------------------------------------------------------------------
 % Parse input arguments
@@ -36,7 +39,7 @@ end;
 %------------------------------------------------------------------------------
 % Dump the file
 %------------------------------------------------------------------------------
-fprintf('writing FVCOM spongefile %s\n',filename)
+if(ftbverbose); fprintf('writing FVCOM spongefile %s\n',filename); end;
 fid = fopen(filename,'w');
 
 if(Mobj.nSponge==0)
@@ -52,5 +55,7 @@ else
 end;
 fclose(fid);
 		
-fprintf(['end   : ' subname '\n'])
+if(ftbverbose)
+  fprintf(['end   : ' subname '\n'])
+end;
 
