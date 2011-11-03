@@ -90,39 +90,44 @@ This function is called by:
 0024 <span class="comment">%</span>
 0025 <span class="comment">%==============================================================================</span>
 0026 subname = <span class="string">'write_FVCOM_obc'</span>;
-0027 fprintf(<span class="string">'\n'</span>); fprintf([<span class="string">'begin : '</span> subname <span class="string">'\n'</span>]);
-0028 
-0029 <span class="comment">%------------------------------------------------------------------------------</span>
-0030 <span class="comment">% Parse input arguments</span>
-0031 <span class="comment">%------------------------------------------------------------------------------</span>
-0032 <span class="keyword">if</span>(exist(<span class="string">'Mobj'</span>)*exist(<span class="string">'filename'</span>)==0)
-0033     error(<span class="string">'arguments to write_FVCOM_obc are incorrect'</span>)
-0034 <span class="keyword">end</span>;
-0035 
-0036 <span class="comment">%------------------------------------------------------------------------------</span>
-0037 <span class="comment">% Dump the file</span>
-0038 <span class="comment">%------------------------------------------------------------------------------</span>
-0039 fprintf(<span class="string">'writing FVCOM obc %s\n'</span>,filename)
-0040 fid = fopen(filename,<span class="string">'w'</span>);
-0041 
-0042 <span class="keyword">if</span>(Mobj.nObs==0)
-0043     fprintf(fid,<span class="string">'OBC Node Number = %d\n'</span>,0);
-0044 <span class="keyword">else</span>
-0045     counter = 0;
-0046     Total_Obc = sum(Mobj.nObcNodes(1:Mobj.nObs));
-0047     fprintf(fid,<span class="string">'OBC Node Number = %d\n'</span>,Total_Obc);
-0048     <span class="keyword">for</span> i=1:Mobj.nObs
-0049         <span class="keyword">for</span> j=1:Mobj.nObcNodes(i)
-0050             counter = counter + 1;
-0051             fprintf(fid,<span class="string">'%d %d %d\n'</span>,counter,Mobj.obc_nodes(i,j),Mobj.obc_type(i));
-0052         <span class="keyword">end</span>;
-0053     <span class="keyword">end</span>;
-0054 <span class="keyword">end</span>;
-0055 fclose(fid);
-0056 
-0057         
-0058 fprintf([<span class="string">'end   : '</span> subname <span class="string">'\n'</span>])
-0059</pre></div>
-<hr><address>Generated on Mon 06-Dec-2010 21:40:32 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+0027 <span class="keyword">global</span> ftbverbose
+0028 <span class="keyword">if</span>(ftbverbose)
+0029   fprintf(<span class="string">'\n'</span>); fprintf([<span class="string">'begin : '</span> subname <span class="string">'\n'</span>]);
+0030 <span class="keyword">end</span>;
+0031 
+0032 <span class="comment">%------------------------------------------------------------------------------</span>
+0033 <span class="comment">% Parse input arguments</span>
+0034 <span class="comment">%------------------------------------------------------------------------------</span>
+0035 <span class="keyword">if</span>(exist(<span class="string">'Mobj'</span>)*exist(<span class="string">'filename'</span>)==0)
+0036     error(<span class="string">'arguments to write_FVCOM_obc are incorrect'</span>)
+0037 <span class="keyword">end</span>;
+0038 
+0039 <span class="comment">%------------------------------------------------------------------------------</span>
+0040 <span class="comment">% Dump the file</span>
+0041 <span class="comment">%------------------------------------------------------------------------------</span>
+0042 <span class="keyword">if</span>(ftbverbose); fprintf(<span class="string">'writing FVCOM obc %s\n'</span>,filename); <span class="keyword">end</span>;
+0043 fid = fopen(filename,<span class="string">'w'</span>);
+0044 
+0045 <span class="keyword">if</span>(Mobj.nObs==0)
+0046     fprintf(fid,<span class="string">'OBC Node Number = %d\n'</span>,0);
+0047 <span class="keyword">else</span>
+0048     counter = 0;
+0049     Total_Obc = sum(Mobj.nObcNodes(1:Mobj.nObs));
+0050     fprintf(fid,<span class="string">'OBC Node Number = %d\n'</span>,Total_Obc);
+0051     <span class="keyword">for</span> i=1:Mobj.nObs
+0052         <span class="keyword">for</span> j=1:Mobj.nObcNodes(i)
+0053             counter = counter + 1;
+0054             fprintf(fid,<span class="string">'%d %d %d\n'</span>,counter,Mobj.obc_nodes(i,j),Mobj.obc_type(i));
+0055         <span class="keyword">end</span>;
+0056     <span class="keyword">end</span>;
+0057 <span class="keyword">end</span>;
+0058 fclose(fid);
+0059 
+0060         
+0061 <span class="keyword">if</span>(ftbverbose)
+0062   fprintf([<span class="string">'end   : '</span> subname <span class="string">'\n'</span>])
+0063 <span class="keyword">end</span>;
+0064</pre></div>
+<hr><address>Generated on Wed 02-Nov-2011 21:05:22 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
 </body>
 </html>

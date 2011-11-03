@@ -68,7 +68,7 @@ This function is called by:
 
 
 <h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
-<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function write_FVCOM_spectide(ObcNodes,Period,Phase,Amp,SpectralFile,MyTitle)   </a>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function write_FVCOM_spectide(ObcNodes,Period,Phase,Amp,SpectralFile,MyTitle) </a>
 0002     
 0003 <span class="comment">% Write an FVCOM spectral tidal elevation forcing file</span>
 0004 <span class="comment">%</span>
@@ -99,105 +99,108 @@ This function is called by:
 0029 <span class="comment">%==============================================================================</span>
 0030 warning off
 0031 
-0032 subname = <span class="string">'write_FVCOM_spectide'</span>;
-0033 fprintf(<span class="string">'\n'</span>)
-0034 fprintf([<span class="string">'begin : '</span> subname <span class="string">'\n'</span>])
-0035 <span class="comment">%------------------------------------------------------------------------------</span>
-0036 <span class="comment">% Sanity check on input and dimensions</span>
-0037 <span class="comment">%------------------------------------------------------------------------------</span>
-0038 nComponents = prod(size(Period));
-0039 fprintf(<span class="string">'Number of Tide Components %d\n'</span>,nComponents)
-0040 
-0041 nObcs = prod(size(ObcNodes));
-0042 fprintf(<span class="string">'Number of Open Boundary Nodes %d\n'</span>,nObcs)
+0032 <span class="keyword">global</span> ftbverbose 
+0033 report = false;
+0034 <span class="keyword">if</span>(ftbverbose); report = true; <span class="keyword">end</span>;
+0035 subname = <span class="string">'write_FVCOM_spectide'</span>;
+0036 <span class="keyword">if</span>(report);  fprintf(<span class="string">'\n'</span>); <span class="keyword">end</span>;
+0037 <span class="keyword">if</span>(report); fprintf([<span class="string">'begin : '</span> subname <span class="string">'\n'</span>]); <span class="keyword">end</span>;
+0038 <span class="comment">%------------------------------------------------------------------------------</span>
+0039 <span class="comment">% Sanity check on input and dimensions</span>
+0040 <span class="comment">%------------------------------------------------------------------------------</span>
+0041 nComponents = prod(size(Period));
+0042 <span class="keyword">if</span>(report); fprintf(<span class="string">'Number of Tide Components %d\n'</span>,nComponents); <span class="keyword">end</span>;
 0043 
-0044 [chk1,chk2] = size(Amp);
-0045 <span class="keyword">if</span>( (nObcs-chk1)*(nComponents-chk2) ~= 0)
-0046     fprintf(<span class="string">'Amp dimensions do not match!!!'</span>)
-0047     fprintf(<span class="string">'nObcs %d nComponens %d\n'</span>,chk1,chk2)
-0048     stop
-0049 <span class="keyword">end</span>;
-0050 
-0051 [chk1,chk2] = size(Phase);
-0052 <span class="keyword">if</span>( (nObcs-chk1)*(nComponents-chk2) ~= 0)
-0053     fprintf(<span class="string">'Phase dimensions do not match!!!'</span>)
-0054     fprintf(<span class="string">'nObcs %d nComponens %d\n'</span>,chk1,chk2)
-0055     stop
-0056 <span class="keyword">end</span>;
-0057 
-0058 <span class="comment">%------------------------------------------------------------------------------</span>
-0059 <span class="comment">% Dump the file</span>
-0060 <span class="comment">%------------------------------------------------------------------------------</span>
-0061 
-0062 nc = netcdf(SpectralFile, <span class="string">'clobber'</span>);             
-0063 
-0064 <span class="comment">% dump header</span>
-0065 nc.type = <span class="string">'FVCOM SPECTRAL ELEVATION FORCING FILE'</span> ;
-0066 nc.title = MyTitle;
-0067 nc.history = <span class="string">'FILE CREATED using write_FVCOM_spectide'</span>;
-0068 
-0069 <span class="comment">% dimensions</span>
-0070 nc(<span class="string">'nobc'</span>) = nObcs;
-0071 nc(<span class="string">'tidal_components'</span>) = nComponents;
-0072 nc(<span class="string">'DateStrLen'</span>) = 26;
-0073 
-0074 <span class="comment">% variables</span>
-0075 nc{<span class="string">'obc_nodes'</span>} = ncint(<span class="string">'nobc'</span>);
-0076 nc{<span class="string">'obc_nodes'</span>}.long_name = <span class="string">'Open Boundary Node Number'</span>; 
-0077 nc{<span class="string">'obc_nodes'</span>}.grid = <span class="string">'obc_grid'</span>; 
-0078 
-0079 nc{<span class="string">'tide_period'</span>} = ncfloat(<span class="string">'tidal_components'</span>);
-0080 nc{<span class="string">'tide_period'</span>}.long_name = <span class="string">'tide angular period'</span>;
-0081 nc{<span class="string">'tide_period'</span>}.units = <span class="string">'seconds'</span>;
-0082 
-0083 nc{<span class="string">'tide_Eref'</span>} = ncfloat(<span class="string">'nobc'</span>);
-0084 nc{<span class="string">'tide_Eref'</span>}.long_name = <span class="string">'tidal elevation reference level'</span>;
-0085 nc{<span class="string">'tide_Eref'</span>}.units = <span class="string">'meters'</span>;
-0086 
-0087 nc{<span class="string">'tide_Ephase'</span>} = ncfloat(<span class="string">'tidal_components'</span>, <span class="string">'nobc'</span>);
-0088 nc{<span class="string">'tide_Ephase'</span>}.long_name = <span class="string">'tidal elevation phase angle'</span>;
-0089 nc{<span class="string">'tide_Ephase'</span>}.units = <span class="string">'degrees, time of maximum elevation with respect to chosen time origin'</span>;
-0090 
-0091 nc{<span class="string">'tide_Eamp'</span>} = ncfloat(<span class="string">'tidal_components'</span>, <span class="string">'nobc'</span>);
-0092 nc{<span class="string">'tide_Eamp'</span>}.long_name = <span class="string">'tidal elevation amplitude'</span>;
-0093 nc{<span class="string">'tide_Eamp'</span>}.units = <span class="string">'meters'</span>;
-0094 
-0095 nc{<span class="string">'equilibrium_tide_Eamp'</span>} = ncfloat(<span class="string">'tidal_components'</span>);
-0096 nc{<span class="string">'equilibrium_tide_Eamp'</span>}.long_name = <span class="string">'equilibrium tidal elevation amplitude'</span>;
-0097 nc{<span class="string">'equilibrium_tide_Eamp'</span>}.units = <span class="string">'meters'</span>;
-0098 
-0099 nc{<span class="string">'equilibrium_beta_love'</span>} = ncfloat(<span class="string">'tidal_components'</span>);
-0100 nc{<span class="string">'equilibrium_beta_love'</span>}.formula = <span class="string">'beta=1+klove-hlove'</span>;
+0044 nObcs = prod(size(ObcNodes));
+0045 <span class="keyword">if</span>(report); fprintf(<span class="string">'Number of Open Boundary Nodes %d\n'</span>,nObcs); <span class="keyword">end</span>;
+0046 
+0047 [chk1,chk2] = size(Amp);
+0048 <span class="keyword">if</span>( (nObcs-chk1)*(nComponents-chk2) ~= 0)
+0049     fprintf(<span class="string">'Amp dimensions do not match!!!'</span>)
+0050     fprintf(<span class="string">'nObcs %d nComponens %d\n'</span>,chk1,chk2)
+0051     stop
+0052 <span class="keyword">end</span>;
+0053 
+0054 [chk1,chk2] = size(Phase);
+0055 <span class="keyword">if</span>( (nObcs-chk1)*(nComponents-chk2) ~= 0)
+0056     fprintf(<span class="string">'Phase dimensions do not match!!!'</span>)
+0057     fprintf(<span class="string">'nObcs %d nComponens %d\n'</span>,chk1,chk2)
+0058     stop
+0059 <span class="keyword">end</span>;
+0060 
+0061 <span class="comment">%------------------------------------------------------------------------------</span>
+0062 <span class="comment">% Dump the file</span>
+0063 <span class="comment">%------------------------------------------------------------------------------</span>
+0064 
+0065 nc = netcdf(SpectralFile, <span class="string">'clobber'</span>);             
+0066 
+0067 <span class="comment">% dump header</span>
+0068 nc.type = <span class="string">'FVCOM SPECTRAL ELEVATION FORCING FILE'</span> ;
+0069 nc.title = MyTitle;
+0070 nc.history = <span class="string">'FILE CREATED using write_FVCOM_spectide'</span>;
+0071 
+0072 <span class="comment">% dimensions</span>
+0073 nc(<span class="string">'nobc'</span>) = nObcs;
+0074 nc(<span class="string">'tidal_components'</span>) = nComponents;
+0075 nc(<span class="string">'DateStrLen'</span>) = 26;
+0076 
+0077 <span class="comment">% variables</span>
+0078 nc{<span class="string">'obc_nodes'</span>} = ncint(<span class="string">'nobc'</span>);
+0079 nc{<span class="string">'obc_nodes'</span>}.long_name = <span class="string">'Open Boundary Node Number'</span>; 
+0080 nc{<span class="string">'obc_nodes'</span>}.grid = <span class="string">'obc_grid'</span>; 
+0081 
+0082 nc{<span class="string">'tide_period'</span>} = ncfloat(<span class="string">'tidal_components'</span>);
+0083 nc{<span class="string">'tide_period'</span>}.long_name = <span class="string">'tide angular period'</span>;
+0084 nc{<span class="string">'tide_period'</span>}.units = <span class="string">'seconds'</span>;
+0085 
+0086 nc{<span class="string">'tide_Eref'</span>} = ncfloat(<span class="string">'nobc'</span>);
+0087 nc{<span class="string">'tide_Eref'</span>}.long_name = <span class="string">'tidal elevation reference level'</span>;
+0088 nc{<span class="string">'tide_Eref'</span>}.units = <span class="string">'meters'</span>;
+0089 
+0090 nc{<span class="string">'tide_Ephase'</span>} = ncfloat(<span class="string">'tidal_components'</span>, <span class="string">'nobc'</span>);
+0091 nc{<span class="string">'tide_Ephase'</span>}.long_name = <span class="string">'tidal elevation phase angle'</span>;
+0092 nc{<span class="string">'tide_Ephase'</span>}.units = <span class="string">'degrees, time of maximum elevation with respect to chosen time origin'</span>;
+0093 
+0094 nc{<span class="string">'tide_Eamp'</span>} = ncfloat(<span class="string">'tidal_components'</span>, <span class="string">'nobc'</span>);
+0095 nc{<span class="string">'tide_Eamp'</span>}.long_name = <span class="string">'tidal elevation amplitude'</span>;
+0096 nc{<span class="string">'tide_Eamp'</span>}.units = <span class="string">'meters'</span>;
+0097 
+0098 nc{<span class="string">'equilibrium_tide_Eamp'</span>} = ncfloat(<span class="string">'tidal_components'</span>);
+0099 nc{<span class="string">'equilibrium_tide_Eamp'</span>}.long_name = <span class="string">'equilibrium tidal elevation amplitude'</span>;
+0100 nc{<span class="string">'equilibrium_tide_Eamp'</span>}.units = <span class="string">'meters'</span>;
 0101 
-0102 nc{<span class="string">'equilibrium_tide_type'</span>} = ncchar(<span class="string">'tidal_components'</span>, <span class="string">'DateStrLen'</span>);
-0103 nc{<span class="string">'equilibrium_tide_type'</span>}.long_name = <span class="string">'formula'</span>;
-0104 nc{<span class="string">'equilibrium_tide_type'</span>}.units = <span class="string">'beta=1+klove-hlove'</span>;
-0105 
-0106 nc{<span class="string">'time_origin'</span>} = ncfloat;
-0107 nc{<span class="string">'time_origin'</span>}.long_name = <span class="string">'time'</span>;
-0108 nc{<span class="string">'time_origin'</span>}.units = <span class="string">'days since 0.0'</span>;
-0109 nc{<span class="string">'time_origin'</span>}.time_zone = <span class="string">'none'</span>;
-0110 
-0111 
-0112 <span class="comment">% data</span>
-0113 nc{<span class="string">'obc_nodes'</span>}(:)   = ObcNodes; 
-0114 nc{<span class="string">'tide_period'</span>}(:) = Period;
-0115 nc{<span class="string">'tide_Eref'</span>}(:)   = 0.; 
-0116 nc{<span class="string">'tide_Ephase'</span>}(:,:) = Phase';
-0117 nc{<span class="string">'tide_Eamp'</span>}(:,:)   = Amp';
-0118 nc{<span class="string">'equilibrium_tide_Eamp'</span>}(:,:) = 0.0;
-0119 nc{<span class="string">'equilibrium_beta_love'</span>}(:,:) = 0.0;
-0120 
-0121 <span class="keyword">for</span> i=1:nComponents
-0122   nc{<span class="string">'equilibrium_tide_type'</span>}(i,1:26) = <span class="string">'SEMIDIURNAL               '</span>;
-0123 <span class="keyword">end</span>;
-0124 nc{<span class="string">'time_origin'</span>}(:) = 0.0;
-0125 
-0126 nc = close(nc);    
-0127 
+0102 nc{<span class="string">'equilibrium_beta_love'</span>} = ncfloat(<span class="string">'tidal_components'</span>);
+0103 nc{<span class="string">'equilibrium_beta_love'</span>}.formula = <span class="string">'beta=1+klove-hlove'</span>;
+0104 
+0105 nc{<span class="string">'equilibrium_tide_type'</span>} = ncchar(<span class="string">'tidal_components'</span>, <span class="string">'DateStrLen'</span>);
+0106 nc{<span class="string">'equilibrium_tide_type'</span>}.long_name = <span class="string">'formula'</span>;
+0107 nc{<span class="string">'equilibrium_tide_type'</span>}.units = <span class="string">'beta=1+klove-hlove'</span>;
+0108 
+0109 nc{<span class="string">'time_origin'</span>} = ncfloat;
+0110 nc{<span class="string">'time_origin'</span>}.long_name = <span class="string">'time'</span>;
+0111 nc{<span class="string">'time_origin'</span>}.units = <span class="string">'days since 0.0'</span>;
+0112 nc{<span class="string">'time_origin'</span>}.time_zone = <span class="string">'none'</span>;
+0113 
+0114 
+0115 <span class="comment">% data</span>
+0116 nc{<span class="string">'obc_nodes'</span>}(:)   = ObcNodes; 
+0117 nc{<span class="string">'tide_period'</span>}(:) = Period;
+0118 nc{<span class="string">'tide_Eref'</span>}(:)   = 0.; 
+0119 nc{<span class="string">'tide_Ephase'</span>}(:,:) = Phase';
+0120 nc{<span class="string">'tide_Eamp'</span>}(:,:)   = Amp';
+0121 nc{<span class="string">'equilibrium_tide_Eamp'</span>}(:,:) = 0.0;
+0122 nc{<span class="string">'equilibrium_beta_love'</span>}(:,:) = 0.0;
+0123 
+0124 <span class="keyword">for</span> i=1:nComponents
+0125   nc{<span class="string">'equilibrium_tide_type'</span>}(i,1:26) = <span class="string">'SEMIDIURNAL               '</span>;
+0126 <span class="keyword">end</span>;
+0127 nc{<span class="string">'time_origin'</span>}(:) = 0.0;
 0128 
-0129 fprintf([<span class="string">'end   : '</span> subname <span class="string">'\n'</span>])
-0130</pre></div>
-<hr><address>Generated on Mon 06-Dec-2010 21:40:32 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+0129 close(nc);    
+0130 
+0131 
+0132 <span class="keyword">if</span>(report); fprintf([<span class="string">'end   : '</span> subname <span class="string">'\n'</span>]); <span class="keyword">end</span>;
+0133</pre></div>
+<hr><address>Generated on Wed 02-Nov-2011 21:05:22 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
 </body>
 </html>

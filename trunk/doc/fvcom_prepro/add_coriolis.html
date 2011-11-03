@@ -97,49 +97,53 @@ This function is called by:
 0027 <span class="comment">% Revision history</span>
 0028 <span class="comment">%</span>
 0029 <span class="comment">%==============================================================================</span>
-0030 
+0030 <span class="keyword">global</span> ftbverbose
 0031 subname = <span class="string">'add_coriolis'</span>;
-0032 fprintf(<span class="string">'\n'</span>)
-0033 fprintf([<span class="string">'begin : '</span> subname <span class="string">'\n'</span>])
-0034 
-0035 <span class="comment">%------------------------------------------------------------------------------</span>
-0036 <span class="comment">% Parse arguments</span>
+0032 <span class="keyword">if</span>(ftbverbose)
+0033   fprintf(<span class="string">'\n'</span>)
+0034   fprintf([<span class="string">'begin : '</span> subname <span class="string">'\n'</span>])
+0035 <span class="keyword">end</span>;
+0036 
 0037 <span class="comment">%------------------------------------------------------------------------------</span>
-0038 CorType = <span class="string">'uselatitude'</span>;
-0039 <span class="keyword">if</span>(exist(<span class="string">'cortype'</span>))
-0040     <span class="keyword">if</span>(cortype(1:3)==<span class="string">'use'</span>)
-0041         CorType = <span class="string">'uselatitude'</span>;
-0042         <span class="keyword">if</span>(~Mobj.have_cor)
-0043             error(<span class="string">'To set Coriolis with latitude, need (lon,lat) field in Mesh structure'</span>)
-0044         <span class="keyword">end</span>;
-0045     <span class="keyword">else</span>
-0046         CorType = <span class="string">'constant'</span>;
-0047         <span class="keyword">if</span>(~exist(<span class="string">'fval'</span>))
-0048             error(<span class="string">'must provide a constant latitude for constant coriolis option'</span>);
-0049         <span class="keyword">end</span>;
-0050     <span class="keyword">end</span>;
-0051 <span class="keyword">end</span>;
-0052 
-0053 <span class="comment">%------------------------------------------------------------------------------</span>
-0054 <span class="comment">% Set Coriolis</span>
+0038 <span class="comment">% Parse arguments</span>
+0039 <span class="comment">%------------------------------------------------------------------------------</span>
+0040 CorType = <span class="string">'uselatitude'</span>;
+0041 <span class="keyword">if</span>(exist(<span class="string">'cortype'</span>))
+0042     <span class="keyword">if</span>(cortype(1:3)==<span class="string">'use'</span>)
+0043         CorType = <span class="string">'uselatitude'</span>;
+0044         <span class="keyword">if</span>(~Mobj.have_cor)
+0045             error(<span class="string">'To set Coriolis with latitude, need (lon,lat) field in Mesh structure'</span>)
+0046         <span class="keyword">end</span>;
+0047     <span class="keyword">else</span>
+0048         CorType = <span class="string">'constant'</span>;
+0049         <span class="keyword">if</span>(~exist(<span class="string">'fval'</span>))
+0050             error(<span class="string">'must provide a constant latitude for constant coriolis option'</span>);
+0051         <span class="keyword">end</span>;
+0052     <span class="keyword">end</span>;
+0053 <span class="keyword">end</span>;
+0054 
 0055 <span class="comment">%------------------------------------------------------------------------------</span>
-0056 <span class="keyword">if</span>(CorType(1:3) == <span class="string">'use'</span>)
-0057     fprintf(<span class="string">'setting Coriolis to latitude\n'</span>)
-0058     Mobj.f = Mobj.lat;
-0059 <span class="keyword">end</span>;
-0060 
-0061 <span class="keyword">if</span>(CorType(1:3) == <span class="string">'con'</span>)
-0062     fprintf(<span class="string">'setting Coriolis to constant %f\n'</span>,fval)
-0063     Mobj.f = fval*ones(Mobj.nVerts,1);
-0064 <span class="keyword">end</span>;
-0065 
-0066 Mobj.have_cor = true;
+0056 <span class="comment">% Set Coriolis</span>
+0057 <span class="comment">%------------------------------------------------------------------------------</span>
+0058 <span class="keyword">if</span>(CorType(1:3) == <span class="string">'use'</span>)
+0059     <span class="keyword">if</span>(ftbverbose); fprintf(<span class="string">'setting Coriolis to latitude\n'</span>);<span class="keyword">end</span>;
+0060     Mobj.f = Mobj.lat;
+0061 <span class="keyword">end</span>;
+0062 
+0063 <span class="keyword">if</span>(CorType(1:3) == <span class="string">'con'</span>)
+0064     <span class="keyword">if</span>(ftbverbose); fprintf(<span class="string">'setting Coriolis to constant %f\n'</span>,fval); <span class="keyword">end</span>;
+0065     Mobj.f = fval*ones(Mobj.nVerts,1);
+0066 <span class="keyword">end</span>;
 0067 
-0068 fprintf([<span class="string">'end   : '</span> subname <span class="string">'\n'</span>])
+0068 Mobj.have_cor = true;
 0069 
-0070 
-0071 
-0072</pre></div>
-<hr><address>Generated on Mon 06-Dec-2010 21:40:32 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+0070 <span class="keyword">if</span>(ftbverbose)
+0071   fprintf([<span class="string">'end   : '</span> subname <span class="string">'\n'</span>])
+0072 <span class="keyword">end</span>;
+0073 
+0074 
+0075 
+0076</pre></div>
+<hr><address>Generated on Wed 02-Nov-2011 21:05:22 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
 </body>
 </html>

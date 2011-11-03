@@ -112,114 +112,122 @@ This function is called by:
 0035 <span class="comment">%==============================================================================</span>
 0036 warning off;
 0037 
-0038 
-0039 subname = <span class="string">'write_FVCOM_river'</span>;
-0040 fprintf(<span class="string">'\n'</span>)
-0041 fprintf([<span class="string">'begin : '</span> subname <span class="string">'\n'</span>])
-0042 
-0043 
-0044 fprintf(<span class="string">'creating river NetCDF file %s for River %s\n'</span>,RiverFile,RiverName); 
+0038 <span class="keyword">global</span> ftbverbose;
+0039 <span class="keyword">if</span>(ftbverbose);
+0040 subname = <span class="string">'write_FVCOM_river'</span>;
+0041 fprintf(<span class="string">'\n'</span>)
+0042 fprintf([<span class="string">'begin : '</span> subname <span class="string">'\n'</span>])
+0043 <span class="keyword">end</span>;
+0044 
 0045 
-0046 
-0047 nTimes = prod(size(flux));
-0048 fprintf(<span class="string">'# of river nodes: %d\n'</span>,nRivnodes);
-0049 fprintf(<span class="string">'# of time frames: %d\n'</span>,nTimes);
+0046 <span class="keyword">if</span>(ftbverbose); 
+0047   fprintf(<span class="string">'creating river NetCDF file %s for River %s\n'</span>,RiverFile,RiverName); 
+0048 <span class="keyword">end</span>;
+0049 
 0050 
-0051 [year,month,day,hour,mint,sec] = mjulian2greg(time(1));
-0052 fprintf(<span class="string">'river begins at: %d %d %d\n'</span>,year,month,day);
-0053 [year,month,day,hour,mint,sec] = mjulian2greg(time(end));
-0054 fprintf(<span class="string">'river ends at:   %d %d %d\n'</span>,year,month,day);
-0055 
-0056 <span class="comment">% set the flux</span>
-0057 fprintf(<span class="string">'dividing flux into %d points\n'</span>,nRivnodes); 
-0058 river_flux = zeros(nTimes,nRivnodes);
-0059 <span class="keyword">for</span> i=1:nTimes
-0060   river_flux(i,1:nRivnodes) = flux(i)/real(nRivnodes);
-0061 <span class="keyword">end</span>;
-0062 
-0063 <span class="comment">% set temperature and salt</span>
-0064 <span class="keyword">for</span> i=1:nTimes
-0065     river_salt(i,1:nRivnodes) = salt(i);
-0066     river_temp(i,1:nRivnodes) = temp(i);
+0051 nTimes = prod(size(flux));
+0052 <span class="keyword">if</span>(ftbverbose);
+0053   fprintf(<span class="string">'# of river nodes: %d\n'</span>,nRivnodes);
+0054   fprintf(<span class="string">'# of time frames: %d\n'</span>,nTimes);
+0055 <span class="keyword">end</span>;
+0056 
+0057 [year,month,day,hour,mint,sec] = mjulian2greg(time(1));
+0058 <span class="keyword">if</span>(ftbverbose); fprintf(<span class="string">'river begins at: %d %d %d\n'</span>,year,month,day); <span class="keyword">end</span>;
+0059 [year,month,day,hour,mint,sec] = mjulian2greg(time(end));
+0060 <span class="keyword">if</span>(ftbverbose); fprintf(<span class="string">'river ends at:   %d %d %d\n'</span>,year,month,day); <span class="keyword">end</span>;
+0061 
+0062 <span class="comment">% set the flux</span>
+0063 <span class="keyword">if</span>(ftbverbose); fprintf(<span class="string">'dividing flux into %d points\n'</span>,nRivnodes); <span class="keyword">end</span>;
+0064 river_flux = zeros(nTimes,nRivnodes);
+0065 <span class="keyword">for</span> i=1:nTimes
+0066   river_flux(i,1:nRivnodes) = flux(i)/real(nRivnodes);
 0067 <span class="keyword">end</span>;
 0068 
-0069 <span class="comment">% set some kind of sediment</span>
-0070 coarse_sand = 15*ones(nTimes,nRivnodes);
-0071 medium_sand = 45*ones(nTimes,nRivnodes);
-0072 fine_sand   = 30*ones(nTimes,nRivnodes);
-0073 
+0069 <span class="comment">% set temperature and salt</span>
+0070 <span class="keyword">for</span> i=1:nTimes
+0071     river_salt(i,1:nRivnodes) = salt(i);
+0072     river_temp(i,1:nRivnodes) = temp(i);
+0073 <span class="keyword">end</span>;
 0074 
-0075 <span class="comment">%--------------------------------------------------------------</span>
-0076 <span class="comment">% dump to netcdf file</span>
-0077 <span class="comment">%--------------------------------------------------------------</span>
-0078 
-0079 <span class="comment">% open boundary forcing</span>
-0080 nc = netcdf(RiverFile, <span class="string">'clobber'</span>);       
-0081 
-0082 nc.type = <span class="string">'FVCOM RIVER FORCING FILE'</span> ;
-0083 nc.title = RiverInfo1;   
-0084 nc.info =  RiverInfo2; 
-0085 nc.history = <span class="string">'FILE CREATED using write_river_file.m'</span> ;
-0086 
-0087 <span class="comment">% dimensions</span>
-0088 nc(<span class="string">'rivers'</span>) = nRivnodes; 
-0089 nc(<span class="string">'namelen'</span>) = 26; 
-0090 nc(<span class="string">'time'</span>) = 0; 
-0091 
-0092 <span class="comment">% variables</span>
-0093 nc{<span class="string">'river_names'</span>} = ncchar(<span class="string">'rivers'</span>, <span class="string">'namelen'</span>);
-0094 
-0095 nc{<span class="string">'time'</span>} = ncfloat(<span class="string">'time'</span>);
-0096 nc{<span class="string">'time'</span>}.long_name = <span class="string">'time'</span>;  
-0097 nc{<span class="string">'time'</span>}.units     = <span class="string">'days since 0.0'</span>;  
-0098 nc{<span class="string">'time'</span>}.time_zone = <span class="string">'none'</span>;  
-0099 
-0100 nc{<span class="string">'Itime'</span>} = ncint(<span class="string">'time'</span>);
-0101 nc{<span class="string">'Itime'</span>}.units     = <span class="string">'days since 0.0'</span>;  
-0102 nc{<span class="string">'Itime'</span>}.time_zone = <span class="string">'none'</span>;  
-0103 
-0104 nc{<span class="string">'Itime2'</span>} = ncint(<span class="string">'time'</span>);
-0105 nc{<span class="string">'Itime2'</span>}.units     = <span class="string">'msec since 00:00:00'</span>;
-0106 nc{<span class="string">'Itime2'</span>}.time_zone = <span class="string">'none'</span>;  
-0107 
-0108 nc{<span class="string">'river_flux'</span>} = ncfloat(<span class="string">'time'</span>,<span class="string">'rivers'</span>);
-0109 nc{<span class="string">'river_flux'</span>}.long_name = <span class="string">'river runoff volume flux'</span>; 
-0110 nc{<span class="string">'river_flux'</span>}.units     = <span class="string">'m^3s^-1'</span>;  
-0111 
-0112 nc{<span class="string">'river_temp'</span>} = ncfloat(<span class="string">'time'</span>,<span class="string">'rivers'</span>);
-0113 nc{<span class="string">'river_temp'</span>}.long_name = <span class="string">'river runoff temperature'</span>; 
-0114 nc{<span class="string">'river_temp'</span>}.units     = <span class="string">'Celsius'</span>;  
-0115 
-0116 nc{<span class="string">'river_salt'</span>} = ncfloat(<span class="string">'time'</span>,<span class="string">'rivers'</span>);
-0117 nc{<span class="string">'river_salt'</span>}.long_name = <span class="string">'river runoff salinity'</span>; 
-0118 nc{<span class="string">'river_salt'</span>}.units     = <span class="string">'PSU'</span>;  
-0119 
-0120 <span class="comment">% river names (must be 26 character strings)</span>
-0121 <span class="keyword">for</span> i=1:nRivnodes
-0122   fname = [RiverName int2str(i)];
-0123   temp  = <span class="string">'                          '</span>;
-0124   temp(1:length(fname)) = fname;
-0125   nc{<span class="string">'river_names'</span>}(i,:)   = temp;
-0126 <span class="keyword">end</span>;
-0127 
-0128 <span class="comment">% dump dynamic data</span>
-0129 <span class="keyword">for</span> i=1:nTimes
-0130   nc{<span class="string">'time'</span>}(i) = time(i);
-0131   nc{<span class="string">'Itime'</span>}(i) = floor(time(i));
-0132   nc{<span class="string">'Itime2'</span>}(i) = mod(time(i),1)*24*3600*1000.;
-0133   nc{<span class="string">'river_flux'</span>}(i,1:nRivnodes) = river_flux(i,1:nRivnodes); 
-0134   nc{<span class="string">'river_temp'</span>}(i,1:nRivnodes) = river_temp(i,1:nRivnodes); 
-0135   nc{<span class="string">'river_salt'</span>}(i,1:nRivnodes) = river_salt(i,1:nRivnodes); 
-0136   nc{<span class="string">'coarse_sand'</span>}(i,1:nRivnodes) = coarse_sand(i,1:nRivnodes); 
-0137   nc{<span class="string">'medium_sand'</span>}(i,1:nRivnodes) = medium_sand(i,1:nRivnodes); 
-0138   nc{<span class="string">'fine_sand'</span>}(i,1:nRivnodes) = fine_sand(i,1:nRivnodes); 
-0139 <span class="keyword">end</span>;
-0140 
-0141 nc = close(nc);    
-0142 
-0143 
-0144 fprintf([<span class="string">'end   : '</span> subname <span class="string">'\n'</span>])
-0145</pre></div>
-<hr><address>Generated on Mon 06-Dec-2010 21:40:32 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+0075 <span class="comment">% set some kind of sediment</span>
+0076 coarse_sand = 15*ones(nTimes,nRivnodes);
+0077 medium_sand = 45*ones(nTimes,nRivnodes);
+0078 fine_sand   = 30*ones(nTimes,nRivnodes);
+0079 
+0080 
+0081 <span class="comment">%--------------------------------------------------------------</span>
+0082 <span class="comment">% dump to netcdf file</span>
+0083 <span class="comment">%--------------------------------------------------------------</span>
+0084 
+0085 <span class="comment">% open boundary forcing</span>
+0086 nc = netcdf(RiverFile, <span class="string">'clobber'</span>);       
+0087 
+0088 nc.type = <span class="string">'FVCOM RIVER FORCING FILE'</span> ;
+0089 nc.title = RiverInfo1;   
+0090 nc.info =  RiverInfo2; 
+0091 nc.history = <span class="string">'FILE CREATED using write_river_file.m'</span> ;
+0092 
+0093 <span class="comment">% dimensions</span>
+0094 nc(<span class="string">'rivers'</span>) = nRivnodes; 
+0095 nc(<span class="string">'namelen'</span>) = 26; 
+0096 nc(<span class="string">'time'</span>) = 0; 
+0097 
+0098 <span class="comment">% variables</span>
+0099 nc{<span class="string">'river_names'</span>} = ncchar(<span class="string">'rivers'</span>, <span class="string">'namelen'</span>);
+0100 
+0101 nc{<span class="string">'time'</span>} = ncfloat(<span class="string">'time'</span>);
+0102 nc{<span class="string">'time'</span>}.long_name = <span class="string">'time'</span>;  
+0103 nc{<span class="string">'time'</span>}.units     = <span class="string">'days since 0.0'</span>;  
+0104 nc{<span class="string">'time'</span>}.time_zone = <span class="string">'none'</span>;  
+0105 
+0106 nc{<span class="string">'Itime'</span>} = ncint(<span class="string">'time'</span>);
+0107 nc{<span class="string">'Itime'</span>}.units     = <span class="string">'days since 0.0'</span>;  
+0108 nc{<span class="string">'Itime'</span>}.time_zone = <span class="string">'none'</span>;  
+0109 
+0110 nc{<span class="string">'Itime2'</span>} = ncint(<span class="string">'time'</span>);
+0111 nc{<span class="string">'Itime2'</span>}.units     = <span class="string">'msec since 00:00:00'</span>;
+0112 nc{<span class="string">'Itime2'</span>}.time_zone = <span class="string">'none'</span>;  
+0113 
+0114 nc{<span class="string">'river_flux'</span>} = ncfloat(<span class="string">'time'</span>,<span class="string">'rivers'</span>);
+0115 nc{<span class="string">'river_flux'</span>}.long_name = <span class="string">'river runoff volume flux'</span>; 
+0116 nc{<span class="string">'river_flux'</span>}.units     = <span class="string">'m^3s^-1'</span>;  
+0117 
+0118 nc{<span class="string">'river_temp'</span>} = ncfloat(<span class="string">'time'</span>,<span class="string">'rivers'</span>);
+0119 nc{<span class="string">'river_temp'</span>}.long_name = <span class="string">'river runoff temperature'</span>; 
+0120 nc{<span class="string">'river_temp'</span>}.units     = <span class="string">'Celsius'</span>;  
+0121 
+0122 nc{<span class="string">'river_salt'</span>} = ncfloat(<span class="string">'time'</span>,<span class="string">'rivers'</span>);
+0123 nc{<span class="string">'river_salt'</span>}.long_name = <span class="string">'river runoff salinity'</span>; 
+0124 nc{<span class="string">'river_salt'</span>}.units     = <span class="string">'PSU'</span>;  
+0125 
+0126 <span class="comment">% river names (must be 26 character strings)</span>
+0127 <span class="keyword">for</span> i=1:nRivnodes
+0128   fname = [RiverName int2str(i)];
+0129   temp  = <span class="string">'                          '</span>;
+0130   temp(1:length(fname)) = fname;
+0131   nc{<span class="string">'river_names'</span>}(i,:)   = temp;
+0132 <span class="keyword">end</span>;
+0133 
+0134 <span class="comment">% dump dynamic data</span>
+0135 <span class="keyword">for</span> i=1:nTimes
+0136   nc{<span class="string">'time'</span>}(i) = time(i);
+0137   nc{<span class="string">'Itime'</span>}(i) = floor(time(i));
+0138   nc{<span class="string">'Itime2'</span>}(i) = mod(time(i),1)*24*3600*1000.;
+0139   nc{<span class="string">'river_flux'</span>}(i,1:nRivnodes) = river_flux(i,1:nRivnodes); 
+0140   nc{<span class="string">'river_temp'</span>}(i,1:nRivnodes) = river_temp(i,1:nRivnodes); 
+0141   nc{<span class="string">'river_salt'</span>}(i,1:nRivnodes) = river_salt(i,1:nRivnodes); 
+0142   nc{<span class="string">'coarse_sand'</span>}(i,1:nRivnodes) = coarse_sand(i,1:nRivnodes); 
+0143   nc{<span class="string">'medium_sand'</span>}(i,1:nRivnodes) = medium_sand(i,1:nRivnodes); 
+0144   nc{<span class="string">'fine_sand'</span>}(i,1:nRivnodes) = fine_sand(i,1:nRivnodes); 
+0145 <span class="keyword">end</span>;
+0146 
+0147 nc = close(nc);    
+0148 
+0149 
+0150 <span class="keyword">if</span>(ftbverbose);
+0151   fprintf([<span class="string">'end   : '</span> subname <span class="string">'\n'</span>])
+0152 <span class="keyword">end</span>;
+0153</pre></div>
+<hr><address>Generated on Wed 02-Nov-2011 21:05:22 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
 </body>
 </html>

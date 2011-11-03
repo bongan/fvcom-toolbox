@@ -93,89 +93,94 @@ This function is called by:
 0026 <span class="comment">%==============================================================================</span>
 0027 warning off
 0028 subname = <span class="string">'example_FVCOM_wind_ts'</span>;
-0029 fprintf(<span class="string">'\n'</span>)
-0030 fprintf([<span class="string">'begin : '</span> subname <span class="string">'\n'</span>])
-0031 
-0032 <span class="comment">%------------------------------------------------------------------------------</span>
-0033 <span class="comment">% create a dataset</span>
-0034 <span class="comment">%------------------------------------------------------------------------------</span>
-0035 
-0036 <span class="comment">% make a timeframe</span>
-0037 <span class="comment">% tbeg = greg2julian(2009,1,1,0,0,0)-2400000.5;</span>
-0038 <span class="comment">% tend = greg2julian(2010,1,1,0,0,0)-2400000.5;</span>
-0039 tbeg = 0;
-0040 tend = 31;
-0041 time = tbeg:(1./24.):tend;
-0042 nTimes = prod(size(time));
-0043 
-0044 <span class="comment">% make up a fake time varying wind</span>
-0045 taux = 0.25*(cos( ((time-time(1))*2*pi)/7)) + .15*(cos( ((time-time(1))*2*pi)/360));
-0046 tauy = 0.25*(sin( ((time-time(1))*2*pi)/7)) + .15*(sin( ((time-time(1))*2*pi)/360));
-0047 
-0048 <span class="comment">% plot the wind</span>
-0049 subplot(2,1,1)
-0050 plot(time-time(1),taux,<span class="string">'k'</span>); 
-0051 subplot(2,1,2)
-0052 plot(time-time(1),tauy,<span class="string">'r'</span>);
-0053 
-0054 <span class="comment">%------------------------------------------------------------------------------</span>
-0055 <span class="comment">% write output to time-varying, spatially constant FVCOM wind file</span>
-0056 <span class="comment">%------------------------------------------------------------------------------</span>
-0057 fvcom_forcing_file = <span class="string">'tst_wind.nc'</span>; 
-0058 nc = netcdf(fvcom_forcing_file, <span class="string">'clobber'</span>);            
-0059 nc.references = <span class="string">'http://fvcom.smast.umassd.edu'</span>; 
-0060 nc.source = <span class="string">'single-point time-dependent surface forcing'</span>; 
-0061 nc.institution = <span class="string">'School for Marine Science and Technology'</span> ;
-0062 nc.history = <span class="string">'generated using the fvcom-toolbox'</span>;
-0063 
-0064 
-0065   
-0066 <span class="comment">% dimensions</span>
-0067 nc(<span class="string">'time'</span>) = 0;
-0068 
-0069 <span class="comment">% time vars</span>
-0070 nc{<span class="string">'time'</span>} = ncfloat(<span class="string">'time'</span>);
-0071 nc{<span class="string">'time'</span>}.long_name = <span class="string">'time'</span>;
-0072 nc{<span class="string">'time'</span>}.units = <span class="string">'days since 1858-11-17 00:00:00'</span>;
-0073 nc{<span class="string">'time'</span>}.format = <span class="string">'modified julian day (MJD)'</span>;
-0074 nc{<span class="string">'time'</span>}.time_zone = <span class="string">'UTC'</span>;
-0075   
-0076 nc{<span class="string">'Itime'</span>} = ncint(<span class="string">'time'</span>);
-0077 nc{<span class="string">'Itime'</span>}.units = <span class="string">'days since 1858-11-17 00:00:00'</span>;
-0078 nc{<span class="string">'Itime'</span>}.format = <span class="string">'modified julian day (MJD)'</span>;
-0079 nc{<span class="string">'Itime'</span>}.time_zone = <span class="string">'UTC'</span>;
-0080 
-0081 nc{<span class="string">'Itime2'</span>} = ncint(<span class="string">'time'</span>);
-0082 nc{<span class="string">'Itime2'</span>}.units = <span class="string">'msec since 00:00:00'</span>;
-0083 nc{<span class="string">'Itime2'</span>}.time_zone = <span class="string">'UTC'</span>;
-0084 
-0085 
-0086 nc{<span class="string">'uwind_stress'</span>} = ncfloat(<span class="string">'time'</span>);
-0087 nc{<span class="string">'uwind_stress'</span>}.long_name = <span class="string">'Eastward Wind Stress'</span>; 
-0088 nc{<span class="string">'uwind_stress'</span>}.standard_name = <span class="string">'Wind Stress'</span>; 
-0089 nc{<span class="string">'uwind_stress'</span>}.units = <span class="string">'Pa'</span>;
-0090 nc{<span class="string">'uwind_stress'</span>}.type = <span class="string">'data'</span>;
-0091 
-0092 nc{<span class="string">'vwind_stress'</span>} = ncfloat(<span class="string">'time'</span>);
-0093 nc{<span class="string">'vwind_stress'</span>}.long_name = <span class="string">'Northward Wind Stress'</span>; 
-0094 nc{<span class="string">'vwind_stress'</span>}.standard_name = <span class="string">'Wind Stress'</span>; 
-0095 nc{<span class="string">'vwind_stress'</span>}.units = <span class="string">'Pa'</span>;
-0096 nc{<span class="string">'vwind_stress'</span>}.type = <span class="string">'data'</span>;
-0097 
-0098 <span class="comment">% dump time</span>
-0099 nc{<span class="string">'time'</span>}(1:nTimes) = time; 
-0100 nc{<span class="string">'Itime'</span>}(1:nTimes) = floor(time); 
-0101 nc{<span class="string">'Itime2'</span>}(1:nTimes) = mod(time,1)*24*3600*1000.;
-0102 
-0103 nc{<span class="string">'uwind_stress'</span>}(1:nTimes) = taux; 
-0104 nc{<span class="string">'vwind_stress'</span>}(1:nTimes) = tauy; 
+0029 <span class="keyword">global</span> ftbverbose;
+0030 <span class="keyword">if</span>(ftbverbose);
+0031 fprintf(<span class="string">'\n'</span>)
+0032 fprintf([<span class="string">'begin : '</span> subname <span class="string">'\n'</span>])
+0033 <span class="keyword">end</span>;
+0034 
+0035 <span class="comment">%------------------------------------------------------------------------------</span>
+0036 <span class="comment">% create a dataset</span>
+0037 <span class="comment">%------------------------------------------------------------------------------</span>
+0038 
+0039 <span class="comment">% make a timeframe</span>
+0040 <span class="comment">% tbeg = greg2julian(2009,1,1,0,0,0)-2400000.5;</span>
+0041 <span class="comment">% tend = greg2julian(2010,1,1,0,0,0)-2400000.5;</span>
+0042 tbeg = 0;
+0043 tend = 31;
+0044 time = tbeg:(1./24.):tend;
+0045 nTimes = prod(size(time));
+0046 
+0047 <span class="comment">% make up a fake time varying wind</span>
+0048 taux = 0.25*(cos( ((time-time(1))*2*pi)/7)) + .15*(cos( ((time-time(1))*2*pi)/360));
+0049 tauy = 0.25*(sin( ((time-time(1))*2*pi)/7)) + .15*(sin( ((time-time(1))*2*pi)/360));
+0050 
+0051 <span class="comment">% plot the wind</span>
+0052 subplot(2,1,1)
+0053 plot(time-time(1),taux,<span class="string">'k'</span>); 
+0054 subplot(2,1,2)
+0055 plot(time-time(1),tauy,<span class="string">'r'</span>);
+0056 
+0057 <span class="comment">%------------------------------------------------------------------------------</span>
+0058 <span class="comment">% write output to time-varying, spatially constant FVCOM wind file</span>
+0059 <span class="comment">%------------------------------------------------------------------------------</span>
+0060 fvcom_forcing_file = <span class="string">'tst_wind.nc'</span>; 
+0061 nc = netcdf(fvcom_forcing_file, <span class="string">'clobber'</span>);            
+0062 nc.references = <span class="string">'http://fvcom.smast.umassd.edu'</span>; 
+0063 nc.source = <span class="string">'single-point time-dependent surface forcing'</span>; 
+0064 nc.institution = <span class="string">'School for Marine Science and Technology'</span> ;
+0065 nc.history = <span class="string">'generated using the fvcom-toolbox'</span>;
+0066 
+0067 
+0068   
+0069 <span class="comment">% dimensions</span>
+0070 nc(<span class="string">'time'</span>) = 0;
+0071 
+0072 <span class="comment">% time vars</span>
+0073 nc{<span class="string">'time'</span>} = ncfloat(<span class="string">'time'</span>);
+0074 nc{<span class="string">'time'</span>}.long_name = <span class="string">'time'</span>;
+0075 nc{<span class="string">'time'</span>}.units = <span class="string">'days since 1858-11-17 00:00:00'</span>;
+0076 nc{<span class="string">'time'</span>}.format = <span class="string">'modified julian day (MJD)'</span>;
+0077 nc{<span class="string">'time'</span>}.time_zone = <span class="string">'UTC'</span>;
+0078   
+0079 nc{<span class="string">'Itime'</span>} = ncint(<span class="string">'time'</span>);
+0080 nc{<span class="string">'Itime'</span>}.units = <span class="string">'days since 1858-11-17 00:00:00'</span>;
+0081 nc{<span class="string">'Itime'</span>}.format = <span class="string">'modified julian day (MJD)'</span>;
+0082 nc{<span class="string">'Itime'</span>}.time_zone = <span class="string">'UTC'</span>;
+0083 
+0084 nc{<span class="string">'Itime2'</span>} = ncint(<span class="string">'time'</span>);
+0085 nc{<span class="string">'Itime2'</span>}.units = <span class="string">'msec since 00:00:00'</span>;
+0086 nc{<span class="string">'Itime2'</span>}.time_zone = <span class="string">'UTC'</span>;
+0087 
+0088 
+0089 nc{<span class="string">'uwind_stress'</span>} = ncfloat(<span class="string">'time'</span>);
+0090 nc{<span class="string">'uwind_stress'</span>}.long_name = <span class="string">'Eastward Wind Stress'</span>; 
+0091 nc{<span class="string">'uwind_stress'</span>}.standard_name = <span class="string">'Wind Stress'</span>; 
+0092 nc{<span class="string">'uwind_stress'</span>}.units = <span class="string">'Pa'</span>;
+0093 nc{<span class="string">'uwind_stress'</span>}.type = <span class="string">'data'</span>;
+0094 
+0095 nc{<span class="string">'vwind_stress'</span>} = ncfloat(<span class="string">'time'</span>);
+0096 nc{<span class="string">'vwind_stress'</span>}.long_name = <span class="string">'Northward Wind Stress'</span>; 
+0097 nc{<span class="string">'vwind_stress'</span>}.standard_name = <span class="string">'Wind Stress'</span>; 
+0098 nc{<span class="string">'vwind_stress'</span>}.units = <span class="string">'Pa'</span>;
+0099 nc{<span class="string">'vwind_stress'</span>}.type = <span class="string">'data'</span>;
+0100 
+0101 <span class="comment">% dump time</span>
+0102 nc{<span class="string">'time'</span>}(1:nTimes) = time; 
+0103 nc{<span class="string">'Itime'</span>}(1:nTimes) = floor(time); 
+0104 nc{<span class="string">'Itime2'</span>}(1:nTimes) = mod(time,1)*24*3600*1000.;
 0105 
-0106 ierr = close(nc);
-0107 
-0108 fprintf([<span class="string">'end   : '</span> subname <span class="string">'\n'</span>])
-0109 
+0106 nc{<span class="string">'uwind_stress'</span>}(1:nTimes) = taux; 
+0107 nc{<span class="string">'vwind_stress'</span>}(1:nTimes) = tauy; 
+0108 
+0109 ierr = close(nc);
 0110 
-0111</pre></div>
-<hr><address>Generated on Mon 06-Dec-2010 21:40:32 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+0111 <span class="keyword">if</span>(ftbverbose);
+0112 fprintf([<span class="string">'end   : '</span> subname <span class="string">'\n'</span>])
+0113 <span class="keyword">end</span>;
+0114 
+0115 
+0116</pre></div>
+<hr><address>Generated on Wed 02-Nov-2011 21:05:22 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
 </body>
 </html>

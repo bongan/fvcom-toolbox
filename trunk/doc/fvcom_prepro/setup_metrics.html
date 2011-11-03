@@ -57,7 +57,7 @@ This function calls:
 </ul>
 This function is called by:
 <ul style="list-style-image:url(../matlabicon.gif)">
-<li><a href="example2.html" class="code" title="">example2</a>	example demonstrating reading in an FVCOM mesh and smoothing the bathymetry</li></ul>
+<li><a href="example.html" class="code" title="">example</a>	example demonstrating reading in a 2DM file and constructing a model</li><li><a href="example2.html" class="code" title="">example2</a>	example demonstrating reading in an FVCOM mesh and smoothing the bathymetry</li></ul>
 <!-- crossreference -->
 
 
@@ -88,56 +88,74 @@ This function is called by:
 0023 <span class="comment">%</span>
 0024 <span class="comment">%==============================================================================</span>
 0025 subname = <span class="string">'setup_metrics'</span>;
-0026 fprintf(<span class="string">'\n'</span>)
-0027 fprintf([<span class="string">'begin : '</span> subname <span class="string">'\n'</span>])
-0028 
-0029 
-0030 <span class="comment">%------------------------------------------------------------------------------</span>
-0031 <span class="comment">% Calculate metrics</span>
-0032 <span class="comment">%------------------------------------------------------------------------------</span>
-0033 
-0034 <span class="comment">% set local arrays</span>
-0035 tri    = Mobj.tri;
-0036 nElems = Mobj.nElems;
-0037 nVerts = Mobj.nVerts;
-0038 
-0039 <span class="comment">% determine edges</span>
-0040 nEdges = nElems*3;
-0041 edge = zeros(nEdges,2);
-0042 icnt = 1;
-0043 <span class="keyword">for</span> i=1:nElems
-0044   edge(icnt  ,1:2) = tri(i,1:2);
-0045   edge(icnt+1,1:2) = tri(i,2:3);
-0046   edge(icnt+2,1:2) = tri(i,[3,1]);
-0047   icnt = icnt + 3;
-0048 <span class="keyword">end</span>;
-0049 
-0050 <span class="comment">% determine nodes surrounding nodes (no specific order)</span>
-0051 ntsn = zeros(nVerts,1);
-0052 nbsn = zeros(nVerts,12);
-0053 
-0054 <span class="keyword">for</span> i=1:nEdges
-0055   i1 = edge(i,1);
-0056   i2 = edge(i,2);
-0057   [lmin,loc] = min(abs(nbsn(i1,:)-i2));
-0058   <span class="keyword">if</span>(lmin ~= 0);
-0059     ntsn(i1) = ntsn(i1)+1;
-0060     nbsn(i1,ntsn(i1)) = i2;
-0061   <span class="keyword">end</span>;
-0062   [lmin,loc] = min(abs(nbsn(i2,:)-i1));
-0063   <span class="keyword">if</span>(lmin ~= 0);
-0064     ntsn(i2) = ntsn(i2)+1;
-0065     nbsn(i2,ntsn(i2)) = i1;
-0066   <span class="keyword">end</span>;
-0067 <span class="keyword">end</span>;
-0068 
-0069 <span class="comment">% transfer to struct</span>
-0070 Mobj.ntsn = ntsn;
-0071 Mobj.nbsn = nbsn;
-0072 Mobj.have_mets = true;
-0073 
-0074 fprintf([<span class="string">'end   : '</span> subname <span class="string">'\n'</span>])
-0075</pre></div>
-<hr><address>Generated on Mon 06-Dec-2010 21:40:32 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+0026 <span class="keyword">global</span> ftbverbose
+0027 <span class="keyword">if</span>(ftbverbose)
+0028   fprintf(<span class="string">'\n'</span>)
+0029   fprintf([<span class="string">'begin : '</span> subname <span class="string">'\n'</span>])
+0030 <span class="keyword">end</span>;
+0031 
+0032 
+0033 <span class="comment">%------------------------------------------------------------------------------</span>
+0034 <span class="comment">% Calculate metrics</span>
+0035 <span class="comment">%------------------------------------------------------------------------------</span>
+0036 
+0037 <span class="comment">% set local arrays</span>
+0038 tri    = Mobj.tri;
+0039 nElems = Mobj.nElems;
+0040 nVerts = Mobj.nVerts;
+0041 
+0042 <span class="comment">% set xc/yc if they don't exist</span>
+0043 <span class="keyword">if</span>(~isfield(Mobj,<span class="string">'xc'</span>));
+0044   Mobj.xc = zeros(Mobj.nElems,1);
+0045   Mobj.yc = zeros(Mobj.nElems,1);
+0046   <span class="keyword">for</span> i=1:Mobj.nElems
+0047     Mobj.xc(i) = sum(Mobj.x(Mobj.tri(i,1:3)))/3.;
+0048     Mobj.yc(i) = sum(Mobj.y(Mobj.tri(i,1:3)))/3.;
+0049   <span class="keyword">end</span>;
+0050 <span class="keyword">end</span>;
+0051 
+0052 
+0053 <span class="comment">% determine edges</span>
+0054 nEdges = nElems*3;
+0055 edge = zeros(nEdges,2);
+0056 icnt = 1;
+0057 <span class="keyword">for</span> i=1:nElems
+0058   edge(icnt  ,1:2) = tri(i,1:2);
+0059   edge(icnt+1,1:2) = tri(i,2:3);
+0060   edge(icnt+2,1:2) = tri(i,[3,1]);
+0061   icnt = icnt + 3;
+0062 <span class="keyword">end</span>;
+0063 
+0064 <span class="comment">% determine nodes surrounding nodes (no specific order)</span>
+0065 ntsn = zeros(nVerts,1);
+0066 nbsn = zeros(nVerts,12);
+0067 
+0068 <span class="keyword">for</span> i=1:nEdges
+0069   i1 = edge(i,1);
+0070   i2 = edge(i,2);
+0071   [lmin,loc] = min(abs(nbsn(i1,:)-i2));
+0072   <span class="keyword">if</span>(lmin ~= 0);
+0073     ntsn(i1) = ntsn(i1)+1;
+0074     nbsn(i1,ntsn(i1)) = i2;
+0075   <span class="keyword">end</span>;
+0076   [lmin,loc] = min(abs(nbsn(i2,:)-i1));
+0077   <span class="keyword">if</span>(lmin ~= 0);
+0078     ntsn(i2) = ntsn(i2)+1;
+0079     nbsn(i2,ntsn(i2)) = i1;
+0080   <span class="keyword">end</span>;
+0081 <span class="keyword">end</span>;
+0082 
+0083 
+0084 
+0085 <span class="comment">% transfer to struct</span>
+0086 Mobj.ntsn = ntsn;
+0087 Mobj.nbsn = nbsn;
+0088 Mobj.have_mets = true;
+0089 
+0090 <span class="keyword">if</span>(ftbverbose)
+0091   fprintf([<span class="string">'end   : '</span> subname <span class="string">'\n'</span>])
+0092 <span class="keyword">end</span>;
+0093</pre></div>
+<hr><address>Generated on Wed 02-Nov-2011 21:05:22 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
 </body>
 </html>

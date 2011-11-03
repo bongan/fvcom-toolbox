@@ -90,61 +90,64 @@ This function is called by:
 0024 <span class="comment">%</span>
 0025 <span class="comment">%==============================================================================</span>
 0026 subname = <span class="string">'set_spectide'</span>;
-0027 fprintf(<span class="string">'\n'</span>)
-0028 fprintf([<span class="string">'begin : '</span> subname <span class="string">'\n'</span>])
-0029 
-0030 <span class="comment">%------------------------------------------------------------------------------</span>
-0031 <span class="comment">% Set Constants</span>
-0032 <span class="comment">%------------------------------------------------------------------------------</span>
-0033 MyTitle = <span class="string">'spectral tide test'</span>;
-0034 SpectralFile = <span class="string">'tst_spectide.nc'</span>;
-0035 
-0036 <span class="comment">%------------------------------------------------------------------------------</span>
-0037 <span class="comment">% Set Component Periods</span>
-0038 <span class="comment">%------------------------------------------------------------------------------</span>
-0039 Components = {   <span class="string">'M2'</span>,    <span class="string">'N2'</span>,    <span class="string">'S2'</span>,   <span class="string">'O1'</span>,    <span class="string">'K1'</span>};
-0040 Period     = [44714.16, 45570.05, 43200, 92949.63, 86164.09];
-0041 
-0042 <span class="comment">%------------------------------------------------------------------------------</span>
-0043 <span class="comment">% Setup user defined phase and amplitude along the open boundaries</span>
-0044 <span class="comment">% need to set:</span>
-0045 <span class="comment">%   1.) Period - vector containing component period in seconds</span>
-0046 <span class="comment">%   2.) Amp    - array of size [Nobcs, Ncomponents] containing amplitude in m</span>
-0047 <span class="comment">%   3.) Phase  - array of size [Nobcs, Ncomponents] containing phase in degrees</span>
-0048 <span class="comment">%------------------------------------------------------------------------------</span>
-0049 nComps = 1;
-0050 
-0051 <span class="keyword">if</span>(Mobj.nObs==0)
-0052     warning(<span class="string">'cannot setup spectral open boundary, there is no open boundary in the mesh struct'</span>)
-0053     <span class="keyword">return</span>
-0054 <span class="keyword">end</span>;
-0055 
-0056 cnt = 0;
-0057 <span class="keyword">for</span> ob=1:Mobj.nObs
-0058     nObcs = Mobj.nObcNodes(ob);
-0059     <span class="keyword">for</span> j=1:nObcs
-0060         cnt = cnt + 1;
-0061         ObcNodes(cnt) = Mobj.obc_nodes(1,j);  <span class="comment">%set the open boundary nodes</span>
-0062         <span class="keyword">for</span> i=1:nObcs
-0063             <span class="keyword">if</span>(ob==1)
-0064                 Amp(cnt,1:nComps) = [1.0];  
-0065             <span class="keyword">else</span>
-0066                 Amp(cnt,1:nComps) = [1.0];
-0067             <span class="keyword">end</span>;
-0068         <span class="keyword">end</span>;
-0069 
-0070         <span class="keyword">for</span> i=1:nObcs
-0071             Phase(cnt,1:nComps) = [0.];
-0072         <span class="keyword">end</span>;
-0073     <span class="keyword">end</span>;
-0074 <span class="keyword">end</span>;
-0075 
-0076 <span class="comment">%------------------------------------------------------------------------------</span>
-0077 <span class="comment">% Dump a spectral tide file in NetCDF</span>
-0078 <span class="comment">%------------------------------------------------------------------------------</span>
-0079 <a href="write_FVCOM_spectide.html" class="code" title="function write_FVCOM_spectide(ObcNodes,Period,Phase,Amp,SpectralFile,MyTitle)">write_FVCOM_spectide</a>(ObcNodes,Period(1:nComps),Phase,Amp,SpectralFile,MyTitle)
-0080 
-0081 fprintf([<span class="string">'end   : '</span> subname <span class="string">'\n'</span>])</pre></div>
-<hr><address>Generated on Mon 06-Dec-2010 21:40:32 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+0027 <span class="keyword">global</span> ftbverbose;
+0028 <span class="keyword">if</span>(ftbverbose);
+0029   fprintf(<span class="string">'\n'</span>)
+0030   fprintf([<span class="string">'begin : '</span> subname <span class="string">'\n'</span>])
+0031 <span class="keyword">end</span>;
+0032 
+0033 <span class="comment">%------------------------------------------------------------------------------</span>
+0034 <span class="comment">% Set Constants</span>
+0035 <span class="comment">%------------------------------------------------------------------------------</span>
+0036 MyTitle = <span class="string">'spectral tide test'</span>;
+0037 SpectralFile = <span class="string">'tst_spectide.nc'</span>;
+0038 
+0039 <span class="comment">%------------------------------------------------------------------------------</span>
+0040 <span class="comment">% Set Component Periods</span>
+0041 <span class="comment">%------------------------------------------------------------------------------</span>
+0042 Components = {   <span class="string">'M2'</span>,    <span class="string">'N2'</span>,    <span class="string">'S2'</span>,   <span class="string">'O1'</span>,    <span class="string">'K1'</span>};
+0043 Period     = [44714.16, 45570.05, 43200, 92949.63, 86164.09];
+0044 
+0045 <span class="comment">%------------------------------------------------------------------------------</span>
+0046 <span class="comment">% Setup user defined phase and amplitude along the open boundaries</span>
+0047 <span class="comment">% need to set:</span>
+0048 <span class="comment">%   1.) Period - vector containing component period in seconds</span>
+0049 <span class="comment">%   2.) Amp    - array of size [Nobcs, Ncomponents] containing amplitude in m</span>
+0050 <span class="comment">%   3.) Phase  - array of size [Nobcs, Ncomponents] containing phase in degrees</span>
+0051 <span class="comment">%------------------------------------------------------------------------------</span>
+0052 nComps = 1;
+0053 
+0054 <span class="keyword">if</span>(Mobj.nObs==0)
+0055     warning(<span class="string">'cannot setup spectral open boundary, there is no open boundary in the mesh struct'</span>)
+0056     <span class="keyword">return</span>
+0057 <span class="keyword">end</span>;
+0058 
+0059 cnt = 0;
+0060 <span class="keyword">for</span> ob=1:Mobj.nObs
+0061     nObcs = Mobj.nObcNodes(ob);
+0062     <span class="keyword">for</span> j=1:nObcs
+0063         cnt = cnt + 1;
+0064         ObcNodes(cnt) = Mobj.obc_nodes(1,j);  <span class="comment">%set the open boundary nodes</span>
+0065         <span class="keyword">for</span> i=1:nObcs
+0066             <span class="keyword">if</span>(ob==1)
+0067                 Amp(cnt,1:nComps) = [1.0];  
+0068             <span class="keyword">else</span>
+0069                 Amp(cnt,1:nComps) = [1.0];
+0070             <span class="keyword">end</span>;
+0071         <span class="keyword">end</span>;
+0072 
+0073         <span class="keyword">for</span> i=1:nObcs
+0074             Phase(cnt,1:nComps) = [0.];
+0075         <span class="keyword">end</span>;
+0076     <span class="keyword">end</span>;
+0077 <span class="keyword">end</span>;
+0078 
+0079 <span class="comment">%------------------------------------------------------------------------------</span>
+0080 <span class="comment">% Dump a spectral tide file in NetCDF</span>
+0081 <span class="comment">%------------------------------------------------------------------------------</span>
+0082 <a href="write_FVCOM_spectide.html" class="code" title="function write_FVCOM_spectide(ObcNodes,Period,Phase,Amp,SpectralFile,MyTitle)">write_FVCOM_spectide</a>(ObcNodes,Period(1:nComps),Phase,Amp,SpectralFile,MyTitle)
+0083 
+0084 <span class="keyword">if</span>(ftbverbose); fprintf([<span class="string">'end   : '</span> subname <span class="string">'\n'</span>]);<span class="keyword">end</span>;</pre></div>
+<hr><address>Generated on Wed 02-Nov-2011 21:05:22 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
 </body>
 </html>
