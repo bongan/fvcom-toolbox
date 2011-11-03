@@ -12,4 +12,6 @@ You will need to download/install the netcdf toolbox which was originally writte
 
 Make sure that "which mexnc"  returns an m-file, not a mex file.
 
- 
+ =Optional Dependencies =
+
+If you wish to project coordinates from geographic to Euclidean (see my_project.m) it is recommended you install the m_map matlab projection toolbox.
