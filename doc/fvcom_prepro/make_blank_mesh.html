@@ -85,38 +85,42 @@ This function is called by:
 0021 <span class="comment">% Revision history</span>
 0022 <span class="comment">%</span>
 0023 <span class="comment">%==============================================================================</span>
-0024 
+0024 <span class="keyword">global</span> ftbverbose
 0025 subname = <span class="string">'make_blank_mesh'</span>;
-0026 fprintf(<span class="string">'\n'</span>)
-0027 fprintf([<span class="string">'begin : '</span> subname <span class="string">'\n'</span>])
-0028 
-0029 <span class="comment">%------------------------------------------------------------------------------</span>
-0030 <span class="comment">% Set defaults</span>
+0026 <span class="keyword">if</span>(ftbverbose)
+0027   fprintf(<span class="string">'\n'</span>)
+0028   fprintf([<span class="string">'begin : '</span> subname <span class="string">'\n'</span>])
+0029 <span class="keyword">end</span>;
+0030 
 0031 <span class="comment">%------------------------------------------------------------------------------</span>
-0032 
-0033 
-0034 <span class="comment">% dimensions</span>
-0035 Mobj.nVerts  = 0;
-0036 Mobj.nElems  = 0;
-0037 Mobj.nRivers = 0;
-0038 Mobj.nObs    = 0;
-0039 Mobj.nSponge = 0;
-0040 Mobj.riv_nodes = zeros(50,10);
-0041 Mobj.obc_nodes = zeros(10,500);
-0042 Mobj.sponge_nodes = zeros(10,500);
-0043 
-0044 <span class="comment">% flags</span>
-0045 Mobj.nativeCoords = <span class="string">'cartesian'</span>;
-0046 Mobj.have_lonlat  = false;
-0047 Mobj.have_cor     = false;
-0048 Mobj.have_xy      = false;
-0049 Mobj.have_bath    = false;
-0050 Mobj.have_mets    = false;
-0051 
-0052 
-0053 fprintf([<span class="string">'end   : '</span> subname <span class="string">'\n'</span>])
+0032 <span class="comment">% Set defaults</span>
+0033 <span class="comment">%------------------------------------------------------------------------------</span>
+0034 
+0035 
+0036 <span class="comment">% dimensions</span>
+0037 Mobj.nVerts  = 0;
+0038 Mobj.nElems  = 0;
+0039 Mobj.nRivers = 0;
+0040 Mobj.nObs    = 0;
+0041 Mobj.nSponge = 0;
+0042 Mobj.riv_nodes = zeros(50,10);
+0043 Mobj.obc_nodes = zeros(10,500);
+0044 Mobj.sponge_nodes = zeros(10,500);
+0045 
+0046 <span class="comment">% flags</span>
+0047 Mobj.nativeCoords = <span class="string">'cartesian'</span>;
+0048 Mobj.have_lonlat  = false;
+0049 Mobj.have_cor     = false;
+0050 Mobj.have_xy      = false;
+0051 Mobj.have_bath    = false;
+0052 Mobj.have_mets    = false;
+0053 
 0054 
-0055</pre></div>
-<hr><address>Generated on Mon 06-Dec-2010 21:40:32 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+0055 <span class="keyword">if</span>(ftbverbose)
+0056   fprintf([<span class="string">'end   : '</span> subname <span class="string">'\n'</span>])
+0057 <span class="keyword">end</span>;
+0058 
+0059</pre></div>
+<hr><address>Generated on Wed 02-Nov-2011 21:05:22 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
 </body>
 </html>

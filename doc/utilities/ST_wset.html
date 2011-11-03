@@ -135,15 +135,16 @@ This function is called by:
 0064 
 0065 <span class="comment">% calculate rho</span>
 0066 dens = <a href="SW_Density.html" class="code" title="function rho = SW_Density(T,S)">SW_Density</a>(T,S);
-0067 
-0068 <span class="comment">% calculate dstar</span>
-0069 dstar = <a href="ST_Dstar.html" class="code" title="function [dstar] = ST_Dstar(d,varargin)">ST_Dstar</a>(d,<span class="string">'temp'</span>,T,<span class="string">'sal'</span>,S,<span class="string">'sdens'</span>,sdens);
-0070 
-0071 <span class="comment">% calculate wset</span>
-0072 wset = (nu/d)*( sqrt(10.36^2 + 1.049*(dstar^3)) - 10.36); 
-0073 
+0067 <span class="comment">%dens/1000.</span>
+0068 
+0069 <span class="comment">% calculate dstar</span>
+0070 dstar = <a href="ST_Dstar.html" class="code" title="function [dstar] = ST_Dstar(d,varargin)">ST_Dstar</a>(d,<span class="string">'temp'</span>,T,<span class="string">'sal'</span>,S,<span class="string">'sdens'</span>,sdens);
+0071 
+0072 <span class="comment">% calculate wset</span>
+0073 wset = (nu/d)*( sqrt(10.36^2 + 1.049*(dstar^3)) - 10.36); 
 0074 
-0075 <span class="comment">%fprintf(['end   : ' subname '\n'])</span></pre></div>
-<hr><address>Generated on Mon 06-Dec-2010 21:40:32 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+0075 
+0076 <span class="comment">%fprintf(['end   : ' subname '\n'])</span></pre></div>
+<hr><address>Generated on Wed 02-Nov-2011 21:05:22 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
 </body>
 </html>

@@ -57,7 +57,7 @@ This function calls:
 </ul>
 This function is called by:
 <ul style="list-style-image:url(../matlabicon.gif)">
-</ul>
+<li><a href="example.html" class="code" title="">example</a>	example demonstrating reading in a 2DM file and constructing a model</li></ul>
 <!-- crossreference -->
 
 
@@ -89,48 +89,53 @@ This function is called by:
 0024 <span class="comment">%==============================================================================</span>
 0025 
 0026 subname = <span class="string">'estimate_ts'</span>;
-0027 fprintf(<span class="string">'\n'</span>)
-0028 fprintf([<span class="string">'begin : '</span> subname <span class="string">'\n'</span>])
-0029 
-0030 <span class="comment">%------------------------------------------------------------------------------</span>
-0031 <span class="comment">% Set constants</span>
-0032 <span class="comment">%------------------------------------------------------------------------------</span>
-0033 
-0034 g    = 9.81; <span class="comment">%gravitational acceleration</span>
-0035 u    = 3.0;  <span class="comment">%u-velocity</span>
-0036 zeta = 3.0;  <span class="comment">%tide amp</span>
-0037 
-0038 <span class="keyword">if</span>(~Mobj.have_bath)
-0039     error(<span class="string">'can''t estimate the time step without bathymetry'</span>)
-0040 <span class="keyword">end</span>;
-0041 
-0042 <span class="comment">%------------------------------------------------------------------------------</span>
-0043 <span class="comment">% Compute the time step estimate</span>
-0044 <span class="comment">%------------------------------------------------------------------------------</span>
-0045 x = Mobj.x;
-0046 y = Mobj.y;
-0047 h = Mobj.h;
-0048 tri = Mobj.tri;
-0049 nVerts = Mobj.nVerts;
-0050 nElems = Mobj.nElems;
-0051 
-0052 ts = ones(nVerts,1)*1e9;
-0053 side = zeros(nVerts,1);
-0054 <span class="keyword">for</span> i=1:nElems
-0055   n1 = tri(i,1);
-0056   n2 = tri(i,2);
-0057   n3 = tri(i,3);
-0058   nds = [n1 n2 n3];
-0059   lside = sqrt( (x(n1)-x(n2))^2 + (y(n1)-y(n2))^2); 
-0060   dpth  = max(h(nds))+zeta;
-0061   dpth  = max(dpth,1.);
-0062   ts(nds) = min(ts(nds),lside/( sqrt(g*dpth) + u));
-0063 <span class="keyword">end</span>;
-0064 fprintf(<span class="string">'minimum time step: %f seconds\n'</span>,min(ts))
-0065 Mobj.ts = ts;
-0066 Mobj.have_ts = true;
-0067 
-0068 fprintf([<span class="string">'end   : '</span> subname <span class="string">'\n'</span>])</pre></div>
-<hr><address>Generated on Mon 06-Dec-2010 21:40:32 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+0027 <span class="keyword">global</span> ftbverbose
+0028 <span class="keyword">if</span>(ftbverbose)
+0029   fprintf(<span class="string">'\n'</span>)
+0030   fprintf([<span class="string">'begin : '</span> subname <span class="string">'\n'</span>])
+0031 <span class="keyword">end</span>;
+0032 
+0033 <span class="comment">%------------------------------------------------------------------------------</span>
+0034 <span class="comment">% Set constants</span>
+0035 <span class="comment">%------------------------------------------------------------------------------</span>
+0036 
+0037 g    = 9.81; <span class="comment">%gravitational acceleration</span>
+0038 u    = 3.0;  <span class="comment">%u-velocity</span>
+0039 zeta = 3.0;  <span class="comment">%tide amp</span>
+0040 
+0041 <span class="keyword">if</span>(~Mobj.have_bath)
+0042     error(<span class="string">'can''t estimate the time step without bathymetry'</span>)
+0043 <span class="keyword">end</span>;
+0044 
+0045 <span class="comment">%------------------------------------------------------------------------------</span>
+0046 <span class="comment">% Compute the time step estimate</span>
+0047 <span class="comment">%------------------------------------------------------------------------------</span>
+0048 x = Mobj.x;
+0049 y = Mobj.y;
+0050 h = Mobj.h;
+0051 tri = Mobj.tri;
+0052 nVerts = Mobj.nVerts;
+0053 nElems = Mobj.nElems;
+0054 
+0055 ts = ones(nVerts,1)*1e9;
+0056 side = zeros(nVerts,1);
+0057 <span class="keyword">for</span> i=1:nElems
+0058   n1 = tri(i,1);
+0059   n2 = tri(i,2);
+0060   n3 = tri(i,3);
+0061   nds = [n1 n2 n3];
+0062   lside = sqrt( (x(n1)-x(n2))^2 + (y(n1)-y(n2))^2); 
+0063   dpth  = max(h(nds))+zeta;
+0064   dpth  = max(dpth,1.);
+0065   ts(nds) = min(ts(nds),lside/( sqrt(g*dpth) + u));
+0066 <span class="keyword">end</span>;
+0067 <span class="keyword">if</span>(ftbverbose); fprintf(<span class="string">'minimum time step: %f seconds\n'</span>,min(ts)); <span class="keyword">end</span>;
+0068 Mobj.ts = ts;
+0069 Mobj.have_ts = true;
+0070 
+0071 <span class="keyword">if</span>(ftbverbose)
+0072   fprintf([<span class="string">'end   : '</span> subname <span class="string">'\n'</span>])
+0073 <span class="keyword">end</span>;</pre></div>
+<hr><address>Generated on Wed 02-Nov-2011 21:05:22 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
 </body>
 </html>
