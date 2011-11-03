@@ -24,7 +24,10 @@ function write_FVCOM_grid(Mobj,filename)
 %   
 %==============================================================================
 subname = 'write_FVCOM_grid';
-fprintf('\n'); fprintf(['begin : ' subname '\n']);
+global ftbverbose
+if(ftbverbose);
+  fprintf('\n'); fprintf(['begin : ' subname '\n']);
+end;
 
 %------------------------------------------------------------------------------
 % Parse input arguments
@@ -43,7 +46,7 @@ else
 	x = Mobj.lon;
 	y = Mobj.lat;
 end;
-fprintf('writing FVCOM gridfile %s\n',filename)
+if(ftbverbose);  fprintf('writing FVCOM gridfile %s\n',filename); end;
 fid = fopen(filename,'w');
 fprintf(fid,'Node Number = %d\n',Mobj.nVerts);
 fprintf(fid,'Cell Number = %d\n',Mobj.nElems);
@@ -55,5 +58,7 @@ for i=1:Mobj.nVerts
 end;
 fclose(fid);
 
-fprintf(['end   : ' subname '\n'])
+if(ftbverbose);
+  fprintf(['end   : ' subname '\n'])
+end;
 

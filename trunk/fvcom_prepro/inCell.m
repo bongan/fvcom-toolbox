@@ -50,3 +50,5 @@ for i=1:nElems
    end;
 end;
   
+% didn't find cell, just return nearest cell
+%cell = ind(1);

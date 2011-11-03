@@ -24,7 +24,7 @@ if(exist('geographic'))
   cartesian = false;
 end;
 
-if(cartesian)
+if(~cartesian)
   % open datatank file
   fid = fopen(fname,'w');
   fprintf(fid,'DataTank Binary File\n');

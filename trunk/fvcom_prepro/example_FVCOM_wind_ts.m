@@ -26,8 +26,11 @@ function example_FVCOM_wind_ts
 %==============================================================================
 warning off
 subname = 'example_FVCOM_wind_ts';
+global ftbverbose;
+if(ftbverbose);
 fprintf('\n')
 fprintf(['begin : ' subname '\n'])
+end;
 
 %------------------------------------------------------------------------------
 % create a dataset
@@ -105,7 +108,9 @@ nc{'vwind_stress'}(1:nTimes) = tauy;
 
 ierr = close(nc);
 
+if(ftbverbose);
 fprintf(['end   : ' subname '\n'])
+end;
 
 
 

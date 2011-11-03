@@ -35,26 +35,32 @@ function write_FVCOM_river(RiverFile,RiverName,nRivnodes,time,flux,temp,salt,Riv
 %==============================================================================
 warning off;
 
-
+global ftbverbose;
+if(ftbverbose);
 subname = 'write_FVCOM_river';
 fprintf('\n')
 fprintf(['begin : ' subname '\n'])
+end;
 
 
-fprintf('creating river NetCDF file %s for River %s\n',RiverFile,RiverName); 
+if(ftbverbose); 
+  fprintf('creating river NetCDF file %s for River %s\n',RiverFile,RiverName); 
+end;
 
 
 nTimes = prod(size(flux));
-fprintf('# of river nodes: %d\n',nRivnodes);
-fprintf('# of time frames: %d\n',nTimes);
+if(ftbverbose);
+  fprintf('# of river nodes: %d\n',nRivnodes);
+  fprintf('# of time frames: %d\n',nTimes);
+end;
 
 [year,month,day,hour,mint,sec] = mjulian2greg(time(1));
-fprintf('river begins at: %d %d %d\n',year,month,day);
+if(ftbverbose); fprintf('river begins at: %d %d %d\n',year,month,day); end;
 [year,month,day,hour,mint,sec] = mjulian2greg(time(end));
-fprintf('river ends at:   %d %d %d\n',year,month,day);
+if(ftbverbose); fprintf('river ends at:   %d %d %d\n',year,month,day); end;
 
 % set the flux
-fprintf('dividing flux into %d points\n',nRivnodes); 
+if(ftbverbose); fprintf('dividing flux into %d points\n',nRivnodes); end;
 river_flux = zeros(nTimes,nRivnodes);
 for i=1:nTimes
   river_flux(i,1:nRivnodes) = flux(i)/real(nRivnodes);
@@ -141,5 +147,7 @@ end;
 nc = close(nc);    
 
 
-fprintf(['end   : ' subname '\n'])
+if(ftbverbose);
+  fprintf(['end   : ' subname '\n'])
+end;
 

@@ -24,8 +24,11 @@ function [Mobj] = estimate_ts(Mobj)
 %==============================================================================
 
 subname = 'estimate_ts';
-fprintf('\n')
-fprintf(['begin : ' subname '\n'])
+global ftbverbose
+if(ftbverbose)
+  fprintf('\n')
+  fprintf(['begin : ' subname '\n'])
+end;
 
 %------------------------------------------------------------------------------
 % Set constants
@@ -61,8 +64,10 @@ for i=1:nElems
   dpth  = max(dpth,1.);
   ts(nds) = min(ts(nds),lside/( sqrt(g*dpth) + u));
 end;
-fprintf('minimum time step: %f seconds\n',min(ts))
+if(ftbverbose); fprintf('minimum time step: %f seconds\n',min(ts)); end;
 Mobj.ts = ts;
 Mobj.have_ts = true;
 
-fprintf(['end   : ' subname '\n'])
+if(ftbverbose)
+  fprintf(['end   : ' subname '\n'])
+end;

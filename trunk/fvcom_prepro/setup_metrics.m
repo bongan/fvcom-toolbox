@@ -23,8 +23,11 @@ function [Mobj]  = setup_metrics(Mobj)
 %   
 %==============================================================================
 subname = 'setup_metrics';
-fprintf('\n')
-fprintf(['begin : ' subname '\n'])
+global ftbverbose
+if(ftbverbose)
+  fprintf('\n')
+  fprintf(['begin : ' subname '\n'])
+end;
 
 
 %------------------------------------------------------------------------------
@@ -35,6 +38,17 @@ fprintf(['begin : ' subname '\n'])
 tri    = Mobj.tri;
 nElems = Mobj.nElems;
 nVerts = Mobj.nVerts;
+
+% set xc/yc if they don't exist
+if(~isfield(Mobj,'xc'));
+  Mobj.xc = zeros(Mobj.nElems,1);
+  Mobj.yc = zeros(Mobj.nElems,1);
+  for i=1:Mobj.nElems
+    Mobj.xc(i) = sum(Mobj.x(Mobj.tri(i,1:3)))/3.;
+    Mobj.yc(i) = sum(Mobj.y(Mobj.tri(i,1:3)))/3.;
+  end;
+end;
+
 
 % determine edges
 nEdges = nElems*3;
@@ -66,10 +80,14 @@ for i=1:nEdges
   end;
 end;
 
+
+
 % transfer to struct
 Mobj.ntsn = ntsn;
 Mobj.nbsn = nbsn;
 Mobj.have_mets = true;
 
-fprintf(['end   : ' subname '\n'])
+if(ftbverbose)
+  fprintf(['end   : ' subname '\n'])
+end;
 

@@ -34,10 +34,13 @@ function add_var_FVCOM_river(RiverFile,VarName,VarLongName,VarUnits,VarData)
 warning off
 
 subname = 'add_var_FVCOM_river';
-fprintf('\n')
-fprintf(['begin : ' subname '\n'])
+global ftbverbose;
+if(ftbverbose);
+  fprintf('\n')
+  fprintf(['begin : ' subname '\n'])
+end;
 
-fprintf('adding variable %s to file %s\n',VarName,RiverFile); 
+if(ftbverbose);fprintf('adding variable %s to file %s\n',VarName,RiverFile); end;
 
 %------------------------------------------------------------------------------
 % Open River Netcdf and read dimensions
@@ -91,5 +94,7 @@ end;
 nc = close(nc);    
 
 
-fprintf(['end   : ' subname '\n'])
+if(ftbverbose);
+  fprintf(['end   : ' subname '\n'])
+end;
 

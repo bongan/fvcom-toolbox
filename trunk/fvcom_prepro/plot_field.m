@@ -33,7 +33,10 @@ function plot_field(Mobj,PlotField,varargin)
 %==============================================================================
 
 subname = 'plot_field';
-fprintf('\n'); fprintf(['begin : ' subname '\n'])
+global ftbverbose
+if(ftbverbose);
+  fprintf('\n'); fprintf(['begin : ' subname '\n'])
+end;
 
 %------------------------------------------------------------------------------
 % Parse input arguments
@@ -141,6 +144,8 @@ if(PlotExtra)
 end;
 
 
-fprintf(['end   : ' subname '\n'])
+if(ftbverbose);
+  fprintf(['end   : ' subname '\n'])
+end;
 
 

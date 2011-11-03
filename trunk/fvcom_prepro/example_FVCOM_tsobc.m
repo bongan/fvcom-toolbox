@@ -22,8 +22,11 @@ warning off;
 
 
 subname = 'example_FVCOM_tsobc';
-fprintf('\n')
-fprintf(['begin : ' subname '\n'])
+global ftbverbose;
+if(ftbverbose);
+  fprintf('\n')
+  fprintf(['begin : ' subname '\n'])
+end;
 
 fvcom_bathy = 'tst_dep.dat';
 fvcom_obc   = 'tst_obc.dat';
@@ -37,16 +40,16 @@ if(fid  < 0)
   error(['file: ' fvcom_obc ' does not exist']);
 end;
 C = textscan(fid, '%s %s %s %s %d', 1);
-nObcs = C{5};
-obc_nodes = zeros(nObcs,1);
-fprintf('reading obc file\n');
-fprintf('# nodes %d\n',nObc);
+nObc = C{5};
+obc_nodes = zeros(nObc,1);
+if(ftbverbose); fprintf('reading obc file\n'); end;
+if(ftbverbose); fprintf('# nodes %d\n',nObc); end;
 for i=1:nObc
   C = textscan(fid, '%d %d %d', 1);
   obc_nodes(i) = C{2};
 end;
 
-fprintf('obc reading complete\n');
+if(ftbverbose); fprintf('obc reading complete\n');end;
 
 %------------------------------------------------------------------------------
 % read in the FVCOM bathymetry data (need bathymetry on open boundary nodes)
@@ -58,14 +61,14 @@ end;
 C = textscan(fid, '%s %s %s %d', 1);
 Nverts = C{4};
 h = zeros(Nverts,1);
-fprintf('reading bathymetry file\n');
-fprintf('# nodes %d\n',Nverts);
+if(ftbverbose); fprintf('reading bathymetry file\n');end;
+if(ftbverbose); fprintf('# nodes %d\n',Nverts);end;
 for i=1:Nverts
   C = textscan(fid, '%f %f %f', 1);
   h(i) = C{3};
 end;
-fprintf('min depth %f max depth %f\n',min(h),max(h));
-fprintf('bathymetry reading complete\n');
+if(ftbverbose); fprintf('min depth %f max depth %f\n',min(h),max(h));end;
+if(ftbverbose); fprintf('bathymetry reading complete\n');end;
 fclose(fid);
 
 %--------------------------------------------------------------
@@ -73,7 +76,7 @@ fclose(fid);
 %--------------------------------------------------------------
 
 % extract bathymetry at open boundary nodes
-h_obc = h(obc_nodes);
+obc_h = h(obc_nodes);
 
 % time
 time = 0:1:31.;
@@ -178,4 +181,4 @@ end;
 nc = close(nc);    
 
 
-fprintf(['end   : ' subname '\n'])
+if(ftbverbose); fprintf(['end   : ' subname '\n']);end;

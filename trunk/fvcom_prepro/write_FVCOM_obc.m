@@ -24,7 +24,10 @@ function write_FVCOM_obc(Mobj,filename)
 %   
 %==============================================================================
 subname = 'write_FVCOM_obc';
-fprintf('\n'); fprintf(['begin : ' subname '\n']);
+global ftbverbose
+if(ftbverbose)
+  fprintf('\n'); fprintf(['begin : ' subname '\n']);
+end;
 
 %------------------------------------------------------------------------------
 % Parse input arguments
@@ -36,7 +39,7 @@ end;
 %------------------------------------------------------------------------------
 % Dump the file
 %------------------------------------------------------------------------------
-fprintf('writing FVCOM obc %s\n',filename)
+if(ftbverbose); fprintf('writing FVCOM obc %s\n',filename); end;
 fid = fopen(filename,'w');
 
 if(Mobj.nObs==0)
@@ -55,5 +58,7 @@ end;
 fclose(fid);
 
 		
-fprintf(['end   : ' subname '\n'])
+if(ftbverbose)
+  fprintf(['end   : ' subname '\n'])
+end;
 

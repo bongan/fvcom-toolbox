@@ -27,10 +27,12 @@ function [Mobj] = add_coriolis(Mobj,cortype,fval)
 % Revision history
 %   
 %==============================================================================
-
+global ftbverbose
 subname = 'add_coriolis';
-fprintf('\n')
-fprintf(['begin : ' subname '\n'])
+if(ftbverbose)
+  fprintf('\n')
+  fprintf(['begin : ' subname '\n'])
+end;
 
 %------------------------------------------------------------------------------
 % Parse arguments 
@@ -54,18 +56,20 @@ end;
 % Set Coriolis
 %------------------------------------------------------------------------------
 if(CorType(1:3) == 'use')
-	fprintf('setting Coriolis to latitude\n')
+	if(ftbverbose); fprintf('setting Coriolis to latitude\n');end;
 	Mobj.f = Mobj.lat;
 end;
 
 if(CorType(1:3) == 'con')
-	fprintf('setting Coriolis to constant %f\n',fval)
+	if(ftbverbose); fprintf('setting Coriolis to constant %f\n',fval); end;
 	Mobj.f = fval*ones(Mobj.nVerts,1);
 end;
 
 Mobj.have_cor = true;
 
-fprintf(['end   : ' subname '\n'])
+if(ftbverbose)
+  fprintf(['end   : ' subname '\n'])
+end;
 
 
 

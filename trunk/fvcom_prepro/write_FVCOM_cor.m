@@ -24,7 +24,10 @@ function write_FVCOM_cor(Mobj,filename)
 %   
 %==============================================================================
 subname = 'write_FVCOM_cor';
-fprintf('\n'); fprintf(['begin : ' subname '\n']);
+global ftbverbose
+if(ftbverbose)
+  fprintf('\n'); fprintf(['begin : ' subname '\n']);
+end;
 
 %------------------------------------------------------------------------------
 % Parse input arguments
@@ -44,7 +47,7 @@ else
 	y = Mobj.lat;
 end;
 if(Mobj.have_cor)
-	fprintf('writing FVCOM coriolis file %s\n',filename)
+	if(ftbverbose); fprintf('writing FVCOM coriolis file %s\n',filename); end;
 	fid = fopen(filename,'w');
 	fprintf(fid,'Node Number = %d\n',Mobj.nVerts);
 	for i=1:Mobj.nVerts
@@ -55,6 +58,8 @@ else
 	error('can''t write coriolis to file, coriolis is not setup, see add_coriolis')
 end;
 
-fprintf(['end   : ' subname '\n'])
+if(ftbverbose)
+  fprintf(['end   : ' subname '\n'])
+end;
 
 
