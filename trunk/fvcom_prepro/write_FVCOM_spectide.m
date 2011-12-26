@@ -48,14 +48,14 @@ if(report); fprintf('Number of Open Boundary Nodes %d\n',nObcs); end;
 if( (nObcs-chk1)*(nComponents-chk2) ~= 0)
 	fprintf('Amp dimensions do not match!!!')
 	fprintf('nObcs %d nComponens %d\n',chk1,chk2)
-	stop
+	error('bad');
 end;
 
 [chk1,chk2] = size(Phase);
 if( (nObcs-chk1)*(nComponents-chk2) ~= 0)
 	fprintf('Phase dimensions do not match!!!')
 	fprintf('nObcs %d nComponens %d\n',chk1,chk2)
-	stop
+	error('bad');
 end;
 
 %------------------------------------------------------------------------------
