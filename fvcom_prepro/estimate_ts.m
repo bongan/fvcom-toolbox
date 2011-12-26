@@ -47,7 +47,7 @@ end;
 %------------------------------------------------------------------------------
 x = Mobj.x;
 y = Mobj.y;
-h = Mobj.h;
+h = max(Mobj.h,0);
 tri = Mobj.tri;
 nVerts = Mobj.nVerts;
 nElems = Mobj.nElems;
