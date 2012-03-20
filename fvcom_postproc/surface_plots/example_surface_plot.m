@@ -19,7 +19,7 @@
 % Revision history
 %   
 %==============================================================================
-addpath ../utilities
+addpath ../../utilities
 %%-----------------------------------------------------------
 % set directories default values
 %
